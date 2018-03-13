@@ -1,0 +1,144 @@
+/* ~~~~~~~~~~~~~~~~~~~~~
+document lvl
+~~~~~~~~~~~~~~~~~~~~~ */
+html,
+body {
+	height: 100%;
+	padding: 0;
+	margin: 0;
+	font-family: sans-serif;
+	background: #ccc;
+}
+// Box sizing
+html {
+  box-sizing: border-box;
+}
+*, *:before, *:after {
+  box-sizing: inherit;
+}
+/*@font-face {
+  font-family: 'unscii-16';
+  src: url('unscii-16.ttf') format('truetype') 
+}*/
+
+/* ~~~~~~~~~~~~~~~~~~~~~
+top wrapper
+~~~~~~~~~~~~~~~~~~~~~ */
+.flex_wrapper {
+    height: 100%;
+    display: -ms-flexbox;
+    display: -webkit-box;
+    display: -moz-box;
+    display: -ms-box;
+    display: box;
+
+    -ms-flex-direction: row;
+    -webkit-box-orient: horizontal;
+    -moz-box-orient: horizontal;
+    -ms-box-orient: horizontal;
+    box-orient: horizontal;
+}
+/* ~~~~~~~~~~~~~~~~~~~~~
+canvas
+~~~~~~~~~~~~~~~~~~~~~ */
+.canvas_container{
+	background: #ccc;
+	-ms-flex: 1;
+	-webkit-box-flex: 1;
+	-moz-box-flex: 1;
+	-ms-box-flex: 1;
+	box-flex: 1;
+}
+.aligner {
+	height: 100%;
+	display: -webkit-box;
+	display: -webkit-flex;
+	display: -ms-flexbox;
+	display: flex;
+	-webkit-box-align: center;
+	-webkit-align-items: center;
+	-ms-flex-align: center;
+	align-items: center;
+	-webkit-box-pack: center;
+	-webkit-justify-content: center;
+	-ms-flex-pack: center;
+	justify-content: center;
+}
+.grid {
+	-webkit-box-flex: 0;
+	background: white;	
+}
+.row {
+	width: auto;
+}
+.row div {
+	display: inline-block;
+	vertical-align:top;
+	width: 8px;
+	height: 16px;
+	box-shadow: inset 0 0 0 0.1px rgba(0,0,0,0.4);
+	font-family: "unscii-16";
+	font-size: 16px;
+	overflow: visible;
+}
+.row div.selected {
+	box-shadow: inset 0 0 0 1px rgba(255,0,0,1);
+}
+/* ~~~~~~~~~~~~~~~~~~~~~
+controls
+~~~~~~~~~~~~~~~~~~~~~ */
+.controls_container {
+	background: white;
+	width: 420px;
+	padding: 0.5em;
+	overflow-y: scroll;
+	-ms-flex: 0 320px;
+	-webkit-box-flex: 0;
+	-moz-box-flex: 0;
+	-ms-box-flex: 0;
+	box-flex: 0;  
+}
+.control_component {
+	display:block;
+	margin-bottom: 0.5em;
+}
+.header {
+	width: 30%;
+	display:inline-block;
+}
+.control_inputs {
+	display:inline-block;
+}
+h3 {
+	font-weight: bold;
+	margin: 1em 0 0.5em 0;
+}
+button {
+	margin-right: 0.5em;
+}
+.keyboard_layout {
+	display: block;
+	text-align: center;
+}
+.keyboard_layout div {
+	display: inline-block;
+	font-size: 10px;
+	margin: 5px;
+}
+
+.keyboard_layout span {
+	display: block;
+	//font-family: "unscii-16";
+	font-size:16px;
+	margin-top:5px;
+	height: 16px;
+}
+.keyboard_layout_row_one {
+	margin-left: 8px;
+}
+.keyboard_layout_row_two {
+	margin-left: 16px;
+}
+.keyboard_layout_row_three {
+	margin-left: 30px;
+}
