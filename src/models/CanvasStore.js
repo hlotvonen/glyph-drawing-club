@@ -1,9 +1,12 @@
 import { observable } from 'mobx';
 
 class CanvasStore {
+  constructor() {
+     this.canvas = Array.from({length: this.canvasHeight}, () => Array.from({length: this.canvasWidth}, () => '\u00A0' ));
+  }
 
   //CANVAS
-  @observable canvas = [[]];
+  @observable canvas;
 
   //SETTINGS
   @observable canvasWidth = 10;
@@ -83,7 +86,7 @@ class CanvasStore {
       this.selected_y = this.selected_y - 1;
     }
     if(event.key == 'Enter'){
-      canvas[1][1] = 'z'
+      this.canvas[this.selected_y][this.selected_x] = 'z'
     }
   }
 
