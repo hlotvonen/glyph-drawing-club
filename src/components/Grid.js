@@ -8,7 +8,7 @@ import Cell from './Cell';
 @observer class Grid extends Component {
 
   render() {
-    const canvas = Array.from({length: store.canvasHeight}, () => Array.from({length: store.canvasWidth}, () => '\u00A0' ));
+    const canvas = store.canvas
     const selected_y = store.selected_y;
     const selected_x = store.selected_x;
 

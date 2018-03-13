@@ -1,9 +1,12 @@
-import { observable } from 'mobx';
+import { action, observable } from 'mobx';
 
 class CanvasStore {
+  constructor() {
+     this.canvas = Array.from({length: this.canvasHeight}, () => Array.from({length: this.canvasWidth}, () => '\u00A0' ));
+  }
 
   //CANVAS
-  @observable canvas = [[]];
+  @observable canvas
 
   //SETTINGS
   @observable canvasWidth = 10;
@@ -17,8 +20,11 @@ class CanvasStore {
   @observable selected_x = 0;
 
   //Change canvas width
-  addCol = () => {
+  @action addCol = () => {
     this.canvasWidth = this.canvasWidth + 1;
+    for (const row of this.canvas) {
+      row.push('\u00A0')
+    }
   }
   deleteCol = () => {
     if(this.canvasWidth > 1){
@@ -26,18 +32,24 @@ class CanvasStore {
       if(this.selected_x == this.canvasWidth){
         this.selected_x = this.selected_x - 1;
       }
+      for (const row of this.canvas) {
+        row.pop()
+      }
     }
   }
   //Change canvas height
-  addRow = () => { 
+  @action addRow = () => { 
     this.canvasHeight = this.canvasHeight + 1;
+    this.canvas.push(Array.from({length: this.canvasWidth}, () => '\u00A0' ))
   }
-  deleteRow = () => {
+
+  @action deleteRow = () => {
     if(this.canvasHeight > 1){
       this.canvasHeight = this.canvasHeight - 1;
       if(this.selected_y == this.canvasHeight){
         this.selected_y = this.selected_y - 1;
       }
+      this.canvas.pop()
     }
   }
 
@@ -83,7 +95,7 @@ class CanvasStore {
       this.selected_y = this.selected_y - 1;
     }
     if(event.key == 'Enter'){
-      canvas[1][1] = 'z'
+      this.canvas[this.selected_y][this.selected_x] = 'z'
     }
   }
 
