@@ -19,7 +19,7 @@ class Canvas extends Component {
 
 	render() {
 		return (
-			<div className="canvas_container">
+			<div className={"canvas_container" + (store.hideGrid ? ' hideGrid' : '')} >
 				<div className="aligner">
 					<Grid canvas={store.canvas}/>
 				</div>

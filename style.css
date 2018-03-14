@@ -49,6 +49,12 @@ canvas
 	-ms-box-flex: 1;
 	box-flex: 1;
 }
+.canvas_container.hideGrid {
+	background: white;
+}
+.canvas_container.hideGrid .row div {
+	box-shadow: inset 0 0 0 0 rgba(0,0,0,0);
+}
 .aligner {
 	height: 100%;
 	display: -webkit-box;
