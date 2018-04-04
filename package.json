@@ -40,6 +40,7 @@
     "react": "^15.1.0",
     "react-dom": "^15.1.0",
     "react-keypress": "^0.1.5",
+    "react-pinch-zoom-pan": "^1.4.5",
     "styled-components": "^3.2.1"
   }
 }

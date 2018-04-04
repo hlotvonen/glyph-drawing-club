@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import store from '../models/CanvasStore.js';
+import setstore from '../models/KeymappingsStore'
 import Grid from './Grid';
 
 
@@ -19,7 +20,7 @@ class Canvas extends Component {
 
 	render() {
 		return (
-			<div className={"canvas_container" + (store.hideGrid ? ' hideGrid' : '')} >
+			<div className={"canvas_container" + (store.hideGrid ? ' hideGrid' : '') + (store.darkTheme ? ' darkTheme' : '')}>
 				<div className="aligner">
 					<Grid canvas={store.canvas}/>
 				</div>

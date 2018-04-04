@@ -10,7 +10,7 @@ class CanvasWidth extends React.Component {
 				{'Canvas width:'}
 				<button onClick={this.props.deleteCol}> {'-1'} </button>
 				<button onClick={this.props.addCol}> {'+1'} </button> 
-				<span>{this.props.canvasWidth}</span>
+				<span>{this.props.canvasWidth} ({store.widthPixels} px)</span>
 			</div>
 		);
 	}

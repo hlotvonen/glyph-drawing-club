@@ -10,7 +10,7 @@ class CellHeight extends React.Component {
 				{'Cell height:'}
 				<button onClick={this.props.decreaseCellHeight}> {'-1'} </button>
 				<button onClick={this.props.increaseCellHeight}> {'+1'} </button> 
-				<span>{this.props.cellHeight}</span>
+				<span>{this.props.cellHeight} px</span>
 			</div>
 		);
 	}

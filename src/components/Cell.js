@@ -1,9 +1,24 @@
 import React from 'react';
 
 const Cell = (props) => {
-  return (
-    <div className={(props.highlighted ? 'selected' : '')} style={{width : props.cellWidth, height : props.cellHeight, fontSize : props.fontSize}} >{props.character}</div>
-  )
+    let transform = { 
+        transform: `scale(${props.flipGlyph}, -1) rotate(${props.rotationAmount}deg)`
+    };
+    const highlighted = props.highlighted ? 'selected' : '';
+    const glyphInvertedColor = props.glyphInvertedColor ? 'invertColor' : '';
+	const classes = `${highlighted} ${glyphInvertedColor}`;
+
+	return (
+		<div className={classes} style={{width : props.cellWidth, height : props.cellHeight}} >
+			<svg
+				height={+props.defaultFontSize + +props.glyphFontSizeModifier} 
+				viewBox={props.glyphOffsetX + " " + props.svgBaseline + " " + props.svgWidth + " " + props.svgHeight} 
+				style={transform}
+			>
+				<path d={props.glyphPath}/>
+			</svg>
+		</div>
+	)
 }
 
 export default Cell;

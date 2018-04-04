@@ -1,6 +1,5 @@
 import React from 'react';
 import { observer } from 'mobx-react';
-import store from '../models/CanvasStore.js';
 
 class HideGrid extends React.Component {
 

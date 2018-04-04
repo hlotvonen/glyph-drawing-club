@@ -13,7 +13,8 @@ class GlyphSelect extends Component {
 	      font: [],
 	      num: 100,
 	      gid: 0,
-	      uncd: null
+	      uncd: null,
+	      fontfile: ""
 	    };
     }
     componentDidMount() {
@@ -21,7 +22,7 @@ class GlyphSelect extends Component {
     }
     go = () => {  
 		//load("unscii-16.ttf",fontLoaded);
-		this.load("unscii-16.ttf", this.fontLoaded);  
+		this.load("Reviscii-Regular.ttf", this.fontLoaded);
 		
 		this.node = document.body;
 		this.node.addEventListener("drop", this.onDrop, false);
@@ -44,12 +45,11 @@ class GlyphSelect extends Component {
 		this.setState({ 
 			font: Typr.parse(resp)
 		});
-
 		this.setState({ 
 			uncd: new Array(this.state.font.maxp.numGlyphs)
 		});
 		for(let i=0; i<100000; i++) {
-			let gid = Typr.U.codeToGlyph(this.state.font, i);  
+			let gid = Typr.U.codeToGlyph(this.state.font, i);
 			if(gid==0) continue;
 			if(this.state.uncd[gid]==null) this.state.uncd[gid]=[i];
 			else this.state.uncd[gid].push(i);
@@ -59,7 +59,21 @@ class GlyphSelect extends Component {
 		this.setState({ gid: 0 });
 		
 		this.drawGlyphs();
+		this.glyphToSVG();
+
+		store.fontName = this.state.font.name.fullName;
+		console.log(this.state.font);
+
 	}
+	glyphToSVG = () => {
+		let path = Typr.U.glyphToPath(this.state.font, this.state.gid);
+		let svgstring = Typr.U.pathToSVG(path);
+		store.glyphPath = svgstring;
+		store.svgWidth = this.state.font.hhea.advanceWidthMax;
+		//store.svgwidth = this.state.font.hmtx.aWidth[this.state.gid];
+		store.svgHeight = this.state.font.hhea.ascender + Math.abs(this.state.font.hhea.descender);
+		store.svgBaseline = this.state.font.hhea.descender;
+	}	
 	drawGlyphs = () => {
 		let cont = document.getElementById("glyphcont");  
 			cont.innerHTML = "";
@@ -71,12 +85,12 @@ class GlyphSelect extends Component {
 		
 		let lim = Math.min(this.state.off+this.state.num, this.glyphCnt());
 		let scale = 32*this.getDPR() / this.state.font.head.unitsPerEm;
+
 		for(let i=this.state.off; i<lim; i++)
 		{
 			let path = Typr.U.glyphToPath(this.state.font, i);
 			
 			cnv.width = cnv.width;
-			//ctx.scale(getDPR(), getDPR());
 			ctx.translate(10*this.getDPR(),Math.round(36*this.getDPR()));  
 			
 			ctx.fillStyle = "#000000";
@@ -84,6 +98,7 @@ class GlyphSelect extends Component {
 			
 			ctx.scale(scale,-scale);
 			Typr.U.pathToContext(path, ctx);
+
 			ctx.fill();
 			
 			let img = document.createElement("img");
@@ -91,31 +106,56 @@ class GlyphSelect extends Component {
 			img.gid = i;
 			img.onclick = this.glyphClick;
 			img.src = cnv.toDataURL();
-			cont.appendChild(img);
+			//only show characters that are encoded with unicode
+			//if (this.state.uncd[i] != null){
+				cont.appendChild(img);
+			//}
 		}
 	}
 	onDrop = (e) => { 
 		this.cancel(e);
 		let fontLoaded = this.fontLoaded;
 		let r = new FileReader();
+		let r64 = new FileReader();
+		let file = e.dataTransfer.files[0];
 		r.onload = function(e) { fontLoaded(e.target.result); };
-		r.readAsArrayBuffer( e.dataTransfer.files[0] );
+		r.readAsArrayBuffer( file );
+		r.onloadend = function(e) {
+		    r64.readAsDataURL( file )
+		    r64.onloadend = function(e) {
+		    	let base64result = r64.result.split(',')[1];
+		    	//Set font face
+				let newStyle = document.createElement('style');
+				newStyle.appendChild(document.createTextNode("\
+				@font-face {\
+				    font-family: 'thefont';\
+				    src: url(data:application/x-font-ttf;charset=utf-8;base64," + base64result + ");\
+				}\
+				"));
+				document.head.appendChild(newStyle);
+				store.selectedFont = "thefont";
+		    }
+		};
 	}
 	glyphClick = (e) => { 
 		this.setState({ gid: e.target.gid });
-		this.displayUnicode(); 
+		this.displayUnicode();
+		this.glyphToSVG();
 	}
 	displayUnicode() {	
 		let props = document.getElementById("properties");
-		let hex = "---", str = "---";
+		let hex = "---", 
+			str = "---";
 		let ucode = this.state.uncd[this.state.gid];
 		if(ucode!=null) {  
 			hex=ucode[0].toString(16);  
 			while(hex.length<4) hex="0"+hex;
 			str=String.fromCharCode(ucode[0]);
+			//update unicode number in the store
+			store.selectedUnicode = ucode[0];
 		}
-		props.innerHTML = "Selected glyph: #"+hex+" <span> "+str+"</span>";
-		store.selectedUnicode = ucode[0];
+		props.innerHTML = "Selected glyph: Hex: #"+hex+" and Dec: #"+ucode+" <span> "+str+"</span>";
+		
 	}
 	getDPR() { 
 		return window["devicePixelRatio"] || 1; 
@@ -134,12 +174,15 @@ class GlyphSelect extends Component {
 	render() {
 		return (
 			<div className="glyphs">
-				<h3>Glyphs</h3>
-				<button type="button" onClick={this.drawPrev}>Previous 100</button><button type="button" onClick={this.drawNext}>Next 100</button>
-				<b>Drag and drop a font file (otf/ttf)</b>
+				<h3>Glyph selection</h3> 
+				<b>To load another font, drop a font file (otf/ttf)</b>
+				<div>Currently selected font: {store.fontName}</div>
+				<button type="button" onClick={this.drawPrev}>Previous 100</button>
+				<button type="button" onClick={this.drawNext}>Next 100</button>
 				<div id="glyphcont"></div>
+				<button type="button" onClick={this.drawPrev}>Previous 100</button>
+				<button type="button" onClick={this.drawNext}>Next 100</button>
 				<div id="properties"></div>
-				
 			</div>
 		);
 	}

@@ -7,10 +7,10 @@ class FontSize extends React.Component {
 	render() {
 		return(
 			<div>
-				{'Font size:'}
+				{'Default font size:'}
 				<button onClick={this.props.decreaseFontSize}> {'-1'} </button>
 				<button onClick={this.props.increaseFontSize}> {'+1'} </button> 
-				<span>{this.props.fontSize}</span>
+				<span>{this.props.defaultFontSize} px</span>
 			</div>
 		);
 	}
