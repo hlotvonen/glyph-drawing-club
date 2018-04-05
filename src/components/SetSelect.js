@@ -8,7 +8,7 @@ class SetSelect extends React.Component {
 
 		const sets = setstore.sets;
 		const selectSetButtons = sets.map((setNumber, x) =>
-				<button type="button" key={x}>{x}</button>
+				<button type="button" key={x} onClick={() => this.props.selectSet(x)}>{x + 1}</button>
 		);
 
 		return (

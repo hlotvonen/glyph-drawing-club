@@ -2,12 +2,14 @@ import { action, observable, computed } from 'mobx';
 import setstore from './KeymappingsStore'
 
 //[glyphPath, svgWidth, svgHeight, svgBaseline, glyphOffsetX, glyphFontSizeModifier, rotationAmount, flipGlyph]
-let emptyCell = ["M0 0", "1", "1", "0", "0", "0", "0", "1", false];
+export const EMPTY_GLYPH = ["M0 0", "1", "1", "0"]
+const EMPTY_CELL = [...EMPTY_GLYPH, "0", "0", "0", "1", false];
+
 
 class CanvasStore {
 //Initialize canvas
 	constructor() {
-		this.canvas = Array.from({length: this.canvasHeight}, () => Array.from({length: this.canvasWidth}, () => emptyCell ));
+		this.canvas = Array.from({length: this.canvasHeight}, () => Array.from({length: this.canvasWidth}, () => EMPTY_CELL ));
 		this.widthPixels = this.canvasWidth * this.cellWidth;
 		this.heightPixels = this.canvasHeight * this.cellHeight;
 	}
@@ -49,7 +51,7 @@ class CanvasStore {
 	@action addCol = () => {
 		this.canvasWidth = this.canvasWidth + 1;
 		for (const row of this.canvas) {
-			row.push(emptyCell)
+			row.push(EMPTY_CELL)
 		}
 		this.widthPixels = this.canvasWidth * this.cellWidth;
 	}
@@ -68,7 +70,7 @@ class CanvasStore {
 //Change canvas height
 	@action addRow = () => { 
 		this.canvasHeight = this.canvasHeight + 1;
-		this.canvas.push(Array.from({length: this.canvasWidth}, () => emptyCell ));
+		this.canvas.push(Array.from({length: this.canvasWidth}, () => EMPTY_CELL ));
 		this.heightPixels = this.canvasHeight * this.cellHeight;
 	}
 
@@ -205,58 +207,43 @@ class CanvasStore {
 		this.canvas[this.selected_y][this.selected_x][7] = this.flipGlyph;
 	}
 
-//Key presses
-	handleKeyPress = (event) => {
-		switch (event.key) {
-			case 'ArrowRight':
-				if(this.selected_x < this.canvasWidth - 1) {
-					this.selected_x = this.selected_x + 1;
-				}
-				else if(this.selected_x = this.canvasWidth) {
-					this.addCol();
-				}
-				event.preventDefault();
-				break;
-			case 'ArrowLeft':
-				if(this.selected_x > 0){
-					this.selected_x = this.selected_x - 1;
-				}
-				event.preventDefault();
-				break;
-			case 'ArrowDown':
-				if(this.selected_y < this.canvasHeight - 1) {
-					this.selected_y = this.selected_y + 1;
-				}
-				else if(this.selected_y = this.canvasHeight) {
-					this.addRow();
-				}
-				event.preventDefault();
-				break;
-			case 'ArrowUp':
-				if(this.selected_y > 0){
-					this.selected_y = this.selected_y - 1;
-				}
-				event.preventDefault();
-				break;
-			case ' ': //Space
-				this.canvas[this.selected_y][this.selected_x] = emptyCell;
-				event.preventDefault();
-				break;
-			case 'q':
-				this.canvas[this.selected_y][this.selected_x] = [this.glyphPath, this.svgWidth, this.svgHeight, this.svgBaseline, this.glyphOffsetX, this.glyphFontSizeModifier, this.rotationAmount, this.flipGlyph, this.glyphInvertedColor];
-				break;
-			case 'i':
-				this.handleChangeInvertColor();
-				break;
-			case 'r':
-				this.rotateGlyphRight();
-				break;
-			case 'f':
-				this.handleChangeFlip();
-				break;
-		}
+	goRight = () => {
+        if(this.selected_x < this.canvasWidth - 1) {
+            this.selected_x = this.selected_x + 1;
+        }
+        else if(this.selected_x = this.canvasWidth) {
+            this.addCol();
+        }
 	}
 
+   goLeft = () => {
+        if(this.selected_x > 0){
+            this.selected_x = this.selected_x - 1;
+        }
+    }
+
+    goDown = () => {
+        if(this.selected_y < this.canvasHeight - 1) {
+            this.selected_y = this.selected_y + 1;
+        }
+        else if(this.selected_y = this.canvasHeight) {
+            this.addRow();
+        }
+    }
+
+    goUp = () => {
+        if(this.selected_y > 0){
+            this.selected_y = this.selected_y - 1;
+        }
+    }
+
+    insertEmpty = () => {
+        this.canvas[this.selected_y][this.selected_x] = EMPTY_CELL;
+    }
+
+    insert = () => {
+        this.canvas[this.selected_y][this.selected_x] = [this.glyphPath, this.svgWidth, this.svgHeight, this.svgBaseline, this.glyphOffsetX, this.glyphFontSizeModifier, this.rotationAmount, this.flipGlyph, this.glyphInvertedColor];
+	}
 }
 
 export default new CanvasStore();
