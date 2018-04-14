@@ -2,13 +2,12 @@ import React from 'react';
 import { observer } from 'mobx-react';
 import setstore from '../models/KeymappingsStore';
 
-
 class SetSelect extends React.Component {
-  render() {
 
+	render() {
 		const sets = setstore.sets;
 		const selectSetButtons = sets.map((setNumber, x) =>
-				<button type="button" key={x} onClick={() => this.props.selectSet(x)}>{x + 1}</button>
+				<button className={(x === setstore.selectedSetIndex ? 'active' : '')} type="button" key={x} onClick={() => this.props.selectSet(x)}>{x + 1}</button>
 		);
 
 		return (

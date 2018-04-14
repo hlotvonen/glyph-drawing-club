@@ -1,5 +1,6 @@
 import React from 'react';
 import { observer } from 'mobx-react';
+import setstore from '../models/KeymappingsStore'
 
 class ToggleMapping extends React.Component {
 
@@ -7,7 +8,7 @@ class ToggleMapping extends React.Component {
     return (
     	<div>
           	{'Map keys:'}
-          	<input type="checkbox" value={this.props.toggleMapping} onChange={this.props.handleChangeMapping} />
+          	<input id="toggleMapping" type="checkbox" value={this.props.toggleMapping} onChange={this.props.handleChangeMapping}/>
       	</div>
     );
   }

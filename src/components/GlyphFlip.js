@@ -7,7 +7,7 @@ class GlyphFlip extends React.Component {
     return (
     	<div>
           	{'Flip glyph:'}
-          	<input type="checkbox" value={this.props.flipGlyph} onChange={this.props.handleChangeFlip} />
+          	<input id="flipGlyph" type="checkbox" value={this.props.flipGlyph} onChange={this.props.handleChangeFlip} />
       	</div>
     );
   }

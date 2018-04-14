@@ -34,7 +34,7 @@ import Cell from './Cell';
     );
 
     return (
-      <div className="grid">
+      <div id="canvas" className="grid">
         {grid}
       </div>
     );

@@ -10,7 +10,7 @@ class CanvasHeight extends React.Component {
 				{'Canvas height:'}
 				<button onClick={this.props.deleteRow}> {'-1'} </button>
 				<button onClick={this.props.addRow}> {'+1'} </button> 
-				<span>{this.props.canvasHeight} ({store.heightPixels} px)</span>
+				<span>{this.props.canvasHeight} {'cells'} ({store.heightPixels} px)</span>
 			</div>
 		);
 	}

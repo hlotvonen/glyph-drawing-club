@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
+import { observable } from 'mobx';
 import store from '../models/CanvasStore.js';
+
+const pagenumber = observable(0);
 
 class GlyphSelect extends Component {
     constructor(props) {
@@ -14,16 +17,16 @@ class GlyphSelect extends Component {
 	      num: 100,
 	      gid: 0,
 	      uncd: null,
-	      fontfile: ""
+	      fontfile: "",
+	      pages_total: 0
 	    };
     }
     componentDidMount() {
 		this.go();
     }
     go = () => {  
-		//load("unscii-16.ttf",fontLoaded);
-		this.load("Reviscii-Regular.ttf", this.fontLoaded);
-		
+		this.load("Tesserae-Regular.otf", this.fontLoaded);
+
 		this.node = document.body;
 		this.node.addEventListener("drop", this.onDrop, false);
 		this.node.addEventListener("dragenter", this.cancel, false);
@@ -45,9 +48,10 @@ class GlyphSelect extends Component {
 		this.setState({ 
 			font: Typr.parse(resp)
 		});
-		this.setState({ 
+		this.setState({
 			uncd: new Array(this.state.font.maxp.numGlyphs)
 		});
+
 		for(let i=0; i<100000; i++) {
 			let gid = Typr.U.codeToGlyph(this.state.font, i);
 			if(gid==0) continue;
@@ -55,14 +59,18 @@ class GlyphSelect extends Component {
 			else this.state.uncd[gid].push(i);
 		}
 
-		this.setState({ off: 0 });
-		this.setState({ gid: 0 });
+		this.setState({ 
+			gid: 0,
+			off: 0,
+			pages_total: Math.floor(this.glyphCnt() / this.state.num)
+		});
 		
 		this.drawGlyphs();
 		this.glyphToSVG();
 
+		pagenumber.set(0);
+
 		store.fontName = this.state.font.name.fullName;
-		console.log(this.state.font);
 
 	}
 	glyphToSVG = () => {
@@ -106,10 +114,7 @@ class GlyphSelect extends Component {
 			img.gid = i;
 			img.onclick = this.glyphClick;
 			img.src = cnv.toDataURL();
-			//only show characters that are encoded with unicode
-			//if (this.state.uncd[i] != null){
-				cont.appendChild(img);
-			//}
+			cont.appendChild(img);
 		}
 	}
 	onDrop = (e) => { 
@@ -164,25 +169,56 @@ class GlyphSelect extends Component {
     	return this.state.font.maxp.numGlyphs;
     }
     drawNext = () => {
-		if(this.state.off+this.state.num<this.glyphCnt()) this.state.off = this.state.off + this.state.num;
+		if(this.state.off+this.state.num<this.glyphCnt()) {
+			this.state.off = this.state.off + this.state.num;
+		}
+		pagenumber.set(pagenumber + 1);
+		console.log(pagenumber);
 		this.drawGlyphs();
     }
 	drawPrev = () => {
-		if(this.state.off>0) this.state.off = this.state.off-this.state.num; 
+		if(this.state.off>0) {
+			this.state.off = this.state.off-this.state.num;
+		}
+		pagenumber.set(this.state.off / this.state.num);
 		this.drawGlyphs();
 	}
+	updatePageNum = (evt) => {
+		pagenumber.set(evt.target.value);
+		this.state.off = pagenumber * this.state.num;
+		this.drawGlyphs();
+
+		// If input is invalid, give input error class, and show last page
+		var page_select_input = document.getElementById("page_select_input");
+	 	page_select_input.className = page_select_input.className.replace("input-error", "");
+        if (isNaN(evt.target.value) || evt.target.value > this.state.pages_total) {
+            page_select_input.className += " input-error ";
+            this.state.off = this.state.pages_total * this.state.num;
+            this.drawGlyphs();
+        }
+	}	
 	render() {
 		return (
 			<div className="glyphs">
 				<h3>Glyph selection</h3> 
 				<b>To load another font, drop a font file (otf/ttf)</b>
 				<div>Currently selected font: {store.fontName}</div>
-				<button type="button" onClick={this.drawPrev}>Previous 100</button>
-				<button type="button" onClick={this.drawNext}>Next 100</button>
+				<button type="button" onClick={this.drawPrev}>Previous</button>
+				<button type="button" onClick={this.drawNext}>Next</button>
+				<div className="page_selection">
+					Select page: 
+					<input 
+						id="page_select_input"
+						type="number"
+						min="0" 
+						max={this.state.pages_total}
+						value={pagenumber}
+						onChange={evt => this.updatePageNum(evt)}
+					/>/{this.state.pages_total}
+				</div>
 				<div id="glyphcont"></div>
-				<button type="button" onClick={this.drawPrev}>Previous 100</button>
-				<button type="button" onClick={this.drawNext}>Next 100</button>
-				<div id="properties"></div>
+				<button type="button" onClick={this.drawPrev}>Previous</button>
+				<button type="button" onClick={this.drawNext}>Next</button>
 			</div>
 		);
 	}

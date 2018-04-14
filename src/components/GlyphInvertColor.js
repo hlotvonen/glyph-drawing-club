@@ -7,7 +7,7 @@ class GlyphInvertColor extends React.Component {
     return (
     	<div>
           	{'Invert color:'}
-          	<input type="checkbox" value={this.props.invertColor} onChange={this.props.handleChangeInvertColor} />
+          	<input type="checkbox" id="invertColor" value={this.props.invertColor} onChange={this.props.handleChangeInvertColor} />
       	</div>
     );
   }

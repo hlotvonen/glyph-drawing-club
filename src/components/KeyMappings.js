@@ -10,19 +10,14 @@ import SetSelect from './SetSelect'
 class KeyMappings extends React.Component {
 	render() {
 	 	const sets = setstore.sets;
-
-	 	// TODO: Alter keymapping sets
-
 		return (
 	    	<div className="glyph_sets">
 	    		<h3>Keymappings</h3>
 	    		<ToggleMapping handleChangeMapping={setstore.handleChangeMapping} />
 	    		<SetSelect addSet={setstore.addSet} selectSet={setstore.selectSet} />
-				<div className="grid">
-					{sets.map((set, y) => (
-						<KeyMapping keys={set} key={y} />)
-					)}
-				</div>
+				{sets.map((set, y) => (
+					<KeyMapping keys={set} key={y} setIndex={y} />
+				))}
 	    	</div>
 		);
 	}
