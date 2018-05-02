@@ -3,7 +3,8 @@ import { observer } from 'mobx-react';
 import { observable } from 'mobx';
 import store from '../models/CanvasStore.js';
 
-const pagenumber = observable(0);
+let PAGENUMBER = observable(0);
+let SELECTEDFONT = observable('Tesserae-Regular');
 
 class GlyphSelect extends Component {
     constructor(props) {
@@ -12,20 +13,24 @@ class GlyphSelect extends Component {
 		this.onDrop = this.onDrop.bind(this);
 
 	    this.state = {
-	      off: 0,
-	      font: [],
-	      num: 100,
-	      gid: 0,
-	      uncd: null,
-	      fontfile: "",
-	      pages_total: 0
-	    };
+			off: 0,
+			font: [],
+			num: 100,
+			gid: 0,
+			uncd: null,
+			fontfile: "",
+			pages_total: 0	    
+	  	};
     }
     componentDidMount() {
 		this.go();
     }
-    go = () => {  
-		this.load("Tesserae-Regular.otf", this.fontLoaded);
+    go = () => {
+    	if(SELECTEDFONT == 'Tesserae-Regular') {
+			this.load("Tesserae-Regular.otf", this.fontLoaded);
+		} else if(SELECTEDFONT == 'Unscii') {
+			this.load("unscii-16.ttf", this.fontLoaded);
+		}
 
 		this.node = document.body;
 		this.node.addEventListener("drop", this.onDrop, false);
@@ -68,7 +73,7 @@ class GlyphSelect extends Component {
 		this.drawGlyphs();
 		this.glyphToSVG();
 
-		pagenumber.set(0);
+		PAGENUMBER.set(0);
 
 		store.fontName = this.state.font.name.fullName;
 
@@ -159,7 +164,7 @@ class GlyphSelect extends Component {
 			//update unicode number in the store
 			store.selectedUnicode = ucode[0];
 		}
-		props.innerHTML = "Selected glyph: Hex: #"+hex+" and Dec: #"+ucode+" <span> "+str+"</span>";
+		props.innerHTML = "Hex: #"+hex+"</br> Dec: #"+ucode+"</br> <span> "+str+"</span>";
 		
 	}
 	getDPR() { 
@@ -172,20 +177,20 @@ class GlyphSelect extends Component {
 		if(this.state.off+this.state.num<this.glyphCnt()) {
 			this.state.off = this.state.off + this.state.num;
 		}
-		pagenumber.set(pagenumber + 1);
-		console.log(pagenumber);
+		PAGENUMBER.set(PAGENUMBER + 1);
+		console.log(PAGENUMBER);
 		this.drawGlyphs();
     }
 	drawPrev = () => {
 		if(this.state.off>0) {
 			this.state.off = this.state.off-this.state.num;
 		}
-		pagenumber.set(this.state.off / this.state.num);
+		PAGENUMBER.set(this.state.off / this.state.num);
 		this.drawGlyphs();
 	}
 	updatePageNum = (evt) => {
-		pagenumber.set(evt.target.value);
-		this.state.off = pagenumber * this.state.num;
+		PAGENUMBER.set(evt.target.value);
+		this.state.off = PAGENUMBER * this.state.num;
 		this.drawGlyphs();
 
 		// If input is invalid, give input error class, and show last page
@@ -196,12 +201,22 @@ class GlyphSelect extends Component {
             this.state.off = this.state.pages_total * this.state.num;
             this.drawGlyphs();
         }
-	}	
+	}
+	handleFontSelectChange = (evt) => {
+		SELECTEDFONT.set(evt.target.value);
+		this.go();
+	}
 	render() {
 		return (
 			<div className="glyphs">
 				<h3>Glyph selection</h3> 
-				<b>To load another font, drop a font file (otf/ttf)</b>
+				Select a preset font:
+				<select value={SELECTEDFONT} onChange={this.handleFontSelectChange.bind(this)}>
+				  <option value="Tesserae-Regular">Tesserae-Regular</option>
+				  <option value="Unscii">Unscii</option>
+				</select>
+				<br/>
+				<b>Or drag and drop a font file (otf/ttf)</b>
 				<div>Currently selected font: {store.fontName}</div>
 				<button type="button" onClick={this.drawPrev}>Previous</button>
 				<button type="button" onClick={this.drawNext}>Next</button>
@@ -212,8 +227,10 @@ class GlyphSelect extends Component {
 						type="number"
 						min="0" 
 						max={this.state.pages_total}
-						value={pagenumber}
+						value={PAGENUMBER}
 						onChange={evt => this.updatePageNum(evt)}
+						onFocus={() => store.toggleWriting()}
+						onBlur={() => store.toggleWriting()}
 					/>/{this.state.pages_total}
 				</div>
 				<div id="glyphcont"></div>

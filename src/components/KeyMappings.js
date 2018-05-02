@@ -11,8 +11,8 @@ class KeyMappings extends React.Component {
 	render() {
 	 	const sets = setstore.sets;
 		return (
-	    	<div className="glyph_sets">
-	    		<h3>Keymappings</h3>
+	    	<div className="Sets">
+	    		{console.log(sets)}
 	    		<ToggleMapping handleChangeMapping={setstore.handleChangeMapping} />
 	    		<SetSelect addSet={setstore.addSet} selectSet={setstore.selectSet} />
 				{sets.map((set, y) => (

@@ -6,6 +6,7 @@ import { observer } from 'mobx-react'
 const KeyMapping = observer((props) => {
 	return (
 		<div className={"KeyMappingsContainer " + (props.setIndex === setstore.selectedSetIndex ? 'active' : '')} >
+			<div className="KeyMappingsFlexer">
 			{Object.entries(props.keys).map(([keyName, glyph]) => {
 				return (
 					<div key={keyName}>
@@ -20,6 +21,7 @@ const KeyMapping = observer((props) => {
 					</div>
 				)
 			})}
+			</div>
 		</div>
 	)
 });

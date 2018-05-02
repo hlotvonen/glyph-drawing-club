@@ -16,6 +16,8 @@ class ExportButtons extends React.Component {
 						max="25"
 						value={this.props.exportSizeMultiplier}
 						onChange={this.props.updateExportSizeMultiplier}
+						onFocus={() => store.toggleWriting()}
+						onBlur={() => store.toggleWriting()}
 					/> ({store.widthPixels * store.exportSizeMultiplier}px &times; {store.heightPixels * store.exportSizeMultiplier}px)
 			</div>
 		);

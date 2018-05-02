@@ -19,8 +19,8 @@ class GlyphTuning extends React.Component {
 				<GlyphOffsetX increaseGlyphOffsetX={store.increaseGlyphOffsetX} decreaseGlyphOffsetX={store.decreaseGlyphOffsetX}/>
 				<GlyphOffsetY increaseGlyphOffsetY={store.increaseGlyphOffsetY} decreaseGlyphOffsetY={store.decreaseGlyphOffsetY}/>
 				<GlyphRotate rotationAmount={store.rotationAmount} rotateGlyphRight={store.rotateGlyphRight} rotateGlyphLeft={store.rotateGlyphLeft} />
-				<GlyphFlip glyphFlip={store.glyphFlip} handleChangeFlip={store.handleChangeFlip}/>
-				<GlyphInvertColor glyphInvertedColor={store.glyphInvertedColor} handleChangeInvertColor={store.handleChangeInvertColor}/>
+				<GlyphFlip handleChangeFlip={store.handleChangeFlip}/>
+				<GlyphInvertColor handleChangeInvertColor={store.handleChangeInvertColor}/>
 				<GlyphClear glyphClear={store.glyphClear} />
 			</div>
 		);

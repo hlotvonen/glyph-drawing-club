@@ -1,8 +1,8 @@
-import { action, observable, mobx, toJS } from 'mobx';
+import { action, observable, computed, mobx, toJS } from 'mobx';
 import store from './CanvasStore'
 
 const EMPTY_GLYPH = ["M0 0", "1", "1", "0"]
-const KEYS = ['F1', 'F2', 'F3', 'F4', 'F5', 'F6', 'F7', 'F8', 'F9', 'F9', 'F10']
+const KEYS = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"]
 //const KEYS = ['F1', 'F2', 'F3', 'F4', 'F5', 'F6', 'F7', 'F8', 'F9', 'F9', 'F10', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', 'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'z', 'x', 'c', 'v', 'b', 'n', 'm']
 	
 class KeymappingsStore {
@@ -21,7 +21,6 @@ class KeymappingsStore {
 		document.getElementById('toggleMapping').checked = this.toggleMapping;
 	}
 
-
 	@action
 	selectSet = (index) => {
 		if (index >= 0 && index < this.sets.length) {
@@ -35,7 +34,6 @@ class KeymappingsStore {
 		for (const keyName of KEYS) {
 			set[keyName] = EMPTY_GLYPH
 		}
-
 		this.sets.push(set)
 		this.selectedSetIndex = this.sets.length - 1
 	}

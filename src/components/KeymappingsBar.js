@@ -8,10 +8,13 @@ import store from '../models/CanvasStore'
 class KeymappingsBar extends React.Component {
 	render() {
 		return (
-			<div className="keymappings">
-	          	<SelectedGlyph glyphPath={store.glyphPath} svgWidth={store.svgWidth} svgHeight={store.svgHeight} svgBaseline={store.svgBaseline}/>
-				<div id="properties"></div>
+			<div className="KeyMappingsBar">
 				<KeyMappings/>
+				<div className="SelectedGlyphContainer">
+	          		<SelectedGlyph glyphPath={store.glyphPath} svgWidth={store.svgWidth} svgHeight={store.svgHeight} svgBaseline={store.svgBaseline}/>
+					<div id="properties"></div>
+				</div>
+
 			</div>
 		)
 	}

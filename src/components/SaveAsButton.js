@@ -13,6 +13,8 @@ class SaveAsButton extends React.Component {
 						name="name" 
 						value={this.props.fileName}
 						onChange={this.props.updateFileName}
+						onFocus={() => store.toggleWriting()}
+						onBlur={() => store.toggleWriting()}
 					/>
 					<button onClick={() => saveAs()}> {'Save'} </button>
 

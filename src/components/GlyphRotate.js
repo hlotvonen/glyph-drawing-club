@@ -7,7 +7,7 @@ class GlyphRotate extends React.Component {
 	render() {
 		return(
 			<div>
-				{'Glyph rotation:'}
+				{'Glyph rotation (r):'}
 				<button onClick={this.props.rotateGlyphLeft}> {'⟲'} </button>
 				<button onClick={this.props.rotateGlyphRight}> {'⟳'} </button> 
 				<span>{this.props.rotationAmount}&deg;</span>

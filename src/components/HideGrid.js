@@ -6,7 +6,7 @@ class HideGrid extends React.Component {
   render() {
     return (
     	<div>
-          	{'Hide grid:'}
+          	{'Hide grid (h):'}
           	<input id="hideGrid" type="checkbox" value={this.props.hideGrid} onChange={this.props.handleChangeHideGrid} />
       	</div>
     );

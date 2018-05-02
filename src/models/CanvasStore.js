@@ -1,7 +1,7 @@
-import { action, observable, computed, autorun } from 'mobx';
+import { action, observable, computed, autorun, toJS } from 'mobx';
 import setstore from './KeymappingsStore'
 
-//[glyphPath, svgWidth, svgHeight, svgBaseline, glyphOffsetX, glyphFontSizeModifier, rotationAmount, flipGlyph]
+//[glyphPath, svgWidth, svgHeight, svgBaseline, glyphOffsetX, glyphFontSizeModifier, rotationAmount, flipGlyph, glyphInvertedColor]
 export const EMPTY_GLYPH = ["M0 0", "1", "1", "0"]
 const EMPTY_CELL = [...EMPTY_GLYPH, "0", "0", "0", "1", false];
 
@@ -64,6 +64,10 @@ class CanvasStore {
 	@observable darkTheme = false;
 	@observable widthPixels = 0;
 	@observable heightPixels = 0;
+	@observable copiedRow = [];
+
+//
+	@observable disableShortcuts = false;
 
 //EXPORT
 	@observable exportSizeMultiplier = 5;
@@ -89,6 +93,8 @@ class CanvasStore {
 	@observable rotationAmount = 0;
 	@observable flipGlyph = "1";
 	@observable glyphInvertedColor = false;
+	//@observable increaseGlyphOffsetX = 0;
+	//@observable increaseGlyphOffsetY = 0;
 
 //Change canvas width
 	@action addCol = () => {
@@ -138,18 +144,46 @@ class CanvasStore {
 		}
 		this.heightPixels = this.canvasHeight * this.cellHeight;
 	}
-//Remove row
+//Remove row at selection
 	@action deleteRowAtSelection = () => {
 		this.canvas.splice(this.selected_y, 1);
 		this.canvasHeight = this.canvasHeight - 1;
+		if(this.canvasHeight >= this.selected_y) {
+			this.selected_y = this.selected_y - 1;
+		}
+		if(this.selected_y <= 0) {
+			this.selected_y = this.selected_y + 1;
+		}
 		this.heightPixels = this.canvasHeight * this.cellHeight;
 	}
+//Remove col at selection
 	@action deleteColAtSelection = () => {
 		for (var i = 0; i < this.canvasHeight; i++) {
 				var col = this.canvas[i];
 				col.splice(this.selected_x, 1);
 		}
 		this.canvasWidth = this.canvasWidth - 1;
+		if(this.canvasWidth >= this.selected_x) {
+			this.selected_x = this.selected_x - 1;
+		}
+		if(this.selected_x <= 0) {
+			this.selected_x = this.selected_x + 1;
+		}
+		this.widthPixels = this.canvasWidth * this.cellWidth;
+	}
+//Add row at selection
+	@action addRowAtSelection = () => {
+		this.canvasHeight++;
+		this.canvas.splice(this.selected_y, 0, Array.from({length: this.canvasWidth}, () => EMPTY_CELL ));
+		this.heightPixels = this.canvasHeight * this.cellHeight;
+	}
+//Add col at selection
+	@action addColAtSelection = () => {
+		this.canvasWidth++;
+		for (var i = 0; i < this.canvasHeight; i++) {
+				var col = this.canvas[i];
+				col.splice(this.selected_x, 0, EMPTY_CELL);
+		}
 		this.widthPixels = this.canvasWidth * this.cellWidth;
 	}
 
@@ -220,38 +254,29 @@ class CanvasStore {
 	  reader.readAsText(evt.target.files[0]);
 	}
 //Glyph offset X
-	@computed get increasedOffsetXAmount() {
-		return this.glyphOffsetX + (this.svgWidth / 30);
-	}
-	@computed get decreasedOffsetXAmount() {
-		return this.glyphOffsetX - (this.svgWidth / 30);
-	}
 	increaseGlyphOffsetX = () => {
 		this.glyphOffsetX = this.canvas[this.selected_y][this.selected_x].slice()[4]; //First check the existing offset x value
-		this.glyphOffsetX = this.increasedOffsetXAmount; //Set offset amount to 10% of the glyph width 
+		this.glyphOffsetX += this.svgWidth / 4; //Set offset amount to 10% of the glyph width 
 		this.canvas[this.selected_y][this.selected_x][4] = this.glyphOffsetX; //Update canvas
 	}
 	decreaseGlyphOffsetX = () => {
 		this.glyphOffsetX = this.canvas[this.selected_y][this.selected_x].slice()[4]; //First check the existing offset x value
-		this.glyphOffsetX = this.decreasedOffsetXAmount; //Set offset amount to 10% of the glyph width
+		this.glyphOffsetX -= this.svgWidth / 4; //Set offset amount to 10% of the glyph width
 		this.canvas[this.selected_y][this.selected_x][4] = this.glyphOffsetX; //Update canvas
 	}
 //Glyph offset Y
-	@computed get increasedOffsetYAmount() {
-		return this.glyphOffsetY + (this.svgHeight / 50);
-	}
-	@computed get decreasedOffsetYAmount() {
-		return this.glyphOffsetY - (this.svgHeight / 50);
-	}
 	increaseGlyphOffsetY = () => {
 		this.glyphOffsetY = this.canvas[this.selected_y][this.selected_x].slice()[3]; //First check the existing offset x value
-		this.glyphOffsetY = this.increasedOffsetYAmount; //Set offset amount to 10% of the glyph width 
+		this.glyphOffsetY += this.svgHeight / 4; //Set offset amount to 10% of the glyph width 
 		this.canvas[this.selected_y][this.selected_x][3] = this.glyphOffsetY; //Update canvas
+		console.log(this.glyphOffsetY);
 	}
 	decreaseGlyphOffsetY = () => {
 		this.glyphOffsetY = this.canvas[this.selected_y][this.selected_x].slice()[3]; //First check the existing offset x value
-		this.glyphOffsetY = this.decreasedOffsetYAmount; //Set offset amount to 10% of the glyph width
+		this.glyphOffsetY -= this.svgHeight / 4; //Set offset amount to 10% of the glyph width
 		this.canvas[this.selected_y][this.selected_x][3] = this.glyphOffsetY; //Update canvas
+		console.log(this.glyphOffsetY);
+
 	}
 //Glyph rotation
 	rotateGlyphRight = () => {
@@ -273,9 +298,11 @@ class CanvasStore {
 		this.canvas[this.selected_y][this.selected_x][6] = this.rotationAmount; //Update canvas
 	}
 //Toggle Glyph Invert Color
-	handleChangeInvertColor = () => { 
+	handleChangeInvertColor = () => {
+		this.glyphInvertedColor = this.canvas[this.selected_y][this.selected_x][8];
 		this.glyphInvertedColor = !this.glyphInvertedColor;
-			this.canvas[this.selected_y][this.selected_x][8] = this.glyphInvertedColor; //Update canvas
+		console.log('i');
+		this.canvas[this.selected_y][this.selected_x][8] = this.glyphInvertedColor; //Update canvas
 	}
 
 //Glyph font size
@@ -295,7 +322,8 @@ class CanvasStore {
 		}
 	}
 //Flip glyph
-	handleChangeFlip = () => { 
+	handleChangeFlip = () => {
+		this.flipGlyph = this.canvas[this.selected_y][this.selected_x][7];
 		this.flipGlyph = this.flipGlyph *= -1;
 		this.canvas[this.selected_y][this.selected_x][7] = this.flipGlyph;
 	}
@@ -314,6 +342,21 @@ class CanvasStore {
 		this.canvas[this.selected_y][this.selected_x][8] = false; //invert color
 		document.getElementById('flipGlyph').checked = false; //uncheck flip glyph checkbox
 		document.getElementById('invertColor').checked = false; //uncheck invert color checkbox
+	}
+	emptyCanvas = () => {
+		this.glyphClear;
+		this.selected_y = 0;
+		this.selected_x = 0;
+		this.canvasWidth = 10;
+		this.canvasHeight = 10;
+		this.cellWidth = 30;
+		this.cellHeight = 30;
+		this.defaultFontSize = 30;
+		this.canvas = Array.from({length: this.canvasHeight}, () => Array.from({length: this.canvasWidth}, () => EMPTY_CELL ));
+	}
+	toggleWriting = () => {
+		this.disableShortcuts = !this.disableShortcuts;
+		console.log(this.disableShortcuts);
 	}
 //Tools
 	goRight = () => {
@@ -355,6 +398,27 @@ class CanvasStore {
 	}
 	insert = () => {
 			this.canvas[this.selected_y][this.selected_x] = [this.glyphPath, this.svgWidth, this.svgHeight, this.svgBaseline, this.glyphOffsetX, this.glyphFontSizeModifier, this.rotationAmount, this.flipGlyph, this.glyphInvertedColor];
+	}
+	copyRow = () =>{
+			this.copiedRow = this.canvas[this.selected_y]
+	}
+	pasteRow = () => {
+			if(this.copiedRow.length !== 0) {
+				this.copiedRow.length = this.canvasWidth;
+				this.canvas[this.selected_y] = this.copiedRow;
+				//this.canvas.splice(this.selected_y, 1, this.copiedRow)
+				console.log(this.canvas[this.selected_y])
+			}
+	}
+	flipRow = () => {
+			this.canvas[this.selected_y].forEach(function(element) {
+				element[7] *= -1;
+			});
+	}
+	rotateRow = () => {
+			this.canvas[this.selected_y].forEach(function(element) {
+				element[6] += 180;
+			});
 	}
 }
 

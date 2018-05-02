@@ -14,9 +14,11 @@ import SelectedGlyph from './SelectedGlyph'
 import store from '../models/CanvasStore'
 import KeymappingsBar from './KeymappingsBar'
 import DeleteRowOrCol from './DeleteRowOrCol'
+import AddRowOrCol from './AddRowOrCol'
 import ExportButtons from './ExportButtons'
 import SaveAsButton from './SaveAsButton'
 import LoadButton from './LoadButton'
+import EmptyCanvas from './EmptyCanvas'
 
 @observer 
 class Settings extends React.Component {
@@ -29,23 +31,26 @@ class Settings extends React.Component {
 					<SaveAsButton fileName={store.fileName} updateFileName={store.updateFileName} />
 					<LoadButton />
 					
-					<h3>Settings</h3>
+					<h3>Canvas Settings</h3>
 					<CanvasWidth addCol={store.addCol} deleteCol={store.deleteCol} canvasWidth={store.canvasWidth}/>
 					<CanvasHeight addRow={store.addRow} deleteRow={store.deleteRow} canvasHeight={store.canvasHeight}/>
-					<DeleteRowOrCol deleteRowAtSelection={store.deleteRowAtSelection} deleteColAtSelection={store.deleteColAtSelection} />
+					<EmptyCanvas emptyCanvas={store.emptyCanvas} />
 					<br/>
 					<CellWidth increaseCellWidth={store.increaseCellWidth} decreaseCellWidth={store.decreaseCellWidth} cellWidth={store.cellWidth}/>
 					<CellHeight increaseCellHeight={store.increaseCellHeight} decreaseCellHeight={store.decreaseCellHeight} cellHeight={store.cellHeight}/>
 					<FontSize increaseFontSize={store.increaseFontSize} decreaseFontSize={store.decreaseFontSize} defaultFontSize={store.defaultFontSize}/>
+					
+					<h3>Tools</h3>
+					<DeleteRowOrCol deleteRowAtSelection={store.deleteRowAtSelection} deleteColAtSelection={store.deleteColAtSelection} />
+					<AddRowOrCol addRowAtSelection={store.addRowAtSelection} addColAtSelection={store.addColAtSelection} />
 					<HideGrid hideGrid={store.hideGrid} handleChangeHideGrid={store.handleChangeHideGrid} />
 					<DarkTheme handleChangeTheme={store.handleChangeTheme} />
-					
+
 					<h3>Export</h3>
 					<ExportButtons exportSizeMultiplier={store.exportSizeMultiplier} updateExportSizeMultiplier={store.updateExportSizeMultiplier}/>
 
 					<GlyphTuning/>
 					<GlyphSelect/>
-				    <KeymappingsBar />
 				</div>
 			</div>
 		);

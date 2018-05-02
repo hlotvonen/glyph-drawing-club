@@ -3,6 +3,7 @@ import { observer } from 'mobx-react';
 import store from '../models/CanvasStore.js';
 import setstore from '../models/KeymappingsStore'
 import Grid from './Grid';
+import KeymappingsBar from './KeymappingsBar'
 
 class Canvas extends Component {
 	componentDidMount(){
@@ -14,56 +15,63 @@ class Canvas extends Component {
 
 	handleKeyPress = (event) => {
 
-		const glyph = [store.glyphPath, store.svgWidth, store.svgHeight, store.svgBaseline]
+		//disable shortcuts if focus is on input element
+		if(!store.disableShortcuts) {
 
-		const handlers = !setstore.toggleMapping ? {
-				ArrowRight: store.goRight,
-				ArrowLeft: store.goLeft,
-				ArrowDown: store.goDown,
-				ArrowUp: store.goUp,
-				' ': store.insertEmpty,
-				q: store.insert,
-				r: store.rotateGlyphRight,
-				f: store.handleChangeFlip,
-				h: store.handleChangeHideGrid,
-				i: store.handleChangeInvertColor,
-				m: setstore.handleChangeMapping,
-				u: store.undoCanvas,
-				i: store.addToCanvas,
-				//draw glyph from keymap on to canvas
-				F1: () => setstore.getMapping("F1"),
-				F2: () => setstore.getMapping("F2"),
-				F3: () => setstore.getMapping("F3"),
-				F4: () => setstore.getMapping("F4"),
-				F5: () => setstore.getMapping("F5"),
-				F6: () => setstore.getMapping("F6"),
-				F7: () => setstore.getMapping("F7"),
-				F8: () => setstore.getMapping("F8"),
-				F9: () => setstore.getMapping("F9"),
-				F10: () => setstore.getMapping("F10")
-		} : {
-				//assign selected glyph to keymap
-				F1: () => setstore.setMapping("F1", glyph),
-				F2: () => setstore.setMapping("F2", glyph),
-				F3: () => setstore.setMapping("F3", glyph),
-				F4: () => setstore.setMapping("F4", glyph),
-				F5: () => setstore.setMapping("F5", glyph),
-				F6: () => setstore.setMapping("F6", glyph),
-				F7: () => setstore.setMapping("F7", glyph),
-				F8: () => setstore.setMapping("F8", glyph),
-				F9: () => setstore.setMapping("F9", glyph),
-				F10: () => setstore.setMapping("F10", glyph),
-				m: setstore.handleChangeMapping
+			const glyph = [store.glyphPath, store.svgWidth, store.svgHeight, store.svgBaseline]
+
+			const handlers = !setstore.toggleMapping ? {
+					ArrowRight: store.goRight,
+					ArrowLeft: store.goLeft,
+					ArrowDown: store.goDown,
+					ArrowUp: store.goUp,
+					' ': store.insertEmpty,
+					q: store.insert,
+					r: store.rotateGlyphRight,
+					f: store.handleChangeFlip,
+					h: store.handleChangeHideGrid,
+					i: store.handleChangeInvertColor,
+					d: store.decreaseGlyphOffsetY,
+					m: setstore.handleChangeMapping,
+					c: store.copyRow,
+					v: store.pasteRow,
+					F: store.flipRow,
+					R: store.rotateRow,
+					//draw glyph from keymap on to canvas
+					1: () => setstore.getMapping("1"),
+					2: () => setstore.getMapping("2"),
+					3: () => setstore.getMapping("3"),
+					4: () => setstore.getMapping("4"),
+					5: () => setstore.getMapping("5"),
+					6: () => setstore.getMapping("6"),
+					7: () => setstore.getMapping("7"),
+					8: () => setstore.getMapping("8"),
+					9: () => setstore.getMapping("9"),
+					0: () => setstore.getMapping("0")
+			} : {
+					//assign selected glyph to keymap
+					1: () => setstore.setMapping("1", glyph),
+					2: () => setstore.setMapping("2", glyph),
+					3: () => setstore.setMapping("3", glyph),
+					4: () => setstore.setMapping("4", glyph),
+					5: () => setstore.setMapping("5", glyph),
+					6: () => setstore.setMapping("6", glyph),
+					7: () => setstore.setMapping("7", glyph),
+					8: () => setstore.setMapping("8", glyph),
+					9: () => setstore.setMapping("9", glyph),
+					0: () => setstore.setMapping("0", glyph),
+					m: setstore.handleChangeMapping
+			}
+
+			const handler = handlers[event.key]
+			
+			if (!handler) {
+					return
+			}
+
+			handler()
+			event.preventDefault();
 		}
-
-		const handler = handlers[event.key]
-		
-		if (!handler) {
-				return
-		}
-
-		handler()
-		event.preventDefault();
 	}
 
 
@@ -72,6 +80,7 @@ class Canvas extends Component {
 			<div className={"canvas_container" + (store.hideGrid ? ' hideGrid' : '') + (store.darkTheme ? ' darkTheme' : '')}>
 				<div className="aligner">
 					<Grid canvas={store.canvas}/>
+					<KeymappingsBar />
 				</div>
 			</div>
 		);
