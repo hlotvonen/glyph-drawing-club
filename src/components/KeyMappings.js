@@ -12,7 +12,6 @@ class KeyMappings extends React.Component {
 	 	const sets = setstore.sets;
 		return (
 	    	<div className="Sets">
-	    		{console.log(sets)}
 	    		<ToggleMapping handleChangeMapping={setstore.handleChangeMapping} />
 	    		<SetSelect addSet={setstore.addSet} selectSet={setstore.selectSet} />
 				{sets.map((set, y) => (

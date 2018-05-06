@@ -6,14 +6,13 @@ export const EMPTY_GLYPH = ["M0 0", "1", "1", "0"]
 const EMPTY_CELL = [...EMPTY_GLYPH, "0", "0", "0", "1", false];
 
 let storage;
-let firstRun = true;
 
 class CanvasStore {
 //Initialize canvas
 	constructor() {	
 
 		//load from localstorage if it's not the first time
-		if(JSON.parse(localStorage.storage)["firstRun"] == false) {
+		if(localStorage.firstRun) {
 			storage = JSON.parse(localStorage.storage)
 			this.canvas = storage.canvas
 			this.canvasWidth = storage.canvasWidth
@@ -24,12 +23,12 @@ class CanvasStore {
 			this.canvas = storage.canvas
 			this.widthPixels = storage.widthPixels
 			this.heightPixels = storage.heightPixels
-
 		//else create empty canvas
 		} else { 
 			this.canvas = Array.from({length: this.canvasHeight}, () => Array.from({length: this.canvasWidth}, () => EMPTY_CELL ));
 			this.widthPixels = this.canvasWidth * this.cellWidth;
 			this.heightPixels = this.canvasHeight * this.cellHeight;
+			localStorage.setItem('firstRun', false)
 		}
 
 		//set localstorage, autorun will update it every time something changes
@@ -85,6 +84,8 @@ class CanvasStore {
 	@observable svgBaseline = 0;
 	@observable selectedFont = "Reviscii-Regular";
 	@observable fontName = "Reviscii-Regular";
+	@observable selectionStartPoint = [];
+	@observable selection = [];
 
 //Glyph fine tuning
 	@observable glyphOffsetX = 0;
@@ -394,20 +395,72 @@ class CanvasStore {
 			}
 	}
 	insertEmpty = () => {
-			this.canvas[this.selected_y][this.selected_x] = EMPTY_CELL;
+		this.canvas[this.selected_y][this.selected_x] = EMPTY_CELL;
 	}
 	insert = () => {
-			this.canvas[this.selected_y][this.selected_x] = [this.glyphPath, this.svgWidth, this.svgHeight, this.svgBaseline, this.glyphOffsetX, this.glyphFontSizeModifier, this.rotationAmount, this.flipGlyph, this.glyphInvertedColor];
+		this.canvas[this.selected_y][this.selected_x] = [this.glyphPath, this.svgWidth, this.svgHeight, this.svgBaseline, this.glyphOffsetX, this.glyphFontSizeModifier, this.rotationAmount, this.flipGlyph, this.glyphInvertedColor];
+	}
+	selectionStart = () => {
+		this.selectionStartPoint = toJS([this.selected_x, this.selected_y])
+	}
+	copySelection = () => {
+		this.selection = []
+		let y_i = 0
+    for (y_i = this.selectionStartPoint[1]; y_i <= this.selected_y; y_i++) {
+				this.selection.push(this.canvas[y_i].slice(this.selectionStartPoint[0], this.selected_x + 1));
+		}
+	}
+	pasteSelection = () => {
+		let y_i = 0
+		let x_i = 0
+		let ix = 0
+		let iy = 0
+		let selectionLength_y = this.selection.length;
+		let selectionLength_x = this.selection[0].length;
+		const initCanvasWidth = this.canvasWidth;
+		const initCanvasHeight = this.canvasHeight;
+		//Add cols if paste goes over canvas boundaries 
+		if(this.selected_x + selectionLength_x >= this.canvasWidth) {
+			for (ix = 0; ix < toJS(this.selected_x + selectionLength_x - initCanvasWidth); ix++ ) {
+				this.addCol();
+			}
+		}
+		//Add rows if paste goes over canvas boundaries
+		if(this.selected_y + selectionLength_y > this.canvasHeight) {
+			for (iy = 0; iy < toJS(this.selected_y + selectionLength_y - initCanvasHeight); iy++ ) {
+				this.addRow();
+			}
+		}
+		//Paste selection
+    if(selectionLength_y !== 0 && selectionLength_x !== 0) {
+	    for (y_i = 0; y_i < selectionLength_y; y_i++) {
+	    	for (x_i = 0; x_i < selectionLength_x; x_i++) {
+	    		this.canvas[toJS(this.selected_y + y_i)][toJS(this.selected_x + x_i)] = toJS(this.selection[y_i][x_i])
+	    	}
+			}
+		}
+	}
+	transposeSelection = () => {
+		//WIP
+		this.selection = this.selection.map((col, i) => this.selection.map(row => row[i]));
+	}
+	mirrorSelection = () => {
+		//WIP
+		this.selection = this.selection.map(function(arr){return arr.reverse();});
+		let i;
+		for (i = 0; i < this.selection.length; i++) {
+			this.selection[i].forEach(function(element) {
+				toJS(element[7] *= -1)
+			});
+		}
 	}
 	copyRow = () =>{
-			this.copiedRow = this.canvas[this.selected_y]
+			this.copiedRow = toJS(this.canvas[this.selected_y])
 	}
 	pasteRow = () => {
 			if(this.copiedRow.length !== 0) {
 				this.copiedRow.length = this.canvasWidth;
-				this.canvas[this.selected_y] = this.copiedRow;
-				//this.canvas.splice(this.selected_y, 1, this.copiedRow)
-				console.log(this.canvas[this.selected_y])
+				this.canvas[this.selected_y] = toJS(this.copiedRow)
 			}
 	}
 	flipRow = () => {
@@ -417,7 +470,7 @@ class CanvasStore {
 	}
 	rotateRow = () => {
 			this.canvas[this.selected_y].forEach(function(element) {
-				element[6] += 180;
+				element[6] += 90;
 			});
 	}
 }
