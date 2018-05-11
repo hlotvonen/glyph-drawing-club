@@ -404,10 +404,17 @@ class CanvasStore {
 		this.selectionStartPoint = toJS([this.selected_x, this.selected_y])
 	}
 	copySelection = () => {
+		/*
+
+   		const [x_start, y_start] = this.selectionStartPoint
+			this.selection = [...this.canvas.slice(y_start, this.selected_y).slice(x_start, this.selected_x + 1)]
+
+		*/
+
 		this.selection = []
 		let y_i = 0
     for (y_i = this.selectionStartPoint[1]; y_i <= this.selected_y; y_i++) {
-				this.selection.push(this.canvas[y_i].slice(this.selectionStartPoint[0], this.selected_x + 1));
+				this.selection.push([...this.canvas[y_i].slice(this.selectionStartPoint[0], this.selected_x + 1)]);
 		}
 	}
 	pasteSelection = () => {
@@ -435,7 +442,7 @@ class CanvasStore {
     if(selectionLength_y !== 0 && selectionLength_x !== 0) {
 	    for (y_i = 0; y_i < selectionLength_y; y_i++) {
 	    	for (x_i = 0; x_i < selectionLength_x; x_i++) {
-	    		this.canvas[toJS(this.selected_y + y_i)][toJS(this.selected_x + x_i)] = toJS(this.selection[y_i][x_i])
+	    		this.canvas[Number(this.selected_y) + Number(y_i)][Number(this.selected_x) + Number(x_i)] = [...this.selection[y_i][x_i]]
 	    	}
 			}
 		}
@@ -450,12 +457,12 @@ class CanvasStore {
 		let i;
 		for (i = 0; i < this.selection.length; i++) {
 			this.selection[i].forEach(function(element) {
-				toJS(element[7] *= -1)
+				element[7] *= -1
 			});
 		}
 	}
 	copyRow = () =>{
-			this.copiedRow = toJS(this.canvas[this.selected_y])
+			this.copiedRow = this.canvas[this.selected_y]
 	}
 	pasteRow = () => {
 			if(this.copiedRow.length !== 0) {

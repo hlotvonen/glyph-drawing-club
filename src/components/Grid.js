@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import store from '../models/CanvasStore';
 import Cell from './Cell';
+import SelectionHighlight from './SelectionHighlight'
 
 
 @observer class Grid extends Component {

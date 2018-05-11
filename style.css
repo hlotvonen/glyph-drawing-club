@@ -149,7 +149,8 @@ canvas
 }
 .grid {
 	-webkit-box-flex: 0;
-	background: white;	
+	background: white;
+	position: relative;
 }
 .row {
 	width: auto;
@@ -207,7 +208,13 @@ canvas
 .canvas_container.hideGrid .colNums, .canvas_container.hideGrid .row div.rowNum {
 	display: none;
 }
-
+.selectionHighlight {
+	opacity: 0.5;
+	background: red;
+	top: 0;
+	left: 0;
+	position: absolute;
+}
 .canvas_container.hideGrid .row div, .canvas_container.hideGrid.darkTheme .row div {
 	box-shadow: inset 0 0 0 0 rgba(0,0,0,0);
 }
