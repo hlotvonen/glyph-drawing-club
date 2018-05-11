@@ -7,8 +7,8 @@ class AddRowOrCol extends React.Component {
 		return(
 			<div>
 				{'At selection:'}
-				<button onClick={this.props.addRowAtSelection}> {'Add Row'} </button>
-				<button onClick={this.props.addColAtSelection}> {'Add Col'} </button>
+				<button onClick={this.props.addRowAtSelection}> {'Add Row \u2191'} </button>
+				<button onClick={this.props.addColAtSelection}> {'Add Col \u2190'} </button>
 			</div>
 		);
 	}

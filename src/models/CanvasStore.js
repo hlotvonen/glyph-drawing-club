@@ -75,8 +75,11 @@ class CanvasStore {
 	@observable fileName = "Untitled";
 
 //SELECTION
-	@observable selected_y = 0;
 	@observable selected_x = 0;
+	@observable selected_y = 0;
+	@observable selection = [];
+	@observable selectionArea = {start: null, end: null}
+
 	@observable selectedUnicode = 0;
 	@observable glyphPath = "M0 0";
 	@observable svgHeight = 0;
@@ -84,8 +87,7 @@ class CanvasStore {
 	@observable svgBaseline = 0;
 	@observable selectedFont = "Reviscii-Regular";
 	@observable fontName = "Reviscii-Regular";
-	@observable selectionStartPoint = [];
-	@observable selection = [];
+
 
 //Glyph fine tuning
 	@observable glyphOffsetX = 0;
@@ -368,7 +370,7 @@ class CanvasStore {
 						this.addCol();
 				}
 	}
-	goLeft = () => {
+	goLeft = () => { //ArrowLeft
 			if(this.selected_x > 0){
 					this.selected_x = this.selected_x - 1;
 			}
@@ -377,7 +379,7 @@ class CanvasStore {
 				this.selected_x = this.selected_x - 1;
 			}
 	}
-	goDown = () => {
+	goDown = () => { //ArrowDown
 			if(this.selected_y < this.canvasHeight - 1) {
 					this.selected_y = this.selected_y + 1;
 			}
@@ -385,7 +387,7 @@ class CanvasStore {
 					this.addRow();
 			}
 	}
-	goUp = () => {
+	goUp = () => { //ArrowUp
 			if(this.selected_y > 0){
 				this.selected_y = this.selected_y - 1;
 			} 
@@ -394,64 +396,59 @@ class CanvasStore {
 				this.selected_y = this.selected_y - 1;
 			}
 	}
-	insertEmpty = () => {
+	insertEmpty = () => { //space
 		this.canvas[this.selected_y][this.selected_x] = EMPTY_CELL;
 	}
-	insert = () => {
+	insert = () => { //q
 		this.canvas[this.selected_y][this.selected_x] = [this.glyphPath, this.svgWidth, this.svgHeight, this.svgBaseline, this.glyphOffsetX, this.glyphFontSizeModifier, this.rotationAmount, this.flipGlyph, this.glyphInvertedColor];
 	}
-	selectionStart = () => {
-		this.selectionStartPoint = toJS([this.selected_x, this.selected_y])
+	makeSelection = () => { //shift + s
+		if (this.selectionArea.start) {
+			this.selectionArea.end = [this.selected_y, this.selected_x]
+    } else {
+		  this.selectionArea.start = [this.selected_y, this.selected_x]
+		  this.selectionArea.end = null
+    }
 	}
-	copySelection = () => {
-		/*
-
-   		const [x_start, y_start] = this.selectionStartPoint
-			this.selection = [...this.canvas.slice(y_start, this.selected_y).slice(x_start, this.selected_x + 1)]
-
-		*/
-
-		this.selection = []
-		let y_i = 0
-    for (y_i = this.selectionStartPoint[1]; y_i <= this.selected_y; y_i++) {
-				this.selection.push([...this.canvas[y_i].slice(this.selectionStartPoint[0], this.selected_x + 1)]);
+	copySelection = () => { //shift + c
+		if (this.selectionArea.start === null || this.selectionArea.end === null) {
+			return
 		}
-	}
-	pasteSelection = () => {
-		let y_i = 0
-		let x_i = 0
-		let ix = 0
-		let iy = 0
-		let selectionLength_y = this.selection.length;
-		let selectionLength_x = this.selection[0].length;
+
 		const initCanvasWidth = this.canvasWidth;
 		const initCanvasHeight = this.canvasHeight;
-		//Add cols if paste goes over canvas boundaries 
-		if(this.selected_x + selectionLength_x >= this.canvasWidth) {
-			for (ix = 0; ix < toJS(this.selected_x + selectionLength_x - initCanvasWidth); ix++ ) {
+		const selectionWidth = this.selectionArea.end[1] - this.selectionArea.start[1]
+		const selectionHeight = this.selectionArea.end[0] - this.selectionArea.start[0]
+
+		if(this.selected_x + selectionWidth >= this.canvasWidth) {
+			for (let ix = 0; ix < this.selected_x + selectionLength_x - initCanvasWidth; ix++ ) {
 				this.addCol();
 			}
 		}
+
 		//Add rows if paste goes over canvas boundaries
-		if(this.selected_y + selectionLength_y > this.canvasHeight) {
+		if(this.selected_y + selectionHeight > this.canvasHeight) {
 			for (iy = 0; iy < toJS(this.selected_y + selectionLength_y - initCanvasHeight); iy++ ) {
 				this.addRow();
 			}
 		}
-		//Paste selection
-    if(selectionLength_y !== 0 && selectionLength_x !== 0) {
-	    for (y_i = 0; y_i < selectionLength_y; y_i++) {
-	    	for (x_i = 0; x_i < selectionLength_x; x_i++) {
-	    		this.canvas[Number(this.selected_y) + Number(y_i)][Number(this.selected_x) + Number(x_i)] = [...this.selection[y_i][x_i]]
-	    	}
-			}
+
+    for (let y_i = 0; y_i <= selectionHeight; y_i++) {
+    	for (let x_i = 0; x_i <= selectionWidth; x_i++) {
+    		const copiedGlyph = toJS(this.canvas[this.selectionArea.start[0] + y_i][this.selectionArea.start[1] + x_i])
+    		this.canvas[this.selected_y + y_i][this.selected_x + x_i] = copiedGlyph
+    	}
 		}
+	}
+	emptySelection = () => { //x
+		this.selectionArea.start = null
+    this.selectionArea.end = null
 	}
 	transposeSelection = () => {
 		//WIP
 		this.selection = this.selection.map((col, i) => this.selection.map(row => row[i]));
 	}
-	mirrorSelection = () => {
+	mirrorSelection = () => { //Shift + M
 		//WIP
 		this.selection = this.selection.map(function(arr){return arr.reverse();});
 		let i;

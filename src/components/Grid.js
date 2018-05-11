@@ -7,8 +7,6 @@ import SelectionHighlight from './SelectionHighlight'
 
 @observer class Grid extends Component {
 
-
-
   render() {
     const canvas = store.canvas
     const selected_y = store.selected_y;
@@ -48,6 +46,7 @@ import SelectionHighlight from './SelectionHighlight'
       <div id="canvas" className="grid">
         <div className="colNums">{colNums}</div>
         {grid}
+        <SelectionHighlight />
       </div>
     );
   }

@@ -32,7 +32,7 @@ class Canvas extends Component {
 					h: store.handleChangeHideGrid,
 					p: store.handleChangeTheme,
 					i: store.handleChangeInvertColor,
-					S: store.selectionStart,
+					S: store.makeSelection,
 					C: store.copySelection,
 					V: store.pasteSelection,
 					T: store.transposeSelection,
@@ -42,6 +42,7 @@ class Canvas extends Component {
 					m: setstore.handleChangeMapping,
 					F: store.flipRow,
 					R: store.rotateRow,
+					x: store.emptySelection,
 					//draw glyph from keymap on to canvas
 					1: () => setstore.getMapping("1"),
 					2: () => setstore.getMapping("2"),
