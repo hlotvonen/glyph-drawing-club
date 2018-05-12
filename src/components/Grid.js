@@ -3,7 +3,7 @@ import { observer } from 'mobx-react';
 import store from '../models/CanvasStore';
 import Cell from './Cell';
 import SelectionHighlight from './SelectionHighlight'
-
+import gridStore from '../models/GridStore'
 
 @observer class Grid extends Component {
 
@@ -13,7 +13,7 @@ import SelectionHighlight from './SelectionHighlight'
     const selected_x = store.selected_x;
 
     const grid = canvas.map((row, y) =>
-      <div className="row" key={y}>
+      <div className="row" key={y} style={{width: Number(store.canvasWidth) * Number(store.cellWidth) + 'px'}}>
         <div className={'rowNum ' + (selected_y === y ? 'highlighted' : '')}>{y + 1}</div>
         {row.map(([glyphPath, svgWidth, svgHeight, svgBaseline, glyphOffsetX, glyphFontSizeModifier, rotationAmount, flipGlyph, glyphInvertedColor], x) =>
           <Cell 
@@ -43,7 +43,15 @@ import SelectionHighlight from './SelectionHighlight'
     }
 
     return (
-      <div id="canvas" className="grid">
+      <div id="canvas" className="grid" style={{
+        transform: `translate(${
+            gridStore.settings.posX
+          }px, ${
+            gridStore.settings.posY
+          }px) scale(${
+            gridStore.settings.zoom
+          })`
+      }}>
         <div className="colNums">{colNums}</div>
         {grid}
         <SelectionHighlight />

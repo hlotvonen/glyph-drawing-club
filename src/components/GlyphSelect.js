@@ -3,14 +3,13 @@ import { observer } from 'mobx-react';
 import { observable } from 'mobx';
 import store from '../models/CanvasStore.js';
 
-let PAGENUMBER = observable(0);
-let SELECTEDFONT = observable('Tesserae-Regular');
-
 class GlyphSelect extends Component {
+
+	pageNumber = observable.box(0);
+	selectedFont = observable('Tesserae-Regular');
+
     constructor(props) {
 		super(props);
-		this.drawNext = this.drawNext.bind(this);
-		this.onDrop = this.onDrop.bind(this);
 
 	    this.state = {
 			off: 0,
@@ -26,9 +25,9 @@ class GlyphSelect extends Component {
 		this.go();
     }
     go = () => {
-    	if(SELECTEDFONT == 'Tesserae-Regular') {
+    	if(this.selectedFont == 'Tesserae-Regular') {
 			this.load("Tesserae-Regular.otf", this.fontLoaded);
-		} else if(SELECTEDFONT == 'Unscii') {
+		} else if(this.selectedFont == 'Unscii') {
 			this.load("unscii-16.ttf", this.fontLoaded);
 		}
 
@@ -73,7 +72,7 @@ class GlyphSelect extends Component {
 		this.drawGlyphs();
 		this.glyphToSVG();
 
-		PAGENUMBER.set(0);
+		this.pageNumber.set(0);
 
 		store.fontName = this.state.font.name.fullName;
 
@@ -86,7 +85,8 @@ class GlyphSelect extends Component {
 		//store.svgwidth = this.state.font.hmtx.aWidth[this.state.gid];
 		store.svgHeight = this.state.font.hhea.ascender + Math.abs(this.state.font.hhea.descender);
 		store.svgBaseline = this.state.font.hhea.descender;
-	}	
+	}
+
 	drawGlyphs = () => {
 		let cont = document.getElementById("glyphcont");  
 			cont.innerHTML = "";
@@ -122,6 +122,7 @@ class GlyphSelect extends Component {
 			cont.appendChild(img);
 		}
 	}
+
 	onDrop = (e) => { 
 		this.cancel(e);
 		let fontLoaded = this.fontLoaded;
@@ -147,11 +148,13 @@ class GlyphSelect extends Component {
 		    }
 		};
 	}
+
 	glyphClick = (e) => { 
 		this.setState({ gid: e.target.gid });
 		this.displayUnicode();
 		this.glyphToSVG();
 	}
+
 	displayUnicode() {	
 		let props = document.getElementById("properties");
 		let hex = "---", 
@@ -165,7 +168,6 @@ class GlyphSelect extends Component {
 			store.selectedUnicode = ucode[0];
 		}
 		props.innerHTML = "Hex: #"+hex+"</br> Dec: #"+ucode+"</br> <span> "+str+"</span>";
-		
 	}
 	getDPR() { 
 		return window["devicePixelRatio"] || 1; 
@@ -174,36 +176,34 @@ class GlyphSelect extends Component {
     	return this.state.font.maxp.numGlyphs;
     }
     drawNext = () => {
-		if(this.state.off+this.state.num<this.glyphCnt()) {
-			this.state.off = this.state.off + this.state.num;
-		}
-		PAGENUMBER.set(PAGENUMBER + 1);
-		console.log(PAGENUMBER);
-		this.drawGlyphs();
+      if (this.pageNumber.get() < this.state.pages_total) {
+    	this.updatePageNum(this.pageNumber.get() + 1)
+      }
     }
 	drawPrev = () => {
-		if(this.state.off>0) {
-			this.state.off = this.state.off-this.state.num;
-		}
-		PAGENUMBER.set(this.state.off / this.state.num);
-		this.drawGlyphs();
+	  if (this.pageNumber.get() > 0) {
+        this.updatePageNum(this.pageNumber.get() - 1)
+      }
 	}
-	updatePageNum = (evt) => {
-		PAGENUMBER.set(evt.target.value);
-		this.state.off = PAGENUMBER * this.state.num;
-		this.drawGlyphs();
+	updatePageNum = (value) => {
+		this.pageNumber.set(value)
 
-		// If input is invalid, give input error class, and show last page
-		var page_select_input = document.getElementById("page_select_input");
-	 	page_select_input.className = page_select_input.className.replace("input-error", "");
-        if (isNaN(evt.target.value) || evt.target.value > this.state.pages_total) {
-            page_select_input.className += " input-error ";
-            this.state.off = this.state.pages_total * this.state.num;
-            this.drawGlyphs();
-        }
+		if (value === '') {
+			return
+		}
+
+		if (this.pageNumber.get() > this.state.pages_total) {
+			this.pageNumber.set(this.state.pages_total)
+		}
+		if (isNaN(value)) {
+		  return
+		}
+
+		this.state.off = this.pageNumber * this.state.num;
+		this.drawGlyphs();
 	}
-	handleFontSelectChange = (evt) => {
-		SELECTEDFONT.set(evt.target.value);
+	handleFontSelectChange = (value) => {
+		this.selectedFont = value;
 		this.go();
 	}
 	render() {
@@ -211,31 +211,52 @@ class GlyphSelect extends Component {
 			<div className="glyphs">
 				<h3>Glyph selection</h3> 
 				Select a preset font:
-				<select value={SELECTEDFONT} onChange={this.handleFontSelectChange.bind(this)}>
+				<select
+				  value={this.selectedFont}
+				  onChange={evt =>
+				  	this.handleFontSelectChange(evt.target.value)
+				  }
+				>
 				  <option value="Tesserae-Regular">Tesserae-Regular</option>
 				  <option value="Unscii">Unscii</option>
 				</select>
 				<br/>
 				<b>Or drag and drop a font file (otf/ttf)</b>
 				<div>Currently selected font: {store.fontName}</div>
-				<button type="button" onClick={this.drawPrev}>Previous</button>
-				<button type="button" onClick={this.drawNext}>Next</button>
+				<button type="button" onClick={() => this.drawPrev()}>Previous</button>
+				<button type="button" onClick={() => this.drawNext()}>Next</button>
 				<div className="page_selection">
 					Select page: 
 					<input 
 						id="page_select_input"
 						type="number"
-						min="0" 
-						max={this.state.pages_total}
-						value={PAGENUMBER}
-						onChange={evt => this.updatePageNum(evt)}
+						min="1" 
+						max={this.state.pages_total + 1}
+						value={this.pageNumber.get() === ''
+						  ? ''
+						  : this.pageNumber.get() + 1
+						}
 						onFocus={() => store.toggleWriting()}
 						onBlur={() => store.toggleWriting()}
-					/>/{this.state.pages_total}
+						onChange={evt => {
+						  if (evt.target.value === '') {
+ 							this.pageNumber.set('')
+ 							return
+						  }
+						  
+						  const parsedValue = parseInt(evt.target.value, 10)
+						  if (isNaN(parsedValue)) {
+						  	this.updatePageNum(0)
+						  	return
+						  }
+
+						  this.updatePageNum(Math.max(0, parsedValue - 1))
+						}}
+					/>/{this.state.pages_total + 1}
 				</div>
 				<div id="glyphcont"></div>
-				<button type="button" onClick={this.drawPrev}>Previous</button>
-				<button type="button" onClick={this.drawNext}>Next</button>
+				<button type="button" onClick={() => this.drawPrev()}>Previous</button>
+				<button type="button" onClick={() => this.drawNext()}>Next</button>
 			</div>
 		);
 	}

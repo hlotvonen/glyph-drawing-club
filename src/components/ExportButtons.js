@@ -10,7 +10,6 @@ class ExportButtons extends React.Component {
 				<button onClick={() => exportJpg()}> {'Export JPG'} </button>
 					Size:
 					<input
-						id="page_select_input"
 						type="number"
 						min="1"
 						max="25"

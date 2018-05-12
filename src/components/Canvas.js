@@ -4,6 +4,7 @@ import store from '../models/CanvasStore.js';
 import setstore from '../models/KeymappingsStore'
 import Grid from './Grid';
 import KeymappingsBar from './KeymappingsBar'
+import GridControls from './GridControls'
 
 class Canvas extends Component {
 	componentDidMount(){
@@ -32,16 +33,15 @@ class Canvas extends Component {
 					h: store.handleChangeHideGrid,
 					p: store.handleChangeTheme,
 					i: store.handleChangeInvertColor,
+					
 					S: store.makeSelection,
 					C: store.copySelection,
-					V: store.pasteSelection,
-					T: store.transposeSelection,
 					M: store.mirrorSelection,
-					j: store.copyRow,
-					k: store.pasteRow,
+					F: store.flipSelection,
+					E: store.clearArea,
+					Q: store.fillArea,
 					m: setstore.handleChangeMapping,
-					F: store.flipRow,
-					R: store.rotateRow,
+
 					x: store.emptySelection,
 					//draw glyph from keymap on to canvas
 					1: () => setstore.getMapping("1"),
@@ -86,8 +86,9 @@ class Canvas extends Component {
 			<div className={"canvas_container" + (store.hideGrid ? ' hideGrid' : '') + (store.darkTheme ? ' darkTheme' : '')}>
 				<div className="aligner">
 					<Grid canvas={store.canvas}/>
-					<KeymappingsBar />
+					<GridControls />
 				</div>
+				<KeymappingsBar />
 			</div>
 		);
 	}

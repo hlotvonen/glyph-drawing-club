@@ -27,6 +27,9 @@ class Settings extends React.Component {
 			<div className={"controls_container" + (store.darkTheme ? ' darkTheme' : '')}>
 				<div className="canvas_preferences">
 
+					<h3><a href="https://github.com/hlotvonen/unicode-art-editor" target="_blank">READ A TUTORIAL</a></h3>
+					<hr/>
+
 					<h3>Save / Load</h3>
 					<SaveAsButton fileName={store.fileName} updateFileName={store.updateFileName} />
 					<LoadButton />
@@ -51,6 +54,9 @@ class Settings extends React.Component {
 
 					<GlyphTuning/>
 					<GlyphSelect/>
+					<hr/>
+					<p>Follow development at <a href="https://github.com/hlotvonen/unicode-art-editor" target="_blank">Github</a></p>
+
 				</div>
 			</div>
 		);

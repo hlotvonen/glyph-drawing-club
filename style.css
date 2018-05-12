@@ -60,7 +60,7 @@ document lvl
 
 html,
 body {
-	height: 100%;
+	height: 100vh;
 	padding: 0;
 	margin: 0;
 	font-family: monospace;
@@ -81,30 +81,24 @@ html {
 /* ~~~~~~~~~~~~~~~~~~~~~
 top wrapper
 ~~~~~~~~~~~~~~~~~~~~~ */
+#root {
+	height: 100%;
+}
 .flex_wrapper {
     height: 100%;
-    display: -ms-flexbox;
-    display: -webkit-box;
-    display: -moz-box;
-    display: -ms-box;
-    display: box;
-
-    -ms-flex-direction: row;
-    -webkit-box-orient: horizontal;
-    -moz-box-orient: horizontal;
-    -ms-box-orient: horizontal;
-    box-orient: horizontal;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
 }
 /* ~~~~~~~~~~~~~~~~~~~~~
 canvas
 ~~~~~~~~~~~~~~~~~~~~~ */
-.canvas_container{
+.canvas_container {
 	background: #ddd;
-	-ms-flex: 1;
-	-webkit-box-flex: 1;
-	-moz-box-flex: 1;
-	-ms-box-flex: 1;
-	box-flex: 1;
+	display: flex;
+	flex-direction: column;
+	overflow: hidden;
+	flex: 1;
 }
 .canvas_container.hideGrid {
 	background: white;
@@ -131,29 +125,36 @@ canvas
 	background: black;
 }
 .aligner {
-	height: 100%;
-	display: -webkit-box;
-	display: -webkit-flex;
-	display: -ms-flexbox;
 	display: flex;
-	-webkit-box-align: center;
-	-webkit-align-items: center;
-	-ms-flex-align: center;
+	flex: 1;
+	flex-direction: column;
 	align-items: center;
-	-webkit-box-pack: center;
-	-webkit-justify-content: center;
-	-ms-flex-pack: center;
 	justify-content: center;
-	overflow: auto;
+	overflow: hidden;
 	position: relative;
 }
 .grid {
-	-webkit-box-flex: 0;
 	background: white;
 	position: relative;
 }
+.grid_controls {
+	position: absolute;
+	bottom: 0;
+	right: 0;
+	width: 100px;
+	height: 80px;
+	display: flex;
+	flex-direction: column;
+}
+.grid_controls .zoom {
+	display: flex;
+	justify-content: flex-end;
+}
+.grid_controls .move_y {
+	display: flex;
+	justify-content: center;
+}
 .row {
-	width: auto;
 	position: relative;
 }
 .row div {
@@ -184,7 +185,7 @@ canvas
 	left:0;
 	width:100%;
 	height: 100%;
-	box-shadow: inset 0 0 0 1px rgba(255,0,0,1);
+	box-shadow: inset 0 0 0 1px rgba(255,0,0,0.5);
 }
 .colNums {
 	width: 100%;
@@ -209,7 +210,7 @@ canvas
 	display: none;
 }
 .selectionHighlight {
-	opacity: 0.5;
+	opacity: 0.3;
 	background: red;
 	top: 0;
 	left: 0;
@@ -236,11 +237,7 @@ controls
 	width: 420px;
 	padding: 0.5em;
 	overflow-y: scroll;
-	-ms-flex: 0 320px;
-	-webkit-box-flex: 0;
-	-moz-box-flex: 0;
-	-ms-box-flex: 0;
-	box-flex: 0; 
+	flex: none;
 }
 .control_component {
 	display:block;
@@ -275,17 +272,14 @@ button {
 }
 
 .KeyMappingsBar {
-	position: absolute;
-	bottom: 0;
-	left: 0;
 	width: 100%;
 	background: white;
 	display: flex;
 	box-sizing:border-box;
-	padding:5px;
+	padding: 5px;
 }
 .KeyMappingsBar .Sets {
-	flex:1;
+	flex: 1;
 }
 .SelectedGlyphContainer {
 	width: 185px;

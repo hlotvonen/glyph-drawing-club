@@ -1,5 +1,6 @@
 var path = require('path');
 var webpack = require('webpack');
+var UglifyJSPlugin = require('uglifyjs-webpack-plugin');
 
 module.exports = {
   devtool: 'eval',
@@ -12,7 +13,8 @@ module.exports = {
     publicPath: '/static/'
   },
   plugins: [
-    new webpack.HotModuleReplacementPlugin()
+    //new webpack.HotModuleReplacementPlugin(),
+    new UglifyJSPlugin()
   ],
   resolve: {
     extensions: ['.js', '.jsx']
