@@ -23,23 +23,37 @@ Glyph Drawing Club
 ## Keyboard shortcuts
 
 `Arrow keys`: Move around the canvas
+
 `q` : Insert selected glyph
+
 `Spacebar` : Delete
+
 `r` : Rotate glyph
+
 `f` : Flip glyph
+
 `i` : Invert colors
+
 `h` : Hide Grid
+
 `p` : Invert all colors
+
 `Number keys 1–10` : Insert glyph from set
 
 #### Make area selection
 
 `Shift + s` : Start selection area. Press `arrows keys` to change selection size. Press `Shift + s` again to make selection area
+
 `x` : Deselect area
+
 `Shift + c` : Copy selected area
+
 `Shift + m` : Mirror selected area
+
 `Shift + f` : Flip selected area
+
 `Shift + q` : Fill selected area with selected glyph
+
 `Shift + e` : Empty selected area
 
 #### Make glyph sets
