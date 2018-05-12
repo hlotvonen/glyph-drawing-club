@@ -64,7 +64,8 @@ Glyph Drawing Club
 
 ### Examples
 
-Follow [@heikkiveikko](https://www.instagram.com/heikkiveikko/) on Instagram or find some examples [here]()
+* Find some examples [here](examples). You can download the .unscii files and open them with the editor.
+* Follow [@heikkiveikko](https://www.instagram.com/heikkiveikko/) on Instagram for more.
 
 ### Run locally
 
