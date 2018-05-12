@@ -5,56 +5,41 @@ Glyph Drawing Club
 
 ### Basic usage
 
-1. Click on any glyph under the `Glyph selection`
+1. Click on any glyph under the `Glyph selection` on the sidebar.
 2. Press `q` to insert selected glyph on to the canvas.
 3. Move around the canvas by pressing `arrow keys`.
 4. Press `f` to flip or `r` to rotate a glyph.
-5. Have fun!
+5. Check out the keyboard shortcuts below and test everything on the settings panel. Have fun!
 6. Before exporting, remember to hide the grid by pressing `h`
 
 #### Additional tips
 
 * You can drag & drop any font you have on your computer (.otf/.ttf) to use that font!
-* There is no Undo / Redo. We don't make mistakes, just happy little accidents. Save your work often if you are afraid :-)
+* There is no Undo / Redo. We don't make mistakes, just happy little accidents! (or just save often)
 * You can refresh (or close and come back) the webpage without losing your work.
-* For some reason, photoshop gives an error when opening the exported `.jpg` file. Open the image in any other software (like Preview on Mac) export it again, and it should work.
 * Share your work! I would love to see what you make. You can send artwork to [hlotvonen@gmail.com](mailto:hlotvonen@gmail.com)
 
 ## Keyboard shortcuts
 
-`Arrow keys`: Move around the canvas
-
-`q` : Insert selected glyph
-
-`Spacebar` : Delete
-
-`r` : Rotate glyph
-
-`f` : Flip glyph
-
-`i` : Invert colors
-
-`h` : Hide Grid
-
-`p` : Invert all colors
-
-`Number keys 1–10` : Insert glyph from set
+* `Arrow keys`: Move around the canvas
+* `q` : Insert selected glyph
+* `Spacebar` : Delete
+* `r` : Rotate glyph
+* `f` : Flip glyph
+* `i` : Invert colors
+* `h` : Hide Grid
+* `p` : Invert all colors
+* `Number keys 1–10` : Insert glyph from set
 
 #### Make area selection
 
-`Shift + s` : Start selection area. Press `arrows keys` to change selection size. Press `Shift + s` again to make selection area
-
-`x` : Deselect area
-
-`Shift + c` : Copy selected area
-
-`Shift + m` : Mirror selected area
-
-`Shift + f` : Flip selected area
-
-`Shift + q` : Fill selected area with selected glyph
-
-`Shift + e` : Empty selected area
+* `Shift + s` : Start selection area. Press `arrows keys` to change selection size. Press `Shift + s` again to make selection area
+* `x` : Deselect area
+* `Shift + c` : Copy selected area
+* `Shift + m` : Mirror selected area
+* `Shift + f` : Flip selected area
+* `Shift + q` : Fill selected area with selected glyph
+* `Shift + e` : Empty selected area
 
 #### Make glyph sets
 
@@ -78,8 +63,8 @@ npm start
 
 - [ ] Make a longer tutorial
 - [ ] UI improvements
-- [ ] Exported JPG won't open in Photoshop.
-- [ ] Glyph offset x & y are a bit unintuitive
+- [ ] For some reason, photoshop gives an error when opening the exported `.jpg` file. Workaround is to open the image in any other software (like Preview on Mac), export it again, and it should open normally now.
+- [ ] Glyph offset x & y needs a rework
 - [ ] "Reset to default" button offset y is sometimes incorrect
 
 #### To-do in the future (maybe)
@@ -94,4 +79,4 @@ npm start
 * Real textmode with UTF
 
 ### About
-GlyphDrawing.club has been designed and developed by @hlotvonen and @i-tu using React and MobX. For help, ideas, contributions, etc. open an issue or send an email to [hlotvonen@gmail.com](mailto:hlotvonen@gmail.com).
+GlyphDrawing.club has been designed and developed by [@hlotvonen](http://heikkilotvonen.fi) and [@i-tu](https://github.com/i-tu) using React and MobX. For help, ideas, contributions, etc. open an issue or send an email to [hlotvonen@gmail.com](mailto:hlotvonen@gmail.com).
