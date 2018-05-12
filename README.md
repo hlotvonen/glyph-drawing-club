@@ -59,6 +59,7 @@ Glyph Drawing Club
 #### Make glyph sets
 
 `m` : Start mapping glyph sets. This disables all other shortcuts. Press again to end mapping
+
 `Number keys 1–10` : Add selected glyph to set
 
 ### Examples
@@ -74,11 +75,11 @@ npm start
 
 ### To-do
 
-- [] Make a longer tutorial
-- [] UI improvements
-- [] Exported JPG won't open in Photoshop.
-- [] Glyph offset x & y are a bit unintuitive
-- [] "Reset to default" button offset y is sometimes incorrect
+- [ ] Make a longer tutorial
+- [ ] UI improvements
+- [ ] Exported JPG won't open in Photoshop.
+- [ ] Glyph offset x & y are a bit unintuitive
+- [ ] "Reset to default" button offset y is sometimes incorrect
 
 #### To-do in the future (maybe)
 
