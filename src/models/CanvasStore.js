@@ -55,11 +55,11 @@ class CanvasStore {
 	@observable canvas;
 
 //SETTINGS
-	@observable canvasWidth = 20;
-	@observable canvasHeight = 15;
-	@observable cellWidth = 15;
-	@observable cellHeight = 15;
-	@observable defaultFontSize = 15;
+	@observable canvasWidth = 10;
+	@observable canvasHeight = 10;
+	@observable cellWidth = 30;
+	@observable cellHeight = 30;
+	@observable defaultFontSize = 30;
 	@observable hideGrid = false;
 	@observable darkTheme = false;
 	@observable widthPixels = 0;
@@ -74,6 +74,11 @@ class CanvasStore {
 
 //SAVE / LOAD
 	@observable fileName = "Untitled";
+
+//Save to Dropbox info
+	@observable userFullName = "";	
+	@observable userEmail = "";
+	@observable userCountry = "";
 
 //SELECTION
 	@observable selected_x = 0;
@@ -239,6 +244,16 @@ class CanvasStore {
 	@action updateFileName = (evt) => {
 		this.fileName = evt.target.value;
 	}
+//Save to Dropbox info
+	@action updateFullName = (evt) => {
+		this.userFullName = evt.target.value;
+	}
+	@action updateEmail = (evt) => {
+		this.userEmail = evt.target.value;
+	}
+	@action updateCountry = (evt) => {
+		this.userCountry = evt.target.value;
+	}
 //Load file 
 	@action fileUpload = (evt) => {
 	  const reader = new FileReader();
@@ -355,6 +370,8 @@ class CanvasStore {
 		this.cellWidth = 30;
 		this.cellHeight = 30;
 		this.defaultFontSize = 30;
+		this.widthPixels = this.canvasWidth * this.cellWidth;
+		this.heightPixels = this.canvasHeight * this.cellHeight;
 		this.canvas = Array.from({length: this.canvasHeight}, () => Array.from({length: this.canvasWidth}, () => EMPTY_CELL ));
 	}
 	toggleWriting = () => {
@@ -534,6 +551,17 @@ class CanvasStore {
 		}
 
 		this.mapRange(boundingRectangle, glyph => glyph[7] *= -1)
+	}
+	@action
+	invertColorSelection = () => { //Shift + M
+		if (!this.selectionArea.start) {
+			return
+		}
+
+		const boundingRectangle = this.getSelectedArea()
+		const [[start_y, start_x], [end_y, end_x]] = boundingRectangle
+
+		this.mapRange(boundingRectangle, glyph => glyph[8] = !glyph[8])
 	}
 }
 

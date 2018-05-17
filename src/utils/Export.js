@@ -12,8 +12,8 @@ export function exportJpg() {
 
 	domtoimage.toBlob(document.getElementById('canvas'), {
 			style: style, 
-			height: store.heightPixels * store.exportSizeMultiplier,
-			width: store.widthPixels * store.exportSizeMultiplier
+			height: Number(store.heightPixels) * Number(store.exportSizeMultiplier),
+			width: Number(store.widthPixels) * Number(store.exportSizeMultiplier)
 		})
 		.then(function (blob) {
 			FileSaver.saveAs(blob, store.fileName + ".jpg");

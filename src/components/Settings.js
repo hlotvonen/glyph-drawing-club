@@ -19,6 +19,10 @@ import ExportButtons from './ExportButtons'
 import SaveAsButton from './SaveAsButton'
 import LoadButton from './LoadButton'
 import EmptyCanvas from './EmptyCanvas'
+import SaveToDropboxButton from './SaveToDropboxButton'
+import GlyphRotate from './GlyphRotate'
+import GlyphFlip from './GlyphFlip'
+import GlyphInvertColor from './GlyphInvertColor'
 
 @observer 
 class Settings extends React.Component {
@@ -27,36 +31,63 @@ class Settings extends React.Component {
 			<div className={"controls_container" + (store.darkTheme ? ' darkTheme' : '')}>
 				<div className="canvas_preferences">
 
-					<h3><a href="https://github.com/hlotvonen/unicode-art-editor" target="_blank">READ A TUTORIAL</a></h3>
+					<h3>Get started!</h3>
+					<ol className="instructions">
+						<li><span className="hotkey">Click</span> on any glyph under Glyph selection.</li>
+						<li>Press <span className="hotkey">q</span> to insert the glyph.</li>
+						<li>Move around the canvas by pressing <span className="hotkey">arrow keys</span>.</li>
+						<li>Press <span className="hotkey">f</span> to flip or <span className="hotkey">r</span> to rotate a glyph.</li>
+						<li><a href="https://github.com/hlotvonen/glyph-drawing-club" target="_blank">See more tips & all the hotkeys here!</a></li>
+					</ol>
 					<hr/>
 
 					<h3>Save / Load</h3>
 					<SaveAsButton fileName={store.fileName} updateFileName={store.updateFileName} />
 					<LoadButton />
+					<ExportButtons exportSizeMultiplier={store.exportSizeMultiplier} updateExportSizeMultiplier={store.updateExportSizeMultiplier}/>
+
+					<h3>Tools</h3>
+					<HideGrid hideGrid={store.hideGrid} handleChangeHideGrid={store.handleChangeHideGrid} />
+					<DarkTheme handleChangeTheme={store.handleChangeTheme} />
 					
+					<GlyphRotate rotationAmount={store.rotationAmount} rotateGlyphRight={store.rotateGlyphRight} rotateGlyphLeft={store.rotateGlyphLeft} />
+					<GlyphFlip handleChangeFlip={store.handleChangeFlip}/>
+					<GlyphInvertColor handleChangeInvertColor={store.handleChangeInvertColor}/>
+					
+					<GlyphSelect/>
+
+
 					<h3>Canvas Settings</h3>
 					<CanvasWidth addCol={store.addCol} deleteCol={store.deleteCol} canvasWidth={store.canvasWidth}/>
 					<CanvasHeight addRow={store.addRow} deleteRow={store.deleteRow} canvasHeight={store.canvasHeight}/>
+					<DeleteRowOrCol deleteRowAtSelection={store.deleteRowAtSelection} deleteColAtSelection={store.deleteColAtSelection} />
+					<AddRowOrCol addRowAtSelection={store.addRowAtSelection} addColAtSelection={store.addColAtSelection} />
 					<EmptyCanvas emptyCanvas={store.emptyCanvas} />
+					
 					<br/>
+
 					<CellWidth increaseCellWidth={store.increaseCellWidth} decreaseCellWidth={store.decreaseCellWidth} cellWidth={store.cellWidth}/>
 					<CellHeight increaseCellHeight={store.increaseCellHeight} decreaseCellHeight={store.decreaseCellHeight} cellHeight={store.cellHeight}/>
 					<FontSize increaseFontSize={store.increaseFontSize} decreaseFontSize={store.decreaseFontSize} defaultFontSize={store.defaultFontSize}/>
-					
-					<h3>Tools</h3>
-					<DeleteRowOrCol deleteRowAtSelection={store.deleteRowAtSelection} deleteColAtSelection={store.deleteColAtSelection} />
-					<AddRowOrCol addRowAtSelection={store.addRowAtSelection} addColAtSelection={store.addColAtSelection} />
-					<HideGrid hideGrid={store.hideGrid} handleChangeHideGrid={store.handleChangeHideGrid} />
-					<DarkTheme handleChangeTheme={store.handleChangeTheme} />
-
-					<h3>Export</h3>
-					<ExportButtons exportSizeMultiplier={store.exportSizeMultiplier} updateExportSizeMultiplier={store.updateExportSizeMultiplier}/>
 
 					<GlyphTuning/>
-					<GlyphSelect/>
-					<hr/>
-					<p>Follow development at <a href="https://github.com/hlotvonen/unicode-art-editor" target="_blank">Github</a></p>
 
+					<hr/>
+
+					<h3>Contribute to the book!</h3>
+					<p>The book, publised as part of my graduation work, will contain works from people using this editor. 
+					All the works that are sent will be included into the book, given that they are not spam or don't have the required info. 
+					By clicking the button below you give persmission to use your artwork. Your email won't be published. Deadline 24th of May.</p>
+					<br/>
+					<SaveToDropboxButton 
+						userFullName={store.userFullName} updateFullName={store.updateFullName}
+						userEmail={store.userEmail} updateEmail={store.updateEmail}
+						userCountry={store.userCountry} updateCountry={store.updateCountry}
+					/>
+
+					<hr/>
+					<br/>
+					<p>Follow development at <a href="https://github.com/hlotvonen/unicode-art-editor" target="_blank">Github</a></p>
 				</div>
 			</div>
 		);

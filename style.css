@@ -140,19 +140,35 @@ canvas
 .grid_controls {
 	position: absolute;
 	bottom: 0;
-	right: 0;
-	width: 100px;
-	height: 80px;
-	display: flex;
-	flex-direction: column;
+	right: 5px;
+	width: 70px;
+	height: 100px;
+}
+.grid_controls button{
+	width: 20px;
+	height: 20px;
+	padding: 0;
+	margin-right: 3px;
+	vertical-align: middle;
+	border:none;
+	background: #eee;
+	box-shadow: 0 0 0 0.5px rgba(0,0,0,1);
+}
+.grid_controls button:hover {
+	transform: scale(1.1);
 }
 .grid_controls .zoom {
 	display: flex;
 	justify-content: flex-end;
+	margin-bottom: 5px
+}
+.grid_controls .zoom button:first-child {
+	margin-right: 4px;
 }
 .grid_controls .move_y {
-	display: flex;
-	justify-content: center;
+    display: block;
+    margin: 3px auto;
+    width: 25px;
 }
 .row {
 	position: relative;
@@ -228,6 +244,23 @@ svg {
 	position: absolute;
 	top: 0;
 	left: 0;
+}
+ol.instructions {
+	list-style: initial;
+	list-style-type:decimal;
+	list-style-position: inside;
+}
+ol.instructions li {
+	margin-top: 3px;
+}
+span.hotkey {
+	background: #333;
+	padding: 3px;
+	border-radius: 5px;
+	color:white;
+}
+#dropbox-response {
+	color:red;
 }
 /* ~~~~~~~~~~~~~~~~~~~~~
 controls
