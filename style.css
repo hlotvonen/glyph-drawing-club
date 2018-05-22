@@ -193,6 +193,9 @@ canvas
 .row div.rowNum.highlighted {
 	color: red;
 }
+.row div.clipCells {
+	overflow: hidden;
+}
 .row div.selected:after {
 	content: '';
 	display: block;

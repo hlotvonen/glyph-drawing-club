@@ -63,21 +63,22 @@ npm start
 ### To-do
 
 - [ ] Make a longer tutorial
+- [x] Add masking (like Taiwanese ANSI)
 - [ ] UI improvements
 - [ ] For some reason, photoshop gives an error when opening the exported `.jpg` file. Workaround is to open the image in any other software (like Preview on Mac), export it again, and it should open normally now.
 - [ ] Glyph offset x & y needs a rework
-- [ ] "Reset to default" button offset y is sometimes incorrect
+- [x] "Reset to default" button offset y is sometimes incorrect
 
 #### To-do in the future (maybe)
 
-* Tooltips
-* Export as vector data
-* Typing mode
-* Undo/redo functionality
-* Color tool
-* Gallery, where users can upload their creations
-* Frames (to make animation)
-* Real textmode with UTF
+- [ ] Tooltips
+- [ ] Export as vector data
+- [x] Typing mode
+- [ ] Undo/redo functionality
+- [ ] Color tool
+- [ ] Gallery, where users can upload their creations
+- [ ] Frames (to make animation)
+- [ ] Real textmode with UTF
 
 ### About
 GlyphDrawing.club has been designed and developed by [@hlotvonen](http://heikkilotvonen.fi) and [@i-tu](https://github.com/i-tu) using React and MobX. For help, ideas, contributions, etc. open an issue or send an email to [hlotvonen@gmail.com](mailto:hlotvonen@gmail.com).

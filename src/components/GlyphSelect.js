@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { observable } from 'mobx';
 import store from '../models/CanvasStore.js';
+import typingmodestore from '../models/TypingModeStore'
 
 class GlyphSelect extends Component {
 
@@ -23,12 +24,21 @@ class GlyphSelect extends Component {
     }
     componentDidMount() {
 		this.go();
-    }
+		document.addEventListener("keydown", this.handleKeyPress, false);
+	}
+	componentWillUnmount(){
+		document.removeEventListener("keydown", this.handleKeyPress, false);
+	}
+
     go = () => {
     	if(this.selectedFont == 'Tesserae-Regular') {
 			this.load("Tesserae-Regular.otf", this.fontLoaded);
 		} else if(this.selectedFont == 'Unscii') {
 			this.load("unscii-16.ttf", this.fontLoaded);
+		} else if(this.selectedFont == 'MingLiU') {
+			this.load("mingliu.TTF", this.fontLoaded);
+		} else if(this.selectedFont == 'Mona') {
+			this.load("mona.ttf", this.fontLoaded);
 		}
 
 		this.node = document.body;
@@ -77,15 +87,58 @@ class GlyphSelect extends Component {
 		store.fontName = this.state.font.name.fullName;
 
 	}
+	handleKeyPress = (event) => {
+		if(store.typingMode && !store.disableShortcuts) {
+
+			const handlers = {
+				ArrowRight: store.goRight,
+				ArrowLeft: store.goLeft,
+				ArrowDown: store.goDown,
+				ArrowUp: store.goUp,
+				Backspace: store.backSpace,
+				Escape: store.handleChangeTypingMode,
+				Enter: store.enter,
+				'§': store.insert
+			}
+			const handler = handlers[event.key]
+
+			if(event.key in handlers) {
+				handler()
+			}
+			if(typingmodestore.KEY_INTO_UNICODE[event.key] !== undefined) {
+
+				let path = Typr.U.glyphToPath(this.state.font, Typr.U.codeToGlyph(this.state.font, typingmodestore.KEY_INTO_UNICODE[event.key]));
+				let svgstring = Typr.U.pathToSVG(path);
+				store.glyphPath = svgstring;
+				store.svgWidth = this.state.font.hhea.advanceWidthMax;
+				store.svgHeight = this.state.font.hhea.ascender + Math.abs(this.state.font.hhea.descender);
+				store.svgBaseline = this.state.font.hhea.descender;
+
+				store.canvas[store.selected_y][store.selected_x] = store.getSelectedGlyph();
+				store.selected_x = store.selected_x + 1
+
+				if(store.selected_x == store.canvasWidth) {
+					store.selected_x = 0
+					if(store.selected_y < store.canvasHeight - 1) {
+						store.selected_y = store.selected_y + 1;
+					}
+					else if(store.selected_y == store.canvasHeight) {
+						store.selected_y = store.selected_y - 1;
+					}
+				}
+			}
+			event.preventDefault();
+		}
+	}
 	glyphToSVG = () => {
 		let path = Typr.U.glyphToPath(this.state.font, this.state.gid);
 		let svgstring = Typr.U.pathToSVG(path);
 		store.glyphPath = svgstring;
 		store.svgWidth = this.state.font.hhea.advanceWidthMax;
-		//store.svgwidth = this.state.font.hmtx.aWidth[this.state.gid];
 		store.svgHeight = this.state.font.hhea.ascender + Math.abs(this.state.font.hhea.descender);
 		store.svgBaseline = this.state.font.hhea.descender;
 	}
+
 
 	drawGlyphs = () => {
 		let cont = document.getElementById("glyphcont");  
@@ -219,6 +272,8 @@ class GlyphSelect extends Component {
 				>
 				  <option value="Tesserae-Regular">Tesserae-Regular</option>
 				  <option value="Unscii">Unscii</option>
+				  <option value="MingLiU">MingLiU (Taiwanese ANSI)</option>
+				  <option value="Mona">Mona (Swift_JIS)</option>
 				</select>
 				<br/>
 				<b>Or drag and drop a font file (otf/ttf)</b>

@@ -65,6 +65,8 @@ class CanvasStore {
 	@observable widthPixels = 0;
 	@observable heightPixels = 0;
 	@observable copiedRow = [];
+	@observable clipCells = false;
+	@observable typingMode = false;
 
 //
 	@observable disableShortcuts = false;
@@ -231,6 +233,16 @@ class CanvasStore {
 		this.hideGrid = !this.hideGrid;
 		document.getElementById('hideGrid').checked = this.hideGrid; 
 	}
+//Toggle Clip Cells
+	handleChangeClipCells = () => { 
+		this.clipCells = !this.clipCells;
+		document.getElementById('clipCells').checked = this.clipCells; 
+	}
+//Toggle Typing Mode
+	handleChangeTypingMode = () => { 
+		this.typingMode = !this.typingMode;
+		document.getElementById('typingMode').checked = this.typingMode; 
+	}
 //Toggle Dark Theme
 	handleChangeTheme = () => { 
 		this.darkTheme = !this.darkTheme;
@@ -287,14 +299,11 @@ class CanvasStore {
 		this.glyphOffsetY = this.canvas[this.selected_y][this.selected_x].slice()[3]; //First check the existing offset x value
 		this.glyphOffsetY += this.svgHeight / 4; //Set offset amount to 10% of the glyph width 
 		this.canvas[this.selected_y][this.selected_x][3] = this.glyphOffsetY; //Update canvas
-		console.log(this.glyphOffsetY);
 	}
 	decreaseGlyphOffsetY = () => {
 		this.glyphOffsetY = this.canvas[this.selected_y][this.selected_x].slice()[3]; //First check the existing offset x value
 		this.glyphOffsetY -= this.svgHeight / 4; //Set offset amount to 10% of the glyph width
 		this.canvas[this.selected_y][this.selected_x][3] = this.glyphOffsetY; //Update canvas
-		console.log(this.glyphOffsetY);
-
 	}
 //Glyph rotation
 	rotateGlyphRight = () => {
@@ -347,19 +356,18 @@ class CanvasStore {
 	}
 //GlyphClear - reset selection to default
 	glyphClear = () => {
+		console.log(this.svgBaseline)
 		this.glyphFontSizeModifier = 0;
 		this.glyphInvertedColor = false;
 		this.rotationAmount = 0;
 		this.glyphOffsetX = 0;
 		this.glyphOffsetY = 0;
-		this.canvas[this.selected_y][this.selected_x][3] = 0; //offset y
+		this.canvas[this.selected_y][this.selected_x][3] = this.svgBaseline; //offset y
 		this.canvas[this.selected_y][this.selected_x][4] = 0; //offset x
 		this.canvas[this.selected_y][this.selected_x][5] = 0; //font size modifier
 		this.canvas[this.selected_y][this.selected_x][6] = 0; //rotation
 		this.canvas[this.selected_y][this.selected_x][7] = 1; //flip
 		this.canvas[this.selected_y][this.selected_x][8] = false; //invert color
-		document.getElementById('flipGlyph').checked = false; //uncheck flip glyph checkbox
-		document.getElementById('invertColor').checked = false; //uncheck invert color checkbox
 	}
 	emptyCanvas = () => {
 		this.glyphClear;
@@ -376,48 +384,44 @@ class CanvasStore {
 	}
 	toggleWriting = () => {
 		this.disableShortcuts = !this.disableShortcuts;
-		console.log(this.disableShortcuts);
 	}
 //Tools
 	@action
 	goRight = () => {
-				if(this.selected_x < this.canvasWidth - 1) {
-						this.selected_x = this.selected_x + 1;
-				}
-				else if(this.selected_x = this.canvasWidth) {
-						//this.addCol();
-						this.selected_x = this.selected_x - 1;
-				}
+		if(this.selected_x < this.canvasWidth - 1) {
+			this.selected_x = this.selected_x + 1;
+		}
+		else if(this.selected_x = this.canvasWidth) {
+			this.selected_x = this.selected_x - 1;
+		}
 	}
 	@action
 	goLeft = () => { //ArrowLeft
-			if(this.selected_x > 0){
-					this.selected_x = this.selected_x - 1;
-			}
-			else if(this.selected_x = 1) {
-				//this.addColLeft();
-				this.selected_x = this.selected_x - 1;
-			}
+		if(this.selected_x > 0){
+			this.selected_x = this.selected_x - 1;
+		}
+		else if(this.selected_x = 1) {
+			this.selected_x = this.selected_x - 1;
+		}
 	}
 	@action
 	goDown = () => { //ArrowDown
-			if(this.selected_y < this.canvasHeight - 1) {
-					this.selected_y = this.selected_y + 1;
-			}
-			else if(this.selected_y = this.canvasHeight) {
-					this.selected_y = this.selected_y - 1;
-					//this.addRow();
-			}
+		if(this.selected_y < this.canvasHeight - 1) {
+			this.selected_y = this.selected_y + 1;
+		}
+		else if(this.selected_y == this.canvasHeight) {
+			this.selected_y = this.selected_y - 1;
+		}
 	}
 	@action
 	goUp = () => { //ArrowUp
-			if(this.selected_y > 0){
-				this.selected_y = this.selected_y - 1;
-			} 
-			else if(this.selected_y = 1) {
-				//this.addRowTop();
-				this.selected_y = this.selected_y - 1;
-			}
+		if(this.selected_y > 0){
+			this.selected_y = this.selected_y - 1;
+		} 
+		else if(this.selected_y = 1) {
+			//this.addRowTop();
+			this.selected_y = this.selected_y - 1;
+		}
 	}
 	insertEmpty = () => { //space
 		this.canvas[this.selected_y][this.selected_x] = EMPTY_CELL;
@@ -427,6 +431,28 @@ class CanvasStore {
 	}
 	insert = () => { //q
 		this.canvas[this.selected_y][this.selected_x] = this.getSelectedGlyph()
+	}
+	backSpace = () => { //backspace
+		this.canvas[this.selected_y][this.selected_x] = EMPTY_CELL;
+		if(this.selected_y > 0) {
+			if(this.selected_x > 0) {
+				this.goLeft();
+			} else if(this.selected_x <= 0) {
+				this.selected_y = this.selected_y - 1
+				this.selected_x = this.canvasWidth - 1
+			}
+		} else {
+			if(this.selected_x > 0) {
+				this.goLeft();
+			}
+			if(this.selected_x == 0) {
+				return
+			}
+		}
+	}
+	enter = () => {
+		this.goDown();
+		this.selected_x = 0
 	}
 
 	getSelectedArea = () => {

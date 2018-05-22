@@ -30,6 +30,7 @@ import gridStore from '../models/GridStore'
             rotationAmount={rotationAmount}
             flipGlyph={flipGlyph}
             glyphInvertedColor={glyphInvertedColor}
+            clipCells={store.clipCells}
             highlighted={y === selected_y && x === selected_x} />
         )}
       </div>

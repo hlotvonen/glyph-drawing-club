@@ -23,6 +23,8 @@ import SaveToDropboxButton from './SaveToDropboxButton'
 import GlyphRotate from './GlyphRotate'
 import GlyphFlip from './GlyphFlip'
 import GlyphInvertColor from './GlyphInvertColor'
+import ClipCells from './ClipCells'
+import TypingMode from './TypingMode'
 
 @observer 
 class Settings extends React.Component {
@@ -48,6 +50,8 @@ class Settings extends React.Component {
 
 					<h3>Tools</h3>
 					<HideGrid hideGrid={store.hideGrid} handleChangeHideGrid={store.handleChangeHideGrid} />
+					<ClipCells clipCells={store.clipCells} handleChangeClipCells={store.handleChangeClipCells} />
+					<TypingMode typingMode={store.typingMode} handleChangeTypingMode={store.handleChangeTypingMode} />
 					<DarkTheme handleChangeTheme={store.handleChangeTheme} />
 					
 					<GlyphRotate rotationAmount={store.rotationAmount} rotateGlyphRight={store.rotateGlyphRight} rotateGlyphLeft={store.rotateGlyphLeft} />

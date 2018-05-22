@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import store from '../models/CanvasStore.js';
 import setstore from '../models/KeymappingsStore'
+import typingmodestore from '../models/TypingModeStore'
 import Grid from './Grid';
 import KeymappingsBar from './KeymappingsBar'
 import GridControls from './GridControls'
@@ -17,7 +18,7 @@ class Canvas extends Component {
 	handleKeyPress = (event) => {
 
 		//disable shortcuts if focus is on input element
-		if(!store.disableShortcuts) {
+		if(!store.disableShortcuts && !store.typingMode) {
 
 			const glyph = [store.glyphPath, store.svgWidth, store.svgHeight, store.svgBaseline]
 
@@ -27,12 +28,16 @@ class Canvas extends Component {
 					ArrowDown: store.goDown,
 					ArrowUp: store.goUp,
 					' ': store.insertEmpty,
+					Backspace: store.backSpace,
+					Enter: store.enter,
 					q: store.insert,
 					r: store.rotateGlyphRight,
 					f: store.handleChangeFlip,
 					h: store.handleChangeHideGrid,
 					p: store.handleChangeTheme,
 					i: store.handleChangeInvertColor,
+					c: store.handleChangeClipCells,
+					t: store.handleChangeTypingMode,
 
 					S: store.makeSelection,
 					C: store.copySelection,
