@@ -81,9 +81,10 @@ class Settings extends React.Component {
 					<hr/>
 
 					<h3>Contribute to the book!</h3>
-					<p>The book, publised as part of my graduation work, will contain works from people using this editor. 
-					All the works that are sent will be included into the book, given that they are not spam or don't have the required info. 
-					By clicking the button below you give persmission to use your artwork. Your email won't be published. Deadline 24th of May.</p>
+					<p>The zine, publised as part of my graduation work, will contain works from people using this editor. 
+					All the works that are sent will be included into the zine. No limits. Use any font, make as many as you want, submit sketches, unfinished ones too.  
+					By clicking the button below you give persmission to use your artwork. Your email won't be published. Deadline 31st of May. 
+					The contributors will receive a pdf of the zine. The zine will be sold but only to cover printing costs.</p>
 					<br/>
 					<SaveToDropboxButton 
 						userFullName={store.userFullName} updateFullName={store.updateFullName}

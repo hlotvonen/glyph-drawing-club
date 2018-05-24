@@ -16,6 +16,6 @@ export function exportJpg() {
 			width: Number(store.widthPixels) * Number(store.exportSizeMultiplier)
 		})
 		.then(function (blob) {
-			FileSaver.saveAs(blob, store.fileName + ".jpg");
+			FileSaver.saveAs(blob, store.fileName + ".png");
 		})
 }

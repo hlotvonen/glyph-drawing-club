@@ -29,7 +29,7 @@ export function saveToDropbox() {
   })
   .then(function (blob) {
     dbx.filesUpload({
-      path: '/' + store.fileName + " " + store.userFullName + " " + store.userEmail + " " + store.userCountry + ".jpg",
+      path: '/' + store.fileName + " " + store.userFullName + " " + store.userEmail + " " + store.userCountry + ".png",
       contents: blob
     })
     .then(function(response) {

@@ -61,6 +61,8 @@ Glyph Drawing Club
 * Find some examples [here](examples). You can download the .unscii files and open them with the editor.
 * Follow [@heikkiveikko](https://www.instagram.com/heikkiveikko/) on Instagram for more.
 
+#### Emulate 
+
 ### Run locally
 
 ```
@@ -74,7 +76,7 @@ npm start
 - [x] Add masking (like Taiwanese ANSI)
 - [ ] UI improvements
 - [ ] Fix performance issues when the canvas is large.
-- [ ] For some reason, photoshop gives an error when opening the exported `.jpg` file. Workaround is to open the image in any other software (like Preview on Mac), export it again, and it should open normally now.
+- [x] For some reason, photoshop gives an error when opening the exported `.jpg` file. Workaround is to open the image in any other software (like Preview on Mac), export it again, and it should open normally now.
 - [ ] Glyph offset x & y needs a rework
 - [x] "Reset to default" button offset y is sometimes incorrect
 
