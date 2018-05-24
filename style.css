@@ -265,6 +265,9 @@ span.hotkey {
 #dropbox-response {
 	color:red;
 }
+.pixelRendering svg{
+	shape-rendering:optimizeSpeed;
+}
 /* ~~~~~~~~~~~~~~~~~~~~~
 controls
 ~~~~~~~~~~~~~~~~~~~~~ */

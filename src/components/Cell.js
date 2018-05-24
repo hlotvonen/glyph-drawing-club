@@ -12,7 +12,7 @@ const Cell = (props) => {
 	return (
 		<div className={classes} style={{width : props.cellWidth, height : props.cellHeight}} >
 			<svg
-				height={+props.defaultFontSize + +props.glyphFontSizeModifier} 
+				height={Number(props.defaultFontSize) + Number(props.glyphFontSizeModifier)} 
 				viewBox={props.glyphOffsetX + " " + props.svgBaseline + " " + props.svgWidth + " " + props.svgHeight} 
 				style={transform}
 			>

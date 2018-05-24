@@ -25,6 +25,7 @@ import GlyphFlip from './GlyphFlip'
 import GlyphInvertColor from './GlyphInvertColor'
 import ClipCells from './ClipCells'
 import TypingMode from './TypingMode'
+import PixelRendering from './PixelRendering'
 
 @observer 
 class Settings extends React.Component {
@@ -53,6 +54,7 @@ class Settings extends React.Component {
 					<ClipCells clipCells={store.clipCells} handleChangeClipCells={store.handleChangeClipCells} />
 					<TypingMode typingMode={store.typingMode} handleChangeTypingMode={store.handleChangeTypingMode} />
 					<DarkTheme handleChangeTheme={store.handleChangeTheme} />
+					<PixelRendering pixelRendering={store.pixelRendering} handleChangePixelRendering={store.handleChangePixelRendering} />
 					
 					<GlyphRotate rotationAmount={store.rotationAmount} rotateGlyphRight={store.rotateGlyphRight} rotateGlyphLeft={store.rotateGlyphLeft} />
 					<GlyphFlip handleChangeFlip={store.handleChangeFlip}/>

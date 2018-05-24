@@ -11,9 +11,10 @@ import gridStore from '../models/GridStore'
     const canvas = store.canvas
     const selected_y = store.selected_y;
     const selected_x = store.selected_x;
+    const pixelRendering = store.pixelRendering ? 'pixelRendering' : '';
 
     const grid = canvas.map((row, y) =>
-      <div className="row" key={y} style={{width: Number(store.canvasWidth) * Number(store.cellWidth) + 'px'}}>
+      <div className="row" key={y} style={{width: Number(store.canvasWidth) * Number(store.cellWidth) + 'px', height: Number(store.cellHeight) + 'px'}}>
         <div className={'rowNum ' + (selected_y === y ? 'highlighted' : '')}>{y + 1}</div>
         {row.map(([glyphPath, svgWidth, svgHeight, svgBaseline, glyphOffsetX, glyphFontSizeModifier, rotationAmount, flipGlyph, glyphInvertedColor], x) =>
           <Cell 
@@ -44,7 +45,7 @@ import gridStore from '../models/GridStore'
     }
 
     return (
-      <div id="canvas" className="grid" style={{
+      <div id="canvas" className={`grid ${pixelRendering}`} style={{
         transform: `translate(${
             gridStore.settings.posX
           }px, ${

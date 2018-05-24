@@ -67,6 +67,7 @@ class CanvasStore {
 	@observable copiedRow = [];
 	@observable clipCells = false;
 	@observable typingMode = false;
+	@observable pixelRendering = false;
 
 //
 	@observable disableShortcuts = false;
@@ -242,6 +243,11 @@ class CanvasStore {
 	handleChangeTypingMode = () => { 
 		this.typingMode = !this.typingMode;
 		document.getElementById('typingMode').checked = this.typingMode; 
+	}
+//Toggle Pixel Rendering
+	handleChangePixelRendering = () => { 
+		this.pixelRendering = !this.pixelRendering;
+		document.getElementById('pixelRendering').checked = this.pixelRendering; 
 	}
 //Toggle Dark Theme
 	handleChangeTheme = () => { 
