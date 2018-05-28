@@ -26,7 +26,9 @@ class CanvasStore {
 			this.heightPixels = storage.heightPixels
 		//else create empty canvas
 		} else { 
-			this.canvas = Array.from({length: this.canvasHeight}, () => Array.from({length: this.canvasWidth}, () => EMPTY_CELL ));
+			this.canvas = Array.from({length: this.canvasHeight}, () => this.getEmptyRow());
+
+
 			this.widthPixels = this.canvasWidth * this.cellWidth;
 			this.heightPixels = this.canvasHeight * this.cellHeight;
 			localStorage.setItem('firstRun', false)
@@ -134,15 +136,18 @@ class CanvasStore {
 		}
 		this.widthPixels = this.canvasWidth * this.cellWidth;
 	}
+
+	getEmptyRow = () => Array.from({length: this.canvasWidth}, () => EMPTY_CELL)
+
 //Change canvas height
 	@action addRow = () => { 
 		this.canvasHeight = this.canvasHeight + 1;
-		this.canvas.push(Array.from({length: this.canvasWidth}, () => EMPTY_CELL ));
+		this.canvas.push(this.getEmptyRow());
 		this.heightPixels = this.canvasHeight * this.cellHeight;
 	}
 	@action addRowTop = () => { 
 		this.canvasHeight = this.canvasHeight + 1;
-		this.canvas.unshift(Array.from({length: this.canvasWidth}, () => EMPTY_CELL ));
+		this.canvas.unshift(this.getEmptyRow())
 		this.heightPixels = this.canvasHeight * this.cellHeight;
 	}
 	@action deleteRow = () => {
@@ -185,7 +190,7 @@ class CanvasStore {
 //Add row at selection
 	@action addRowAtSelection = () => {
 		this.canvasHeight++;
-		this.canvas.splice(this.selected_y, 0, Array.from({length: this.canvasWidth}, () => EMPTY_CELL ));
+		this.canvas.splice(this.selected_y, 0, this.getEmptyRow());
 		this.heightPixels = this.canvasHeight * this.cellHeight;
 	}
 //Add col at selection
@@ -386,7 +391,7 @@ class CanvasStore {
 		this.defaultFontSize = 30;
 		this.widthPixels = this.canvasWidth * this.cellWidth;
 		this.heightPixels = this.canvasHeight * this.cellHeight;
-		this.canvas = Array.from({length: this.canvasHeight}, () => Array.from({length: this.canvasWidth}, () => EMPTY_CELL ));
+		this.canvas = Array.from({length: this.canvasHeight}, () => this.getEmptyRow());
 	}
 	toggleWriting = () => {
 		this.disableShortcuts = !this.disableShortcuts;
