@@ -113,9 +113,7 @@ canvas
 	box-shadow: inset 0 0 0 0.5px rgba(255,255,255,0.1);
 	fill: white;
 }
-.canvas_container.darkTheme .row div.selected {
-	box-shadow: inset 0 0 0 1px rgba(255,0,0,1);
-}
+
 .canvas_container.darkTheme .row div.invertColor {
 	fill: black;
 	background: white;
@@ -180,32 +178,25 @@ canvas
 	overflow: visible;
 	position: relative;
 }
-.row div.rowNum {
+.rowNums div.rowNum {
 	position: absolute;
-	top: 0;
+	display: flex;
+	align-items: center;
+	justify-content: center;
 	left: -30px;
 	box-shadow: none;
 	text-align: right;
 	font-size: 0.6em;
 	background: none;
-	color:#888;
+	color: #888;
 }
-.row div.rowNum.highlighted {
+.rowNums div.rowNum.highlighted {
 	color: red;
 }
 .row div.clipCells {
 	overflow: hidden;
 }
-.row div.selected:after {
-	content: '';
-	display: block;
-	position: absolute;
-	top:0;
-	left:0;
-	width:100%;
-	height: 100%;
-	box-shadow: inset 0 0 0 1px rgba(255,0,0,0.5);
-}
+
 .colNums {
 	width: 100%;
 	position: relative;
@@ -213,9 +204,9 @@ canvas
 }
 .colNum {
 	width: auto;
-	display: inline-block;
-	vertical-align:top;
-	box-shadow: none;
+	display: inline-flex;
+	justify-content: center;
+	align-items: center;
 	font-size: 0.6em;
 	background: none;
 	color:#888;
@@ -225,7 +216,17 @@ canvas
 .colNum.highlighted {
 	color: red;
 }
-.canvas_container.hideGrid .colNums, .canvas_container.hideGrid .row div.rowNum {
+.cursor {
+	position: absolute;
+    box-shadow: inset 0 0 0 1px rgba(255,0,0,0.5);
+	z-index: 1000;
+}
+
+.canvas_container.hideGrid .cursor {
+	display: none;
+}
+
+.canvas_container.hideGrid .colNums, .canvas_container.hideGrid .rowNums {
 	display: none;
 }
 .selectionHighlight {
@@ -238,9 +239,7 @@ canvas
 .canvas_container.hideGrid .row div, .canvas_container.hideGrid.darkTheme .row div {
 	box-shadow: inset 0 0 0 0 rgba(0,0,0,0);
 }
-.canvas_container.hideGrid .row div.selected:after, .canvas_container.hideGrid.darkTheme .row div.selected:after {
-	box-shadow: inset 0 0 0 0 rgba(0,0,0,0);
-}
+
 svg {
 	overflow: visible;
 	transform-origin: 50% 50%;

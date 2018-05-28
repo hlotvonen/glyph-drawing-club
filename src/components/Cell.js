@@ -4,10 +4,9 @@ const Cell = (props) => {
     let transform = { 
         transform: `scale(${props.flipGlyph}, -1) rotate(${props.rotationAmount}deg)`
     };
-    const highlighted = props.highlighted ? 'selected' : '';
     const clipCells = props.clipCells ? 'clipCells' : '';
     const glyphInvertedColor = props.glyphInvertedColor ? 'invertColor' : '';
-	const classes = `${highlighted} ${clipCells} ${glyphInvertedColor}`;
+	const classes = `${clipCells} ${glyphInvertedColor}`;
 
 	return (
 		<div className={classes} style={{width : props.cellWidth, height : props.cellHeight}} >

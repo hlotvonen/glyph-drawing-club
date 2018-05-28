@@ -3,19 +3,18 @@ import { observer } from 'mobx-react';
 import store from '../models/CanvasStore';
 import Cell from './Cell';
 import SelectionHighlight from './SelectionHighlight'
+import Numbers from './Numbers'
+import Cursor from './Cursor'
 import gridStore from '../models/GridStore'
 
 @observer class Grid extends Component {
 
   render() {
     const canvas = store.canvas
-    const selected_y = store.selected_y;
-    const selected_x = store.selected_x;
     const pixelRendering = store.pixelRendering ? 'pixelRendering' : '';
 
     const grid = canvas.map((row, y) =>
       <div className="row" key={y} style={{width: Number(store.canvasWidth) * Number(store.cellWidth) + 'px', height: Number(store.cellHeight) + 'px'}}>
-        <div className={'rowNum ' + (selected_y === y ? 'highlighted' : '')}>{y + 1}</div>
         {row.map(([glyphPath, svgWidth, svgHeight, svgBaseline, glyphOffsetX, glyphFontSizeModifier, rotationAmount, flipGlyph, glyphInvertedColor], x) =>
           <Cell 
             glyphPath={glyphPath} 
@@ -32,17 +31,10 @@ import gridStore from '../models/GridStore'
             flipGlyph={flipGlyph}
             glyphInvertedColor={glyphInvertedColor}
             clipCells={store.clipCells}
-            highlighted={y === selected_y && x === selected_x} />
+          />
         )}
       </div>
     );
-
-    const colNums = [];
-    for (var i=0; i<store.canvasWidth; i++) {
-        colNums.push(
-          <div key={i} className={'colNum ' + (selected_x === i ? 'highlighted' : '')} style={{width : store.cellWidth}}>{i + 1}</div>
-        )
-    }
 
     return (
       <div id="canvas" className={`grid ${pixelRendering}`} style={{
@@ -54,7 +46,9 @@ import gridStore from '../models/GridStore'
             gridStore.settings.zoom
           })`
       }}>
-        <div className="colNums">{colNums}</div>
+
+        <Numbers />
+        <Cursor />
         {grid}
         <SelectionHighlight />
       </div>
