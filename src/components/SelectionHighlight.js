@@ -7,13 +7,13 @@ import { observer } from 'mobx-react';
  	if (store.selectionArea.start === null) {
  		return null
  	}
- 	console.log(store.selectionArea.start)
+ 	// console.log(store.selectionArea.start)
 	const [[start_y, start_x], [end_y, end_x]] = getBoundingRectangle(
 	  store.selectionArea.start,
 	  store.selectionArea.end || [store.selected_y, store.selected_x]
 	)
 	
-	console.log([start_y, start_x], [end_y, end_x])
+	// console.log([start_y, start_x], [end_y, end_x])
 
 	let posTopX = start_x * store.cellWidth
 	let posTopY = start_y * store.cellHeight

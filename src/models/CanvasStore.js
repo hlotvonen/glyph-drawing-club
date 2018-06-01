@@ -339,7 +339,7 @@ class CanvasStore {
 	handleChangeInvertColor = () => {
 		this.glyphInvertedColor = this.canvas[this.selected_y][this.selected_x][8];
 		this.glyphInvertedColor = !this.glyphInvertedColor;
-		console.log('i');
+		// console.log('i');
 		this.canvas[this.selected_y][this.selected_x][8] = this.glyphInvertedColor; //Update canvas
 	}
 
@@ -367,7 +367,7 @@ class CanvasStore {
 	}
 //GlyphClear - reset selection to default
 	glyphClear = () => {
-		console.log(this.svgBaseline)
+		// console.log(this.svgBaseline)
 		this.glyphFontSizeModifier = 0;
 		this.glyphInvertedColor = false;
 		this.rotationAmount = 0;

@@ -10,31 +10,23 @@ import gridStore from '../models/GridStore'
 @observer class Grid extends Component {
 
   render() {
-    const canvas = store.canvas
     const pixelRendering = store.pixelRendering ? 'pixelRendering' : '';
 
-    const grid = canvas.map((row, y) =>
-      <div className="row" key={y} style={{width: Number(store.canvasWidth) * Number(store.cellWidth) + 'px', height: Number(store.cellHeight) + 'px'}}>
-        {row.map(([glyphPath, svgWidth, svgHeight, svgBaseline, glyphOffsetX, glyphFontSizeModifier, rotationAmount, flipGlyph, glyphInvertedColor], x) =>
-          <Cell 
-            glyphPath={glyphPath} 
-            key={x} 
-            defaultFontSize={store.defaultFontSize} 
-            glyphFontSizeModifier={glyphFontSizeModifier} 
-            svgWidth={svgWidth} 
-            svgHeight={svgHeight} 
-            svgBaseline={svgBaseline} 
-            glyphOffsetX={glyphOffsetX} 
-            cellWidth={store.cellWidth} 
-            cellHeight={store.cellHeight}
-            rotationAmount={rotationAmount}
-            flipGlyph={flipGlyph}
-            glyphInvertedColor={glyphInvertedColor}
-            clipCells={store.clipCells}
-          />
-        )}
-      </div>
-    );
+    const grid = []
+    for (let y = 0; y < store.canvasHeight; y++) {
+      const row = []
+      for (let x = 0; x < store.canvasWidth; x++) {
+        const [glyphPath, svgWidth, svgHeight, svgBaseline, glyphOffsetX, glyphFontSizeModifier, rotationAmount, flipGlyph, glyphInvertedColor]
+         = store.canvas[y][x]
+
+        row.push(<Cell key={`${y}_${x}`} y={y} x={x} />)
+      }
+      grid.push(
+        <div className="row" key={y} style={{width: Number(store.canvasWidth) * Number(store.cellWidth) + 'px', height: Number(store.cellHeight) + 'px'}}>
+          {row}
+        </div>
+      )
+    }
 
     return (
       <div id="canvas" className={`grid ${pixelRendering}`} style={{
