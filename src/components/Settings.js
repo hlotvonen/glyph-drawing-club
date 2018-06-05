@@ -78,7 +78,7 @@ class Settings extends React.Component {
 
 					<GlyphTuning/>
 
-					<hr/>
+					{/*<hr/>
 
 					<h3>Contribute to the book!</h3>
 					<p>The zine, publised as part of my graduation work, will contain works from people using this editor. 
@@ -90,7 +90,7 @@ class Settings extends React.Component {
 						userFullName={store.userFullName} updateFullName={store.updateFullName}
 						userEmail={store.userEmail} updateEmail={store.updateEmail}
 						userCountry={store.userCountry} updateCountry={store.updateCountry}
-					/>
+					/>*/}
 
 					<hr/>
 					<br/>

@@ -34,11 +34,11 @@ export function saveToDropbox() {
     })
     .then(function(response) {
       document.getElementById('dropbox-response').innerText = "Sent successfully! Thank you!" 
-      //console.log(response);
+      console.log(response);
     })
     .catch(function(error) {
       document.getElementById('dropbox-response').innerText = "Sorry something went wrong! Contact hlotvonen@gmail.com" 
-      //console.error(error);
+      console.error(error);
     });
     return false;
   })

@@ -71,7 +71,7 @@ class CanvasStore {
 	@observable typingMode = false;
 	@observable pixelRendering = false;
 
-//
+//SHORTCUTS
 	@observable disableShortcuts = false;
 
 //EXPORT
@@ -85,11 +85,12 @@ class CanvasStore {
 	@observable userEmail = "";
 	@observable userCountry = "";
 
-//SELECTION
+//SELECTION AREA
 	@observable selected_x = 0;
 	@observable selected_y = 0;
 	@observable selectionArea = {start: null, end: null}
 
+//SELECTION
 	@observable selectedUnicode = 0;
 	@observable glyphPath = "M0 0";
 	@observable svgHeight = 0;
@@ -98,7 +99,6 @@ class CanvasStore {
 	@observable selectedFont = "Reviscii-Regular";
 	@observable fontName = "Reviscii-Regular";
 
-
 //Glyph fine tuning
 	@observable glyphOffsetX = 0;
 	@observable glyphOffsetY = 0;
@@ -106,8 +106,6 @@ class CanvasStore {
 	@observable rotationAmount = 0;
 	@observable flipGlyph = "1";
 	@observable glyphInvertedColor = false;
-	//@observable increaseGlyphOffsetX = 0;
-	//@observable increaseGlyphOffsetY = 0;
 
 //Change canvas width
 	@action addCol = () => {

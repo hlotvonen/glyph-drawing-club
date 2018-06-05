@@ -90,6 +90,9 @@ top wrapper
     display: flex;
     flex-direction: row;
 }
+b {
+	font-weight: bold;
+}
 /* ~~~~~~~~~~~~~~~~~~~~~
 canvas
 ~~~~~~~~~~~~~~~~~~~~~ */

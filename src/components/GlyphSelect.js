@@ -19,7 +19,8 @@ class GlyphSelect extends Component {
 			gid: 0,
 			uncd: null,
 			fontfile: "",
-			pages_total: 0	    
+			pages_total: 0,
+			inverted: false    
 	  	};
     }
     componentDidMount() {
@@ -152,6 +153,8 @@ class GlyphSelect extends Component {
 		let lim = Math.min(this.state.off+this.state.num, this.glyphCnt());
 		let scale = 32*this.getDPR() / this.state.font.head.unitsPerEm;
 
+		console.log(this.state.font)
+
 		for(let i=this.state.off; i<lim; i++)
 		{
 			let path = Typr.U.glyphToPath(this.state.font, i);
@@ -159,14 +162,23 @@ class GlyphSelect extends Component {
 			cnv.width = cnv.width;
 			ctx.translate(10*this.getDPR(),Math.round(36*this.getDPR()));  
 			
-			ctx.fillStyle = "#000000";
+			if(this.state.inverted) {
+				ctx.fillStyle = "black";
+				ctx.fillRect(0, Math.round(-25*this.getDPR()), Math.round(25*this.getDPR()), Math.round(25*this.getDPR()));
+			}
+
 			ctx.fillText(i,0,20);
-			
+
 			ctx.scale(scale,-scale);
 			Typr.U.pathToContext(path, ctx);
-
-			ctx.fill();
 			
+			if(this.state.inverted) {
+				ctx.fillStyle = "white";
+			} else {
+				ctx.fillStyle = "black";
+			}
+			ctx.fill();
+
 			let img = document.createElement("img");
 			img.setAttribute("style", "width:"+(cnv.width/this.getDPR())+"px; height:"+(cnv.height/this.getDPR())+"px");
 			img.gid = i;
@@ -188,16 +200,6 @@ class GlyphSelect extends Component {
 		    r64.readAsDataURL( file )
 		    r64.onloadend = function(e) {
 		    	let base64result = r64.result.split(',')[1];
-		    	//Set font face
-				let newStyle = document.createElement('style');
-				newStyle.appendChild(document.createTextNode("\
-				@font-face {\
-				    font-family: 'thefont';\
-				    src: url(data:application/x-font-ttf;charset=utf-8;base64," + base64result + ");\
-				}\
-				"));
-				document.head.appendChild(newStyle);
-				store.selectedFont = "thefont";
 		    }
 		};
 	}
@@ -259,6 +261,11 @@ class GlyphSelect extends Component {
 		this.selectedFont = value;
 		this.go();
 	}
+	handleChangeInvert = () => {
+		this.state.inverted = !this.state.inverted;
+		console.log(this.state.inverted)
+		this.drawGlyphs();
+	}
 	render() {
 		return (
 			<div className="glyphs">
@@ -277,6 +284,7 @@ class GlyphSelect extends Component {
 				</select>
 				<br/>
 				<b>Or drag and drop a font file (otf/ttf)</b>
+				<br/><br/>
 				<div>Currently selected font: {store.fontName}</div>
 				<button type="button" onClick={() => this.drawPrev()}>Previous</button>
 				<button type="button" onClick={() => this.drawNext()}>Next</button>
@@ -308,7 +316,10 @@ class GlyphSelect extends Component {
 						  this.updatePageNum(Math.max(0, parsedValue - 1))
 						}}
 					/>/{this.state.pages_total + 1}
-				</div>
+
+          			{' Invert:'}
+          			<input id="invertGlyphSelection" type="checkbox" value={this.state.inverted} onChange={this.handleChangeInvert} />
+  				</div>
 				<div id="glyphcont"></div>
 				<button type="button" onClick={() => this.drawPrev()}>Previous</button>
 				<button type="button" onClick={() => this.drawNext()}>Next</button>
