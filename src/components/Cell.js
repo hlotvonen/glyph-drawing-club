@@ -3,7 +3,7 @@ import store from '../models/CanvasStore';
 import {observer} from 'mobx-react'
 
 const Cell = observer((props) => {
-    console.log(props.y, props.x)
+    //console.log(props.y, props.x)
     const [glyphPath, svgWidth, svgHeight, svgBaseline, glyphOffsetX, glyphFontSizeModifier, rotationAmount, flipGlyph, glyphInvertedColor]
          = store.canvas[props.y][props.x]
 
@@ -16,6 +16,7 @@ const Cell = observer((props) => {
 
 	return (
 		<div className={classes} style={{width : store.cellWidth, height : store.cellHeight}} >
+			{console.log('One cell updated')}
 			<svg
 				height={Number(store.defaultFontSize) + Number(glyphFontSizeModifier)} 
 				viewBox={glyphOffsetX + " " + svgBaseline + " " + svgWidth + " " + svgHeight} 
