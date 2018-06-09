@@ -16,7 +16,6 @@ const Cell = observer((props) => {
 
 	return (
 		<div className={classes} style={{width : store.cellWidth, height : store.cellHeight}} >
-			{console.log('One cell updated')}
 			<svg
 				height={Number(store.defaultFontSize) + Number(glyphFontSizeModifier)} 
 				viewBox={glyphOffsetX + " " + svgBaseline + " " + svgWidth + " " + svgHeight} 
