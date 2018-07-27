@@ -94,7 +94,7 @@ Copyright (c) 2018, Tim Koch (http://datadoor.net/), with Reserved Font Name “
 
 Public Domain.
 
-#### MingLiU \n 
+#### MingLiU 
 ###### by Microsoft Corporation
 
 MingLiu font is a Traditional Chinese font in a mincho (serif) stroke style. It's used on Taiwanese PTT Bulletin Board Systems to make Taiwanese ANSI art. Read more: 
