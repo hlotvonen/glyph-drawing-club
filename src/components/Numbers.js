@@ -13,7 +13,7 @@ import store from '../models/CanvasStore';
           <div
             key={i}
             className={'colNum ' + (selected_x === i ? 'highlighted' : '')}
-            style={{width : store.cellWidth, height: store.cellHeight}}
+            style={{width : store.cellWidth}}
           >
             {i + 1}
           </div>
@@ -26,7 +26,7 @@ import store from '../models/CanvasStore';
           <div 
             key={i}
             className={'rowNum ' + (selected_y === i ? 'highlighted' : '')}
-            style={{width : store.cellWidth, height: store.cellHeight, position: 'absolute', top: i * store.cellHeight}}
+            style={{height: store.cellHeight, position: 'absolute', top: i * store.cellHeight}}
           >
             {i + 1}
           </div>

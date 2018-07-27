@@ -15,9 +15,9 @@ class CanvasStore {
 		//load from localstorage if it's not the first time
 		if(localStorage.firstRun) {
 			storage = JSON.parse(localStorage.storage)
-			this.canvas = storage.canvas
 			this.canvasWidth = storage.canvasWidth
 			this.canvasHeight = storage.canvasHeight
+			this.canvas = storage.canvas
 			this.cellWidth = storage.cellWidth
 			this.cellHeight = storage.cellHeight
 			this.defaultFontSize = storage.defaultFontSize
@@ -27,8 +27,6 @@ class CanvasStore {
 		//else create empty canvas
 		} else { 
 			this.canvas = Array.from({length: this.canvasHeight}, () => this.getEmptyRow());
-
-
 			this.widthPixels = this.canvasWidth * this.cellWidth;
 			this.heightPixels = this.canvasHeight * this.cellHeight;
 			localStorage.setItem('firstRun', false)
@@ -276,11 +274,11 @@ class CanvasStore {
 		this.userCountry = evt.target.value;
 	}
 //Load file 
-	@action fileUpload = (evt) => {
+	/*fileUpload = (evt) => {
 	  const reader = new FileReader();
+	  reader.readAsText(evt.target.files[0]);
 	  reader.onload = (evt) => {
 	    const jsonObj = JSON.parse(evt.target.result);
-			this.canvas = jsonObj["canvas"]
 			this.canvasWidth = jsonObj["canvasWidth"]
 			this.canvasHeight = jsonObj["canvasHeight"]
 			this.cellWidth = jsonObj["cellWidth"]
@@ -290,8 +288,7 @@ class CanvasStore {
 			this.widthPixels = jsonObj["widthPixels"]
 			this.heightPixels = jsonObj["heightPixels"]
 	  }
-	  reader.readAsText(evt.target.files[0]);
-	}
+	}*/
 //Glyph offset X
 	increaseGlyphOffsetX = () => {
 		this.glyphOffsetX = this.canvas[this.selected_y][this.selected_x].slice()[4]; //First check the existing offset x value
@@ -337,7 +334,7 @@ class CanvasStore {
 	handleChangeInvertColor = () => {
 		this.glyphInvertedColor = this.canvas[this.selected_y][this.selected_x][8];
 		this.glyphInvertedColor = !this.glyphInvertedColor;
-		console.log('i');
+		// console.log('i');
 		this.canvas[this.selected_y][this.selected_x][8] = this.glyphInvertedColor; //Update canvas
 	}
 
@@ -365,7 +362,7 @@ class CanvasStore {
 	}
 //GlyphClear - reset selection to default
 	glyphClear = () => {
-		console.log(this.svgBaseline)
+		// console.log(this.svgBaseline)
 		this.glyphFontSizeModifier = 0;
 		this.glyphInvertedColor = false;
 		this.rotationAmount = 0;

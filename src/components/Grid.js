@@ -7,52 +7,39 @@ import Numbers from './Numbers'
 import Cursor from './Cursor'
 import gridStore from '../models/GridStore'
 
+
 @observer class Grid extends Component {
 
-  render() {
-    const canvas = store.canvas
-    const pixelRendering = store.pixelRendering ? 'pixelRendering' : '';
+	render() {
 
-    const grid = canvas.map((row, y) =>
+		const canvas = store.canvas
+		const grid = canvas.map((row, y) =>
       <div className="row" key={y} style={{width: Number(store.canvasWidth) * Number(store.cellWidth) + 'px', height: Number(store.cellHeight) + 'px'}}>
-        {row.map(([glyphPath, svgWidth, svgHeight, svgBaseline, glyphOffsetX, glyphFontSizeModifier, rotationAmount, flipGlyph, glyphInvertedColor], x) =>
-          <Cell 
-            glyphPath={glyphPath} 
-            key={x} 
-            defaultFontSize={store.defaultFontSize} 
-            glyphFontSizeModifier={glyphFontSizeModifier} 
-            svgWidth={svgWidth} 
-            svgHeight={svgHeight} 
-            svgBaseline={svgBaseline} 
-            glyphOffsetX={glyphOffsetX} 
-            cellWidth={store.cellWidth} 
-            cellHeight={store.cellHeight}
-            rotationAmount={rotationAmount}
-            flipGlyph={flipGlyph}
-            glyphInvertedColor={glyphInvertedColor}
-            clipCells={store.clipCells}
-          />
+        {row.map((col, x) =>
+					<Cell key={`${y}_${x}`} y={y} x={x} />
         )}
       </div>
     );
 
-    return (
-      <div id="canvas" className={`grid ${pixelRendering}`} style={{
-        transform: `translate(${
-            gridStore.settings.posX
-          }px, ${
-            gridStore.settings.posY
-          }px) scale(${
-            gridStore.settings.zoom
-          })`
-      }}>
+		const pixelRendering = store.pixelRendering ? 'pixelRendering' : '';
 
-        <Numbers />
-        <Cursor />
-        {grid}
-        <SelectionHighlight />
-      </div>
-    );
-  }
+		return (
+			<div id="canvas" className={`grid ${pixelRendering}`} style={{
+				transform: `translate(${
+						gridStore.settings.posX
+					}px, ${
+						gridStore.settings.posY
+					}px) scale(${
+						gridStore.settings.zoom
+					})`
+			}}>
+
+				<Numbers />
+				<Cursor />
+				{grid}
+				<SelectionHighlight />
+			</div>
+		);
+	}
 }
 export default Grid;

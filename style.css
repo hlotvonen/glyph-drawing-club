@@ -186,6 +186,7 @@ canvas
 	display: flex;
 	align-items: center;
 	justify-content: center;
+	width: 30px;
 	left: -30px;
 	box-shadow: none;
 	text-align: right;
@@ -214,6 +215,7 @@ canvas
 	background: none;
 	color:#888;
 	position: relative;
+	height: 25px;
 	top: -25px;
 }
 .colNum.highlighted {
