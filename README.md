@@ -7,14 +7,14 @@ Glyph Drawing Club
 
 1. Click on any glyph under the `Glyph selection` on the sidebar.
 2. Press <kbd>q</kbd> to insert selected glyph on to the canvas.
-3. Move around the canvas by pressing `arrow keys`.
+3. Move around the canvas by pressing <kbd>arrow keys<kbd>.
 4. Press <kbd>f</kbd> to flip, <kbd>r</kbd> to rotate or <kbd>i</kbd> to invert the colors of the glyph.
 5. Check out the keyboard shortcuts below and play around with the settings panel. Have fun!
 6. Before exporting, remember to hide the grid by pressing <kbd>h</kbd>
 
 ## Keyboard shortcuts
 
-* `Arrow keys`: Move around the canvas
+* <kbd>Arrow keys<kbd>: Move around the canvas
 * <kbd>q</kbd> : Insert selected glyph on to the canvas
 * <kbd>Spacebar</kbd> : Delete
 * <kbd>r</kbd> : Rotate glyph
@@ -22,32 +22,32 @@ Glyph Drawing Club
 * <kbd>i</kbd> : Invert glyph color
 * <kbd>h</kbd> : Hide Grid
 * <kbd>p</kbd> : Invert colors of the whole canvas
-* `Number keys 1–10` : Insert glyph from set
+* <kbd>Number keys 1–10</kbd> : Insert glyph from set
 
 #### Typing mode
 
-* `t` : Start typing mode
-* `ESC` : End typing mode
-* `§` : Insert selected glyph on to the canvas (same as `q`, but only for typing mode)
-* `Arrow keys` : Move around the canvas 
-* `Enter` : Line break 
-* `Backspace` : delete
+* <kbd>t</kbd> : Start typing mode
+* <kbd>ESC</kbd> : End typing mode
+* <kbd>§</kbd> : Insert selected glyph on to the canvas (same as <kbd>q<kbd>, but only for typing mode)
+* <kbd>Arrow keys</kbd> : Move around the canvas 
+* <kbd>Enter</kbd> : Line break 
+* <kbd>Backspace</kbd> : delete
 
 #### Make area selection
 
-* `Shift + s` : Start selection area. Press `arrows keys` to change selection size. Press `Shift + s` again to make selection area
-* `x` : Deselect area
-* `Shift + c` : Paste selected area
-* `Shift + m` : Mirror selected area
-* `Shift + f` : Flip selected area
-* `Shift + q` : Fill selected area with selected glyph
-* `Shift + e` : Empty selected area
-* `Shift + i` : Invert the colors of selected area
+* <kbd>Shift + s</kbd> : Start selection area. Press <kbd>arrows keys</kbd> to change selection size. Press <kbd>Shift + s</kbd> again to make selection area
+* <kbd>x</kbd> : Deselect area
+* <kbd>Shift + c</kbd> : Paste selected area
+* <kbd>Shift + m</kbd> : Mirror selected area
+* <kbd>Shift + f</kbd> : Flip selected area
+* <kbd>Shift + q</kbd> : Fill selected area with selected glyph
+* <kbd>Shift + e</kbd> : Empty selected area
+* <kbd>Shift + i</kbd> : Invert the colors of selected area
 
 #### Make glyph sets
 
-* `m` : Start mapping glyph sets. This disables all other shortcuts. Press again to end mapping.
-* `Number keys 1–10` : Add selected glyph to set
+* <kbd>m</kbd> : Start mapping glyph sets. This disables all other shortcuts. Press again to end mapping.
+* <kbd>Number keys 1–10</kbd> : Add selected glyph to set
 
 #### Additional tips
 
@@ -61,7 +61,9 @@ Glyph Drawing Club
 * Find some examples [here](examples). You can download the .unscii files and open them with the editor.
 * Follow [@heikkiveikko](https://www.instagram.com/heikkiveikko/) on Instagram for more.
 
-### Fonts
+
+Fonts
+------
 
 #### Tesserae Regular
 ###### created by Heikki Lotvonen
@@ -92,7 +94,7 @@ Copyright (c) 2018, Tim Koch (http://datadoor.net/), with Reserved Font Name “
 
 Public Domain.
 
-#### MingLiU
+#### MingLiU \n 
 ###### by Microsoft Corporation
 
 MingLiu font is a Traditional Chinese font in a mincho (serif) stroke style. It's used on Taiwanese PTT Bulletin Board Systems to make Taiwanese ANSI art. Read more: 
@@ -104,6 +106,8 @@ MingLiu font is a Traditional Chinese font in a mincho (serif) stroke style. It'
 
 "The submona web font project attempts to create a lightweight subset (52 KB) of monafont that can render common Shift_JIS text art in an acceptable manner, by removing the embedded bitmap strikes (a.k.a. pixel fonts) and many glyphs from some Unicode ranges." (read more at [https://github.com/pera/submona-web-font](https://github.com/pera/submona-web-font))
 
+Developement
+------
 
 ### Run locally
 
@@ -139,4 +143,4 @@ npm start
 GlyphDrawing.club has been designed and developed by [@hlotvonen](http://heikkilotvonen.fi) and [@i-tu](https://github.com/i-tu) using React and MobX. For help, ideas, contributions, etc. open an issue or send an email to [hlotvonen@gmail.com](mailto:hlotvonen@gmail.com).
 
 #### Notes
-* This projects uses Typr.js, a javascript font processor: https://github.com/photopea/Typr.js
+* This project uses Typr.js, a javascript font processor: https://github.com/photopea/Typr.js
