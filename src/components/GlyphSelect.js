@@ -33,13 +33,15 @@ class GlyphSelect extends Component {
 
     go = () => {
     	if(this.selectedFont == 'Tesserae-Regular') {
-			this.load("Tesserae-Regular.otf", this.fontLoaded);
+			this.load("fonts/Tesserae-Regular.otf", this.fontLoaded);
 		} else if(this.selectedFont == 'Unscii') {
-			this.load("unscii-16.ttf", this.fontLoaded);
+			this.load("fonts/unscii-16.ttf", this.fontLoaded);
 		} else if(this.selectedFont == 'MingLiU') {
-			this.load("mingliu.TTF", this.fontLoaded);
-		} else if(this.selectedFont == 'Mona') {
-			this.load("mona.ttf", this.fontLoaded);
+			this.load("fonts/mingliu.TTF", this.fontLoaded);
+		} else if(this.selectedFont == 'Submona') {
+			this.load("fonts/submona.ttf", this.fontLoaded);
+		} else if(this.selectedFont == 'RayMantaC64') {
+			this.load("fonts/RayMantaC64-Regular.otf", this.fontLoaded);
 		}
 
 		this.node = document.body;
@@ -278,9 +280,10 @@ class GlyphSelect extends Component {
 				  }
 				>
 				  <option value="Tesserae-Regular">Tesserae-Regular</option>
+				  <option value="RayMantaC64">RayMantaC64 (Custom PETSCII)</option>
 				  <option value="Unscii">Unscii</option>
 				  <option value="MingLiU">MingLiU (Taiwanese ANSI)</option>
-				  <option value="Mona">Mona (Swift_JIS)</option>
+				  <option value="Submona">Submona (Swift_JIS)</option>
 				</select>
 				<br/>
 				<b>Or drag and drop a font file (otf/ttf)</b>

@@ -61,7 +61,49 @@ Glyph Drawing Club
 * Find some examples [here](examples). You can download the .unscii files and open them with the editor.
 * Follow [@heikkiveikko](https://www.instagram.com/heikkiveikko/) on Instagram for more.
 
-#### Emulate 
+### Fonts
+
+####Tesserae Regular
+######created by Heikki Lotvonen
+
+One of the default font options for the Glyph Drawing.Club is a modular 4×4 font Tesserae Regular made specifically for the editor. The font contains a set of geomertical shapes that neatly connect to each other when placed on the editor’s grid. Most of the design samples in this user guide have been done using this font.
+
+The initial inspiration for creating Tesserae Regular was to make a modernised PETSCII font, but with smooth, vectorised curves. However, the font quickly grew to a large collection of carefully crafted shapes that surpass those in any other modular design tool (like FontStruct).
+
+The current version of Tesserae Regular has 382 unique shapes. Inverting the colors and flipping or rotating the shapes creates thousand of different variations, allowing endless possibilities for creating modular designs, be it type design, illustration or anything else.
+
+The font is based on a 4×4 grid. Each anchor point connects to one of the intersections of the grid. This allows for consistent continuation of the shapes when placed next to each other. The font is made of primitive geometric shapes and shapes where the direction point is ¾th of the way to the next anchor point, creating a more interesting asymmetrical shape.
+
+The font is licenced with the *SIL Open Font License*. You can download it from [here](fonts).
+
+####Ray Manta C64
+######created by Tim Koch
+
+Ray Manta C64 font is a combination of four different C64 character sets recreated and merged into one OpenType Font:
+* three custom made C64 character sets (Circlex, Jellextend and Squaresounds) designed by [**Tim Koch (Ray Manta / Datadoor))**](http://datadoor.net/)
+* the regular C64 PETSCII character set 
+
+Copyright (c) 2018, Tim Koch (http://datadoor.net/), with Reserved Font Name “Ray Manta C64”. This Font Software is licensed under the SIL Open Font License, Version 1.1.
+
+####Unscii-16 
+######created by Viznut
+
+"Unscii is a set of bitmapped Unicode fonts based on classic system fonts. Unscii attempts to support character cell art well while also being suitable for terminal and programming use." (read more at [http://pelulamu.net/unscii/](http://pelulamu.net/unscii/))
+
+Public Domain.
+
+####MingLiU
+######by Microsoft Corporation
+
+MingLiu font is a Traditional Chinese font in a mincho (serif) stroke style. It's used on Taiwanese PTT Bulletin Board Systems to make Taiwanese ANSI art. Read more: 
+* https://www.ptt.cc/man/asciiart/index.html
+* https://ansi.loli.tw/ 
+
+####Submona 
+######created by [Brian Gomes Bascoy](http://peramid.es/)
+
+"The submona web font project attempts to create a lightweight subset (52 KB) of monafont that can render common Shift_JIS text art in an acceptable manner, by removing the embedded bitmap strikes (a.k.a. pixel fonts) and many glyphs from some Unicode ranges." (read more at [https://github.com/pera/submona-web-font](https://github.com/pera/submona-web-font))
+
 
 ### Run locally
 
@@ -72,10 +114,12 @@ npm start
 
 ### To-do
 
-- [ ] Make a longer tutorial
+- [ ] Color tool
+- [ ] Make a video tutorial
 - [x] Add masking (like Taiwanese ANSI)
+- [ ] Add faster working mode for working with Taiwanese ANSI
 - [ ] UI improvements
-- [ ] Fix performance issues when the canvas is large.
+- [x] Fix performance issues when the canvas is large.
 - [x] For some reason, photoshop gives an error when opening the exported `.jpg` file. Workaround is to open the image in any other software (like Preview on Mac), export it again, and it should open normally now.
 - [ ] Glyph offset x & y needs a rework
 - [x] "Reset to default" button offset y is sometimes incorrect
@@ -86,10 +130,13 @@ npm start
 - [ ] Export as vector data
 - [x] Typing mode
 - [ ] Undo/redo functionality
-- [ ] Color tool
+- [ ] Feature to overlap characters
 - [ ] Gallery, where users can upload their creations
 - [ ] Frames (to make animation)
 - [ ] Real textmode with UTF
 
 ### About
 GlyphDrawing.club has been designed and developed by [@hlotvonen](http://heikkilotvonen.fi) and [@i-tu](https://github.com/i-tu) using React and MobX. For help, ideas, contributions, etc. open an issue or send an email to [hlotvonen@gmail.com](mailto:hlotvonen@gmail.com).
+
+#### Notes
+* This projects uses Typr.js, a javascript font processor: https://github.com/photopea/Typr.js
