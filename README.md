@@ -6,22 +6,22 @@ Glyph Drawing Club
 ### Basic usage
 
 1. Click on any glyph under the `Glyph selection` on the sidebar.
-2. Press `q` to insert selected glyph on to the canvas.
+2. Press <kbd>q</kbd> to insert selected glyph on to the canvas.
 3. Move around the canvas by pressing `arrow keys`.
-4. Press `f` to flip, `r` to rotate or `i` to invert the colors of the glyph.
+4. Press <kbd>f</kbd> to flip, <kbd>r</kbd> to rotate or <kbd>i</kbd> to invert the colors of the glyph.
 5. Check out the keyboard shortcuts below and play around with the settings panel. Have fun!
-6. Before exporting, remember to hide the grid by pressing `h`
+6. Before exporting, remember to hide the grid by pressing <kbd>h</kbd>
 
 ## Keyboard shortcuts
 
 * `Arrow keys`: Move around the canvas
-* `q` : Insert selected glyph on to the canvas
-* `Spacebar` : Delete
-* `r` : Rotate glyph
-* `f` : Flip glyph
-* `i` : Invert glyph color
-* `h` : Hide Grid
-* `p` : Invert colors of the whole canvas
+* <kbd>q</kbd> : Insert selected glyph on to the canvas
+* <kbd>Spacebar</kbd> : Delete
+* <kbd>r</kbd> : Rotate glyph
+* <kbd>f</kbd> : Flip glyph
+* <kbd>i</kbd> : Invert glyph color
+* <kbd>h</kbd> : Hide Grid
+* <kbd>p</kbd> : Invert colors of the whole canvas
 * `Number keys 1–10` : Insert glyph from set
 
 #### Typing mode
