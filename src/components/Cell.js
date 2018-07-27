@@ -3,6 +3,7 @@ import store from '../models/CanvasStore';
 import {observer} from 'mobx-react'
 
 const Cell = observer((props) => {
+	console.log('mo')
     //console.log(props.y, props.x)
     const [glyphPath, svgWidth, svgHeight, svgBaseline, glyphOffsetX, glyphFontSizeModifier, rotationAmount, flipGlyph, glyphInvertedColor]
          = store.canvas[props.y][props.x]

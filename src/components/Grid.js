@@ -7,44 +7,67 @@ import Numbers from './Numbers'
 import Cursor from './Cursor'
 import gridStore from '../models/GridStore'
 
+
 @observer class Grid extends Component {
 
-  render() {
-    const pixelRendering = store.pixelRendering ? 'pixelRendering' : '';
+	render() {
 
-    const grid = []
-    for (let y = 0; y < store.canvasHeight; y++) {
-      const row = []
-      for (let x = 0; x < store.canvasWidth; x++) {
-        const [glyphPath, svgWidth, svgHeight, svgBaseline, glyphOffsetX, glyphFontSizeModifier, rotationAmount, flipGlyph, glyphInvertedColor]
-         = store.canvas[y][x]
-
-        row.push(<Cell key={`${y}_${x}`} y={y} x={x} />)
-      }
-      grid.push(
-        <div className="row" key={y} style={{width: Number(store.canvasWidth) * Number(store.cellWidth) + 'px', height: Number(store.cellHeight) + 'px'}}>
-          {row}
-        </div>
-      )
-    }
-
-    return (
-      <div id="canvas" className={`grid ${pixelRendering}`} style={{
-        transform: `translate(${
-            gridStore.settings.posX
-          }px, ${
-            gridStore.settings.posY
-          }px) scale(${
-            gridStore.settings.zoom
-          })`
-      }}>
-
-        <Numbers />
-        <Cursor />
-        {grid}
-        <SelectionHighlight />
+		const canvas = store.canvas
+		const grid = canvas.map((row, y) =>
+      <div className="row" key={y} style={{width: Number(store.canvasWidth) * Number(store.cellWidth) + 'px', height: Number(store.cellHeight) + 'px'}}>
+        {row.map((col, x) =>
+					<Cell key={`${y}_${x}`} y={y} x={x} />
+        )}
       </div>
     );
-  }
+
+		/*const GridGenerator = () => {
+
+			const grid = []
+
+			for (let y = 0; y < store.canvasHeight; y++) {
+				const row = []
+			 	
+				for (let x = 0; x < store.canvasWidth; x++) {
+					const [glyphPath, svgWidth, svgHeight, svgBaseline, glyphOffsetX, glyphFontSizeModifier, rotationAmount, flipGlyph, glyphInvertedColor]
+					 = store.canvas[y][x]
+
+					row.push(<Cell key={`${y}_${x}`} y={y} x={x} />)
+				}
+				grid.push(
+					<div className="row" key={y} style={{width: store.canvasWidth * store.cellWidth + 'px', height: Number(store.cellHeight) + 'px'}}>
+						{row}
+					</div>
+				)
+			}
+			return (
+				<div>
+					{grid}
+				</div>
+			)
+		}*/
+
+		const pixelRendering = store.pixelRendering ? 'pixelRendering' : '';
+
+		return (
+			<div id="canvas" className={`grid ${pixelRendering}`} style={{
+				transform: `translate(${
+						gridStore.settings.posX
+					}px, ${
+						gridStore.settings.posY
+					}px) scale(${
+						gridStore.settings.zoom
+					})`
+			}}>
+
+				<Numbers />
+				<Cursor />
+				{
+					grid
+				}
+				<SelectionHighlight />
+			</div>
+		);
+	}
 }
 export default Grid;
