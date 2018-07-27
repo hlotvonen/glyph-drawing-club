@@ -1,7 +1,7 @@
 Glyph Drawing Club
 =====================
 
-[GlyphDrawing.club](http://www.glyphdrawing.club/) is a contemporary textmode graphics editor that supports any font and glyph. It can be used for making custom modular typography, illustrations, concrete poetry and ASCII art.  
+[GlyphDrawing.club](http://www.glyphdrawing.club/) is a contemporary text art editor that supports any font and glyph. It can be used for making custom modular typography, illustrations, concrete poetry and ASCII art and much more.  
 
 ### Basic usage
 
@@ -64,6 +64,7 @@ Glyph Drawing Club
 ### Fonts
 
 ####Tesserae Regular
+
 ######created by Heikki Lotvonen
 
 One of the default font options for the Glyph Drawing.Club is a modular 4×4 font Tesserae Regular made specifically for the editor. The font contains a set of geomertical shapes that neatly connect to each other when placed on the editor’s grid. Most of the design samples in this user guide have been done using this font.
@@ -77,15 +78,17 @@ The font is based on a 4×4 grid. Each anchor point connects to one of the inter
 The font is licenced with the *SIL Open Font License*. You can download it from [here](fonts).
 
 ####Ray Manta C64
+
 ######created by Tim Koch
 
 Ray Manta C64 font is a combination of four different C64 character sets recreated and merged into one OpenType Font:
-* three custom made C64 character sets (Circlex, Jellextend and Squaresounds) designed by [**Tim Koch (Ray Manta / Datadoor))**](http://datadoor.net/)
+* three custom made C64 character sets (Circlex, Jellextend and Squaresounds) designed by [**Tim Koch (Ray Manta / Datadoor)**](http://datadoor.net/)
 * the regular C64 PETSCII character set 
 
 Copyright (c) 2018, Tim Koch (http://datadoor.net/), with Reserved Font Name “Ray Manta C64”. This Font Software is licensed under the SIL Open Font License, Version 1.1.
 
 ####Unscii-16 
+
 ######created by Viznut
 
 "Unscii is a set of bitmapped Unicode fonts based on classic system fonts. Unscii attempts to support character cell art well while also being suitable for terminal and programming use." (read more at [http://pelulamu.net/unscii/](http://pelulamu.net/unscii/))
@@ -93,6 +96,7 @@ Copyright (c) 2018, Tim Koch (http://datadoor.net/), with Reserved Font Name “
 Public Domain.
 
 ####MingLiU
+
 ######by Microsoft Corporation
 
 MingLiu font is a Traditional Chinese font in a mincho (serif) stroke style. It's used on Taiwanese PTT Bulletin Board Systems to make Taiwanese ANSI art. Read more: 
@@ -100,6 +104,7 @@ MingLiu font is a Traditional Chinese font in a mincho (serif) stroke style. It'
 * https://ansi.loli.tw/ 
 
 ####Submona 
+
 ######created by [Brian Gomes Bascoy](http://peramid.es/)
 
 "The submona web font project attempts to create a lightweight subset (52 KB) of monafont that can render common Shift_JIS text art in an acceptable manner, by removing the embedded bitmap strikes (a.k.a. pixel fonts) and many glyphs from some Unicode ranges." (read more at [https://github.com/pera/submona-web-font](https://github.com/pera/submona-web-font))
