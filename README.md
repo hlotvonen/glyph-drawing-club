@@ -7,14 +7,14 @@ Glyph Drawing Club
 
 1. Click on any glyph under the `Glyph selection` on the sidebar.
 2. Press <kbd>q</kbd> to insert selected glyph on to the canvas.
-3. Move around the canvas by pressing <kbd>arrow keys<kbd>.
+3. Move around the canvas by pressing <kbd>arrow keys</kbd>.
 4. Press <kbd>f</kbd> to flip, <kbd>r</kbd> to rotate or <kbd>i</kbd> to invert the colors of the glyph.
 5. Check out the keyboard shortcuts below and play around with the settings panel. Have fun!
 6. Before exporting, remember to hide the grid by pressing <kbd>h</kbd>
 
 ## Keyboard shortcuts
 
-* <kbd>Arrow keys<kbd>: Move around the canvas
+* <kbd>Arrow keys</kbd> : Move around the canvas
 * <kbd>q</kbd> : Insert selected glyph on to the canvas
 * <kbd>Spacebar</kbd> : Delete
 * <kbd>r</kbd> : Rotate glyph
@@ -28,7 +28,7 @@ Glyph Drawing Club
 
 * <kbd>t</kbd> : Start typing mode
 * <kbd>ESC</kbd> : End typing mode
-* <kbd>§</kbd> : Insert selected glyph on to the canvas (same as <kbd>q<kbd>, but only for typing mode)
+* <kbd>§</kbd> : Insert selected glyph on to the canvas (same as <kbd>q</kbd>, but only for typing mode)
 * <kbd>Arrow keys</kbd> : Move around the canvas 
 * <kbd>Enter</kbd> : Line break 
 * <kbd>Backspace</kbd> : delete
