@@ -21,32 +21,6 @@ import gridStore from '../models/GridStore'
       </div>
     );
 
-		/*const GridGenerator = () => {
-
-			const grid = []
-
-			for (let y = 0; y < store.canvasHeight; y++) {
-				const row = []
-			 	
-				for (let x = 0; x < store.canvasWidth; x++) {
-					const [glyphPath, svgWidth, svgHeight, svgBaseline, glyphOffsetX, glyphFontSizeModifier, rotationAmount, flipGlyph, glyphInvertedColor]
-					 = store.canvas[y][x]
-
-					row.push(<Cell key={`${y}_${x}`} y={y} x={x} />)
-				}
-				grid.push(
-					<div className="row" key={y} style={{width: store.canvasWidth * store.cellWidth + 'px', height: Number(store.cellHeight) + 'px'}}>
-						{row}
-					</div>
-				)
-			}
-			return (
-				<div>
-					{grid}
-				</div>
-			)
-		}*/
-
 		const pixelRendering = store.pixelRendering ? 'pixelRendering' : '';
 
 		return (
@@ -62,9 +36,7 @@ import gridStore from '../models/GridStore'
 
 				<Numbers />
 				<Cursor />
-				{
-					grid
-				}
+				{grid}
 				<SelectionHighlight />
 			</div>
 		);

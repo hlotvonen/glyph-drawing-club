@@ -91,7 +91,7 @@ class Canvas extends Component {
 		return (
 			<div className={"canvas_container" + (store.hideGrid ? ' hideGrid' : '') + (store.darkTheme ? ' darkTheme' : '')}>
 				<div className="aligner">
-					<Grid canvas={store.canvas}/>
+					<Grid/>
 					<GridControls />
 				</div>
 				<KeymappingsBar />
