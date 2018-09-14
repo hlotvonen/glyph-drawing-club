@@ -396,8 +396,9 @@ class CanvasStore {
 //Tools
 	@action
 	clickSelection = (event) => {
-		this.selected_x = Number(event.target.getAttribute('data-x'))
-		this.selected_y = Number(event.target.getAttribute('data-y'))
+		event.preventDefault;
+		this.selected_x = Number(event.target.parentNode.getAttribute('data-x'))
+		this.selected_y = Number(event.target.parentNode.getAttribute('data-y'))
 		this.getFontSizeAtSelection()
 	}
 	@action

@@ -252,6 +252,9 @@ svg {
 	top: 0;
 	left: 0;
 }
+svg path {
+	pointer-events: none;
+}
 ol.instructions {
 	list-style: initial;
 	list-style-type:decimal;
