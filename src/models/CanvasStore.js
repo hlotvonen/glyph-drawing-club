@@ -395,47 +395,53 @@ class CanvasStore {
 	}
 //Tools
 	@action
+	clickSelection = (event) => {
+		this.selected_x = Number(event.target.getAttribute('data-x'))
+		this.selected_y = Number(event.target.getAttribute('data-y'))
+		this.getFontSizeAtSelection()
+	}
+	@action
 	getFontSizeAtSelection = () => {
 		this.selectionGlyphFontSize = Number(this.defaultFontSize) + Number(this.canvas[this.selected_y][this.selected_x][5]);
 	}
 	@action
 	goRight = () => {
 		if(this.selected_x < this.canvasWidth - 1) {
-			this.selected_x = this.selected_x + 1;
+			this.selected_x = Number(this.selected_x) + Number(1);
 		}
 		else if(this.selected_x = this.canvasWidth) {
-			this.selected_x = this.selected_x - 1;
+			this.selected_x = Number(this.selected_x) - Number(1);
 		}
 		this.getFontSizeAtSelection()
 	}
 	@action
 	goLeft = () => { //ArrowLeft
 		if(this.selected_x > 0){
-			this.selected_x = this.selected_x - 1;
+			this.selected_x = Number(this.selected_x) - Number(1);
 		}
 		else if(this.selected_x = 1) {
-			this.selected_x = this.selected_x - 1;
+			this.selected_x = Number(this.selected_x) - Number(1);
 		}
 		this.getFontSizeAtSelection()
 	}
 	@action
 	goDown = () => { //ArrowDown
 		if(this.selected_y < this.canvasHeight - 1) {
-			this.selected_y = this.selected_y + 1;
+			this.selected_y = Number(this.selected_y) + Number(1);
 		}
 		else if(this.selected_y == this.canvasHeight) {
-			this.selected_y = this.selected_y - 1;
+			this.selected_y = Number(this.selected_y) - Number(1);
 		}
 		this.getFontSizeAtSelection()
 	}
 	@action
 	goUp = () => { //ArrowUp
 		if(this.selected_y > 0){
-			this.selected_y = this.selected_y - 1;
+			this.selected_y = Number(this.selected_y) - Number(1);
 		} 
 		else if(this.selected_y = 1) {
 			//this.addRowTop();
-			this.selected_y = this.selected_y - 1;
+			this.selected_y = Number(this.selected_y) - Number(1);
 		}
 		this.getFontSizeAtSelection()
 	}

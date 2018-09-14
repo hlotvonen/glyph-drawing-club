@@ -16,7 +16,7 @@ import gridStore from '../models/GridStore'
 		const grid = canvas.map((row, y) =>
       <div className="row" key={y} style={{width: Number(store.canvasWidth) * Number(store.cellWidth) + 'px', height: Number(store.cellHeight) + 'px'}}>
         {row.map((col, x) =>
-					<Cell key={`${y}_${x}`} y={y} x={x} />
+					<Cell key={`${y}_${x}`} y={y} x={x} clickSelection={store.clickSelection}/>
         )}
       </div>
     );

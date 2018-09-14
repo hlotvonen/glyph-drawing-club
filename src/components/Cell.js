@@ -14,8 +14,10 @@ const Cell = observer((props) => {
 	const classes = `${clipCellsClass} ${glyphInvertedColorClass}`;
 
 	return (
-		<div className={classes} style={{width : store.cellWidth, height : store.cellHeight}} >
+		<div className={classes} style={{width : store.cellWidth, height : store.cellHeight}} onClick={props.clickSelection}>
 			<svg
+				data-y={props.y}
+				data-x={props.x}
 				height={Number(store.defaultFontSize) + Number(glyphFontSizeModifier)} 
 				viewBox={glyphOffsetX + " " + svgBaseline + " " + svgWidth + " " + svgHeight} 
 				style={transform}
