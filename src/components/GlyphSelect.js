@@ -197,13 +197,13 @@ class GlyphSelect extends Component {
 		let r64 = new FileReader();
 		let file = e.dataTransfer.files[0];
 		r.onload = function(e) { fontLoaded(e.target.result); };
-		r.readAsArrayBuffer( file );
 		r.onloadend = function(e) {
 		    r64.readAsDataURL( file )
 		    r64.onloadend = function(e) {
 		    	let base64result = r64.result.split(',')[1];
 		    }
 		};
+		r.readAsArrayBuffer( file );
 	}
 
 	glyphClick = (e) => { 

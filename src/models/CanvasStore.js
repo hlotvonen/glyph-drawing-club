@@ -96,13 +96,14 @@ class CanvasStore {
 	@observable svgBaseline = 0;
 	@observable selectedFont = "Reviscii-Regular";
 	@observable fontName = "Reviscii-Regular";
+	@observable selectionGlyphFontSize = 0;
 
 //Glyph fine tuning
 	@observable glyphOffsetX = 0;
 	@observable glyphOffsetY = 0;
 	@observable glyphFontSizeModifier = 0;
 	@observable rotationAmount = 0;
-	@observable flipGlyph = "1";
+	@observable flipGlyph = 1;
 	@observable glyphInvertedColor = false;
 
 //Change canvas width
@@ -243,6 +244,7 @@ class CanvasStore {
 //Toggle Typing Mode
 	handleChangeTypingMode = () => { 
 		this.typingMode = !this.typingMode;
+		this.glyphClear()
 		document.getElementById('typingMode').checked = this.typingMode; 
 	}
 //Toggle Pixel Rendering
@@ -273,22 +275,6 @@ class CanvasStore {
 	@action updateCountry = (evt) => {
 		this.userCountry = evt.target.value;
 	}
-//Load file 
-	/*fileUpload = (evt) => {
-	  const reader = new FileReader();
-	  reader.readAsText(evt.target.files[0]);
-	  reader.onload = (evt) => {
-	    const jsonObj = JSON.parse(evt.target.result);
-			this.canvasWidth = jsonObj["canvasWidth"]
-			this.canvasHeight = jsonObj["canvasHeight"]
-			this.cellWidth = jsonObj["cellWidth"]
-			this.cellHeight = jsonObj["cellHeight"]
-			this.defaultFontSize = jsonObj["defaultFontSize"]
-			this.canvas = jsonObj["canvas"]
-			this.widthPixels = jsonObj["widthPixels"]
-			this.heightPixels = jsonObj["heightPixels"]
-	  }
-	}*/
 //Glyph offset X
 	increaseGlyphOffsetX = () => {
 		this.glyphOffsetX = this.canvas[this.selected_y][this.selected_x].slice()[4]; //First check the existing offset x value
@@ -317,7 +303,7 @@ class CanvasStore {
 		if(this.rotationAmount <= -270) {
 			this.rotationAmount = 0;
 		} else {
-			this.rotationAmount = this.rotationAmount - 90;
+			this.rotationAmount = Number(this.rotationAmount - 90);
 		}
 		this.canvas[this.selected_y][this.selected_x][6] = this.rotationAmount; //Update canvas
 	}
@@ -326,7 +312,7 @@ class CanvasStore {
 		if(this.rotationAmount >= 270) {
 			this.rotationAmount = 0;
 		} else {
-			this.rotationAmount = this.rotationAmount + 90;
+			this.rotationAmount = Number(this.rotationAmount + 90);
 		}
 		this.canvas[this.selected_y][this.selected_x][6] = this.rotationAmount; //Update canvas
 	}
@@ -346,12 +332,27 @@ class CanvasStore {
 		this.glyphFontSizeModifier = this.canvas[this.selected_y][this.selected_x].slice()[5]; //First check the existing glyphFontSizeModifier
 		this.glyphFontSizeModifier++;
 		this.canvas[this.selected_y][this.selected_x][5] = this.glyphFontSizeModifier; //Update canvas
+		this.getFontSizeAtSelection()
 	}
 	decreaseGlyphFontSizeModifier = () => {
 		if(this.glyphFontSize > 1){
 			this.glyphFontSizeModifier = this.canvas[this.selected_y][this.selected_x].slice()[5]; //First check the existing glyphFontSizeModifier
 			this.glyphFontSizeModifier--;
 			this.canvas[this.selected_y][this.selected_x][5] = this.glyphFontSizeModifier; //Update canvas
+			this.getFontSizeAtSelection()
+		}
+	}
+	increaseByOneCellGlyphFontSizeModifier = () => {
+		this.glyphFontSizeModifier = Number(this.canvas[this.selected_y][this.selected_x].slice()[5]) + Number(this.defaultFontSize); //First check the existing glyphFontSizeModifier
+		this.canvas[this.selected_y][this.selected_x][5] = this.glyphFontSizeModifier; //Update canvas
+		this.getFontSizeAtSelection()
+
+	}
+	decreaseByOneCellGlyphFontSizeModifier = () => {
+		if(this.glyphFontSize - this.defaultFontSize >= 1){
+			this.glyphFontSizeModifier = Number(this.canvas[this.selected_y][this.selected_x].slice()[5]) - Number(this.defaultFontSize); //First check the existing glyphFontSizeModifier
+			this.canvas[this.selected_y][this.selected_x][5] = this.glyphFontSizeModifier; //Update canvas
+			this.getFontSizeAtSelection()
 		}
 	}
 //Flip glyph
@@ -362,18 +363,19 @@ class CanvasStore {
 	}
 //GlyphClear - reset selection to default
 	glyphClear = () => {
-		// console.log(this.svgBaseline)
 		this.glyphFontSizeModifier = 0;
 		this.glyphInvertedColor = false;
 		this.rotationAmount = 0;
 		this.glyphOffsetX = 0;
 		this.glyphOffsetY = 0;
+		this.flipGlyph = 1;
 		this.canvas[this.selected_y][this.selected_x][3] = this.svgBaseline; //offset y
 		this.canvas[this.selected_y][this.selected_x][4] = 0; //offset x
 		this.canvas[this.selected_y][this.selected_x][5] = 0; //font size modifier
 		this.canvas[this.selected_y][this.selected_x][6] = 0; //rotation
 		this.canvas[this.selected_y][this.selected_x][7] = 1; //flip
 		this.canvas[this.selected_y][this.selected_x][8] = false; //invert color
+		this.getFontSizeAtSelection()
 	}
 	emptyCanvas = () => {
 		this.glyphClear;
@@ -393,6 +395,10 @@ class CanvasStore {
 	}
 //Tools
 	@action
+	getFontSizeAtSelection = () => {
+		this.selectionGlyphFontSize = Number(this.defaultFontSize) + Number(this.canvas[this.selected_y][this.selected_x][5]);
+	}
+	@action
 	goRight = () => {
 		if(this.selected_x < this.canvasWidth - 1) {
 			this.selected_x = this.selected_x + 1;
@@ -400,6 +406,7 @@ class CanvasStore {
 		else if(this.selected_x = this.canvasWidth) {
 			this.selected_x = this.selected_x - 1;
 		}
+		this.getFontSizeAtSelection()
 	}
 	@action
 	goLeft = () => { //ArrowLeft
@@ -409,6 +416,7 @@ class CanvasStore {
 		else if(this.selected_x = 1) {
 			this.selected_x = this.selected_x - 1;
 		}
+		this.getFontSizeAtSelection()
 	}
 	@action
 	goDown = () => { //ArrowDown
@@ -418,6 +426,7 @@ class CanvasStore {
 		else if(this.selected_y == this.canvasHeight) {
 			this.selected_y = this.selected_y - 1;
 		}
+		this.getFontSizeAtSelection()
 	}
 	@action
 	goUp = () => { //ArrowUp
@@ -428,15 +437,18 @@ class CanvasStore {
 			//this.addRowTop();
 			this.selected_y = this.selected_y - 1;
 		}
+		this.getFontSizeAtSelection()
 	}
 	insertEmpty = () => { //space
 		this.canvas[this.selected_y][this.selected_x] = EMPTY_CELL;
+		this.getFontSizeAtSelection()
 	}
 	getSelectedGlyph = () => {
 		return [this.glyphPath, this.svgWidth, this.svgHeight, this.svgBaseline, this.glyphOffsetX, this.glyphFontSizeModifier, this.rotationAmount, this.flipGlyph, this.glyphInvertedColor]
 	}
 	insert = () => { //q
 		this.canvas[this.selected_y][this.selected_x] = this.getSelectedGlyph()
+		this.getFontSizeAtSelection()
 	}
 	backSpace = () => { //backspace
 		this.canvas[this.selected_y][this.selected_x] = EMPTY_CELL;
@@ -536,10 +548,16 @@ class CanvasStore {
 	}
 
 	@action fillArea = () => {
+		if (!this.selectionArea.start) {
+			return
+		}
 		this.paintRange(this.getSelectedArea(), this.getSelectedGlyph())
 	}
 	@action
 	clearArea = () => {
+		if (!this.selectionArea.start) {
+			return
+		}
 		this.paintRange(this.getSelectedArea(), EMPTY_CELL)
 	}
 
@@ -585,15 +603,99 @@ class CanvasStore {
 		this.mapRange(boundingRectangle, glyph => glyph[7] *= -1)
 	}
 	@action
-	invertColorSelection = () => { //Shift + M
+	transposeSelection = () => {
 		if (!this.selectionArea.start) {
 			return
 		}
+		const boundingRectangle = this.getSelectedArea()
+		const [[start_y, start_x], [end_y, end_x]] = boundingRectangle
 
+		//if selection is not square, do nothing
+		if (end_x - start_x !== end_y - start_y) {
+			return
+		}
+
+		const y_width = end_y - start_y
+		for (let i = 0; i <= y_width; i++) {
+			for (let j = 0; j <= i; j++) {
+				const temp = this.canvas[start_y + i][start_x + j];
+				this.canvas[start_y + i][start_x + j] = this.canvas[start_y + j][start_x + i];
+				this.canvas[start_y + j][start_x + i] = temp;
+			}
+		}
+	}
+
+	@action
+	rotateSelection = () => { // Shift + R
+		if (!this.selectionArea.start) {
+			return
+		}
+		const boundingRectangle = this.getSelectedArea()
+		const [[start_y, start_x], [end_y, end_x]] = boundingRectangle
+		//if selection is not square, do nothing
+		if (end_x - start_x !== end_y - start_y) {
+			return
+		}
+
+		const w = end_y - start_y	+ 1
+		for (let i = 0; i <= w; i++) {
+			for (let j = i; j < w - i - 1; j++) {
+				const temp = this.canvas[start_y + i][start_x + j];
+				this.canvas[start_y + i][start_x + j] 									= this.canvas[start_y + w - j - 1][start_x + i];
+				this.canvas[start_y + w - j - 1][start_x + i] 					= this.canvas[start_y + w - i - 1][start_x + w - j - 1];
+				this.canvas[start_y + w - i - 1][start_x + w - j - 1] 	= this.canvas[start_y + j][start_x + w - i - 1];
+				this.canvas[start_y + j][start_x + w - i - 1] = temp;
+			}
+		}
+
+		this.mapRange(boundingRectangle, glyph => {
+			if ( glyph[7] == -1) {
+				glyph[6] += 90
+			} else {
+				glyph[6] -= 90
+			}
+		})
+	}
+
+	@action
+	invertColorSelection = () => { //Shift + I
+		if (!this.selectionArea.start) {
+			return
+		}
 		const boundingRectangle = this.getSelectedArea()
 		const [[start_y, start_x], [end_y, end_x]] = boundingRectangle
 
 		this.mapRange(boundingRectangle, glyph => glyph[8] = !glyph[8])
+	}
+	@action
+	rotateIndividuallySelection = () => { //Shift + L
+		if (!this.selectionArea.start) {
+			return
+		}
+		const boundingRectangle = this.getSelectedArea()
+		const [[start_y, start_x], [end_y, end_x]] = boundingRectangle
+
+		this.mapRange(boundingRectangle, glyph => {
+			glyph[6] += 90
+		})
+	}
+	@action
+	flipIndividuallySelection = () => { //Shift + L
+		if (!this.selectionArea.start) {
+			return
+		}
+		const boundingRectangle = this.getSelectedArea()
+		const [[start_y, start_x], [end_y, end_x]] = boundingRectangle
+
+		this.mapRange(boundingRectangle, glyph => {
+			glyph[7] *= -1
+		})
+	}
+	@action
+	selectAll = () => { //Shift + A
+		this.emptySelection();
+		this.selectionArea.start = [0, 0]
+		this.selectionArea.end = [this.canvasWidth - 1, this.canvasHeight - 1]
 	}
 }
 

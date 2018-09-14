@@ -49,19 +49,14 @@ class Settings extends React.Component {
 					<LoadButton />
 					<ExportButtons exportSizeMultiplier={store.exportSizeMultiplier} updateExportSizeMultiplier={store.updateExportSizeMultiplier}/>
 
-					<h3>Tools</h3>
+					<h3>Options</h3>
 					<HideGrid hideGrid={store.hideGrid} handleChangeHideGrid={store.handleChangeHideGrid} />
 					<ClipCells clipCells={store.clipCells} handleChangeClipCells={store.handleChangeClipCells} />
 					<TypingMode typingMode={store.typingMode} handleChangeTypingMode={store.handleChangeTypingMode} />
 					<DarkTheme handleChangeTheme={store.handleChangeTheme} />
 					<PixelRendering pixelRendering={store.pixelRendering} handleChangePixelRendering={store.handleChangePixelRendering} />
 					
-					<GlyphRotate rotationAmount={store.rotationAmount} rotateGlyphRight={store.rotateGlyphRight} rotateGlyphLeft={store.rotateGlyphLeft} />
-					<GlyphFlip handleChangeFlip={store.handleChangeFlip}/>
-					<GlyphInvertColor handleChangeInvertColor={store.handleChangeInvertColor}/>
-					
 					<GlyphSelect/>
-
 
 					<h3>Canvas Settings</h3>
 					<CanvasWidth addCol={store.addCol} deleteCol={store.deleteCol} canvasWidth={store.canvasWidth}/>

@@ -139,6 +139,10 @@ npm start
 - [ ] Frames (to make animation)
 - [ ] Real textmode with UTF
 
+#### Bugs
+- [ ] Chrome & Windows when trying to drag and drop a font gives Uncaught TypeError: Failed to execute 'readAsArrayBuffer' on 'FileReader': parameter 1 is not of type 'Blob'. at HTMLBodyElement.GlyphSelect.\_this.onDrop
+
+
 ### About
 GlyphDrawing.club has been designed and developed by [@hlotvonen](http://heikkilotvonen.fi) and [@i-tu](https://github.com/i-tu) using React and MobX. For help, ideas, contributions, etc. open an issue or send an email to [hlotvonen@gmail.com](mailto:hlotvonen@gmail.com).
 
