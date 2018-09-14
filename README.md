@@ -37,12 +37,18 @@ Glyph Drawing Club
 
 * <kbd>Shift + s</kbd> : Start selection area. Press <kbd>arrows keys</kbd> to change selection size. Press <kbd>Shift + s</kbd> again to make selection area
 * <kbd>x</kbd> : Deselect area
+* <kbd>Shift + a</kbd> : Select all
 * <kbd>Shift + c</kbd> : Paste selected area
 * <kbd>Shift + m</kbd> : Mirror selected area
 * <kbd>Shift + f</kbd> : Flip selected area
 * <kbd>Shift + q</kbd> : Fill selected area with selected glyph
 * <kbd>Shift + e</kbd> : Empty selected area
 * <kbd>Shift + i</kbd> : Invert the colors of selected area
+* <kbd>Shift + l</kbd> : Rotate glyphs individually in selected area
+* <kbd>Shift + k</kbd> : Flip glyphs individually in selected area
+* <kbd>Shift + r</kbd> : Rotate selected area. Selection area has to be square (same amount of cells width & height)
+* <kbd>Shift + t</kbd> : Transpose selected area. Selection area has to be square (same amount of cells width & height)
+
 
 #### Make glyph sets
 
@@ -120,28 +126,31 @@ npm start
 
 - [ ] Color tool
 - [ ] Make a video tutorial
-- [x] Add masking (like Taiwanese ANSI)
 - [ ] Add faster working mode for working with Taiwanese ANSI
 - [ ] UI improvements
-- [x] Fix performance issues when the canvas is large.
-- [x] For some reason, photoshop gives an error when opening the exported `.jpg` file. Workaround is to open the image in any other software (like Preview on Mac), export it again, and it should open normally now.
+- [ ] Fix performance issues when the canvas is large.
 - [ ] Glyph offset x & y needs a rework
-- [x] "Reset to default" button offset y is sometimes incorrect
 
 #### To-do in the future (maybe)
 
 - [ ] Tooltips
-- [ ] Export as vector data
-- [x] Typing mode
+- [ ] Tabbed sidebar
+- [ ] Save& load keymappings
+- [ ] Fill area with random glyphs
+- [ ] Insert glyph with different modifiers (size, rotate, flip, etc)
+- [ ] Mobile version?
+- [ ] Export as vector
 - [ ] Undo/redo functionality
 - [ ] Feature to overlap characters
 - [ ] Gallery, where users can upload their creations
-- [ ] Frames (to make animation)
+- [ ] Frames with onion skin (to make animation)
 - [ ] Real textmode with UTF
 
 #### Bugs
-- [ ] Chrome & Windows when trying to drag and drop a font gives Uncaught TypeError: Failed to execute 'readAsArrayBuffer' on 'FileReader': parameter 1 is not of type 'Blob'. at HTMLBodyElement.GlyphSelect.\_this.onDrop
 
+- [ ] Chrome & Windows when trying to drag and drop a font gives Uncaught TypeError: Failed to execute 'readAsArrayBuffer' on 'FileReader': parameter 1 is not of type 'Blob'. at HTMLBodyElement.GlyphSelect.\_this.onDrop
+- [ ] Safari export doesn't work
+- [ ] Safari doesn't display grid (lines have to be 1 px in order to show)
 
 ### About
 GlyphDrawing.club has been designed and developed by [@hlotvonen](http://heikkilotvonen.fi) and [@i-tu](https://github.com/i-tu) using React and MobX. For help, ideas, contributions, etc. open an issue or send an email to [hlotvonen@gmail.com](mailto:hlotvonen@gmail.com).
