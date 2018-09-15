@@ -702,7 +702,7 @@ class CanvasStore {
 	selectAll = () => { //Shift + A
 		this.emptySelection();
 		this.selectionArea.start = [0, 0]
-		this.selectionArea.end = [this.canvasWidth - 1, this.canvasHeight - 1]
+		this.selectionArea.end = [this.canvasHeight - 1, this.canvasWidth - 1]
 	}
 }
 
