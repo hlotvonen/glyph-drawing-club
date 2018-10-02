@@ -25,7 +25,7 @@ class CanvasStore {
 			this.heightPixels = storage.heightPixels
 			//else create empty canvas
 		} else {
-			this.canvas = this.getEmptyCanvas()
+			this.canvas = this.getEmptyCanvas(this.canvasHeight)
 			this.widthPixels = this.canvasWidth * this.cellWidth
 			this.heightPixels = this.canvasHeight * this.cellHeight
 			localStorage.setItem("firstRun", false)
@@ -521,7 +521,6 @@ class CanvasStore {
 		if (this.selected_y > 0) {
 			this.selected_y = Number(this.selected_y) - Number(1)
 		} else if ((this.selected_y = 1)) {
-			//this.addRowTop();
 			this.selected_y = Number(this.selected_y) - Number(1)
 		}
 		this.getFontSizeAtSelection()

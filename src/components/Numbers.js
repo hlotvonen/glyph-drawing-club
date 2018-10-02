@@ -16,7 +16,7 @@ class Numbers extends Component {
 					className={"colNum " + (selected_x === i ? "highlighted" : "")}
 					style={{ width: store.cellWidth }}
 				>
-					{i}
+					{i + 1}
 				</div>
 			)
 		}
@@ -33,7 +33,7 @@ class Numbers extends Component {
 						top: i * store.cellHeight,
 					}}
 				>
-					{i}
+					{i + 1}
 				</div>
 			)
 		}

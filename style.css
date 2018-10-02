@@ -113,17 +113,19 @@ canvas
 	background: black;
 }
 .canvas_container.darkTheme .row div {
-	box-shadow: inset 0 0 0 0.5px rgba(255,255,255,0.1);
 	fill: white;
 }
-
+.canvas_container.darkTheme .row div:after {
+	box-shadow: inset 0 0 0 1px rgba(255,255,255,0.3);
+	z-index: 1000;
+}
 .canvas_container.darkTheme .row div.invertColor {
 	fill: black;
 	background: white;
 }
 .canvas_container .row div.invertColor {
-	fill: white;
 	background: black;
+	fill: white;
 }
 .aligner {
 	display: flex;
@@ -153,7 +155,7 @@ canvas
 	vertical-align: middle;
 	border:none;
 	background: #eee;
-	box-shadow: 0 0 0 0.5px rgba(0,0,0,1);
+	box-shadow: 0 0 0 1px rgba(0,0,0,1);
 }
 .grid_controls button:hover {
 	transform: scale(1.1);
@@ -177,9 +179,17 @@ canvas
 .row div {
 	display: inline-block;
 	vertical-align:top;
-	box-shadow: inset 0 0 0 0.5px rgba(0,0,0,0.1);
 	overflow: visible;
 	position: relative;
+}
+.row div:after {
+	content: '';
+	display: block;
+	width: 100%;
+	height: 100%;
+	box-shadow: inset 0 0 0 1px rgba(0,0,0,0.08);
+	z-index: 1000;
+	position: absolute;
 }
 .rowNums div.rowNum {
 	position: absolute;
@@ -223,8 +233,9 @@ canvas
 }
 .cursor {
 	position: absolute;
-    box-shadow: inset 0 0 0 1px rgba(255,0,0,0.5);
+    box-shadow: inset 0 0 0 1px rgba(255,0,0,1);
 	z-index: 1000;
+	pointer-events: none;
 }
 
 .canvas_container.hideGrid .cursor {
@@ -240,8 +251,9 @@ canvas
 	top: 0;
 	left: 0;
 	position: absolute;
+	pointer-events: none;
 }
-.canvas_container.hideGrid .row div, .canvas_container.hideGrid.darkTheme .row div {
+.canvas_container.hideGrid .row div:after, .canvas_container.hideGrid.darkTheme .row div:after {
 	box-shadow: inset 0 0 0 0 rgba(0,0,0,0);
 }
 
