@@ -118,6 +118,7 @@ canvas
 .canvas_container.darkTheme .row div:after {
 	box-shadow: inset 0 0 0 1px rgba(255,255,255,0.3);
 	z-index: 1000;
+	pointer-events: none;
 }
 .canvas_container.darkTheme .row div.invertColor {
 	fill: black;
@@ -190,6 +191,7 @@ canvas
 	box-shadow: inset 0 0 0 1px rgba(0,0,0,0.08);
 	z-index: 1000;
 	position: absolute;
+	pointer-events: none;
 }
 .rowNums div.rowNum {
 	position: absolute;
