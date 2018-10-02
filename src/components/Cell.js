@@ -13,7 +13,16 @@ const Cell = observer(props => {
 		rotationAmount,
 		flipGlyph,
 		glyphInvertedColor,
-	] = store.canvas[props.y][props.x]
+		/*
+		TO-DO:
+		glyphOffsetY,
+		foregroundColor, //hex r,g,b
+		backgroundColor, //hex
+		color1, //0-100 blue
+		color2, //0-100 pink
+		color3  //0-100 yellow
+		*/
+	] = props.cell
 
 	let transform = {
 		transform: `scale(${flipGlyph}, -1) rotate(${rotationAmount}deg)`,
@@ -21,6 +30,7 @@ const Cell = observer(props => {
 	const clipCellsClass = store.clipCells ? "clipCells" : ""
 	const glyphInvertedColorClass = glyphInvertedColor ? "invertColor" : ""
 	const classes = `${clipCellsClass} ${glyphInvertedColorClass}`
+	console.log('cell', props.cell)
 
 	return (
 		<div

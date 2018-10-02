@@ -54,7 +54,7 @@ class Settings extends React.Component {
 						</li>
 						<li>
 							<a
-								href="https://github.com/hlotvonen/glyph-drawing-club"
+								href="https://github.com/hlotvonen/glyph-drawing-club#basic-usage"
 								target="_blank"
 							>
 								See more tips & all the hotkeys here!
@@ -142,8 +142,8 @@ class Settings extends React.Component {
 					<p>
 						If you would like to contribute your artwork to possible upcoming
 						GD.C zines, use the form below to submit your work. By clicking the
-						button below you give persmission to use your artwork. Only your
-						name and country will be pusblished. The contributors will receive a
+						button below you give permission to use your artwork. Only your
+						name and country will be published. The contributors will receive a
 						pdf of the zines sent to email. The zines will be sold but only to
 						cover printing costs.
 					</p>

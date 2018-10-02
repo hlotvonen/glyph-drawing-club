@@ -76,7 +76,6 @@ class GlyphSelect extends Component {
 				continue
 			}
 			if (this.state.uncd[gid] == null) {
-				console.log([i])
 				this.state.uncd[gid] = [i]
 			} else {
 				this.state.uncd[gid].push(i)
@@ -129,9 +128,7 @@ class GlyphSelect extends Component {
 					Math.abs(this.state.font.hhea.descender)
 				store.svgBaseline = this.state.font.hhea.descender
 
-				store.canvas[store.selected_y][
-					store.selected_x
-				] = store.getSelectedGlyph()
+				store.canvas[store.selected_y][store.selected_x].replace(store.getSelectedGlyph())
 				store.selected_x = store.selected_x + 1
 
 				if (store.selected_x == store.canvasWidth) {
@@ -168,7 +165,6 @@ class GlyphSelect extends Component {
 		let lim = Math.min(this.state.off + this.state.num, this.glyphCnt())
 		let scale = (32 * this.getDPR()) / this.state.font.head.unitsPerEm
 
-		console.log(this.state.font)
 
 		for (let i = this.state.off; i < lim; i++) {
 			let path = Typr.U.glyphToPath(this.state.font, i)
@@ -298,7 +294,6 @@ class GlyphSelect extends Component {
 	}
 	handleChangeInvert = () => {
 		this.state.inverted = !this.state.inverted
-		console.log(this.state.inverted)
 		this.drawGlyphs()
 	}
 	render() {

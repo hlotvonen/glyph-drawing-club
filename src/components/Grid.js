@@ -10,6 +10,8 @@ import gridStore from "../models/GridStore"
 @observer
 class Grid extends Component {
 	render() {
+		console.log('GRID', store.canvas)
+		
 		const canvas = store.canvas
 		const grid = canvas.map((row, y) => (
 			<div
@@ -25,6 +27,7 @@ class Grid extends Component {
 						key={`${y}_${x}`}
 						y={y}
 						x={x}
+						cell={store.canvas[y][x]}
 						clickSelection={store.clickSelection}
 					/>
 				))}

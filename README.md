@@ -124,27 +124,25 @@ npm start
 
 ### To-do
 
+- [ ] Tabbed sidebar
 - [ ] Color tool
-- [ ] Make a video tutorial
+- [ ] Export as vector
 - [ ] Add faster working mode for working with Taiwanese ANSI
 - [ ] UI improvements
-- [ ] Fix performance issues when the canvas is large.
 - [ ] Glyph offset x & y needs a rework
+- [ ] Undo/redo functionality
+- [ ] Save & load keymappings
 
 #### To-do in the future (maybe)
 
 - [ ] Tooltips
-- [ ] Tabbed sidebar
-- [ ] Save& load keymappings
+- [ ] Make a video tutorial
 - [ ] Fill area with random glyphs
 - [ ] Insert glyph with different modifiers (size, rotate, flip, etc)
 - [ ] Mobile version?
-- [ ] Export as vector
-- [ ] Undo/redo functionality
 - [ ] Feature to overlap characters
 - [ ] Gallery, where users can upload their creations
 - [ ] Frames with onion skin (to make animation)
-- [ ] Real textmode with UTF
 
 #### Bugs
 

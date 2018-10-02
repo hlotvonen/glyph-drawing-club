@@ -4,7 +4,7 @@ import { getBoundingRectangle } from "../utils/geometry"
 
 //[glyphPath, svgWidth, svgHeight, svgBaseline, glyphOffsetX, glyphFontSizeModifier, rotationAmount, flipGlyph, glyphInvertedColor]
 export const EMPTY_GLYPH = ["M0 0", "1", "1", "0"]
-const EMPTY_CELL = [...EMPTY_GLYPH, "0", "0", "0", "1", false]
+const getEmptyCell = () => observable([...EMPTY_GLYPH, "0", "0", "0", "1", false])
 
 let storage
 
@@ -25,9 +25,7 @@ class CanvasStore {
 			this.heightPixels = storage.heightPixels
 			//else create empty canvas
 		} else {
-			this.canvas = Array.from({ length: this.canvasHeight }, () =>
-				this.getEmptyRow()
-			)
+			this.canvas = this.getEmptyCanvas()
 			this.widthPixels = this.canvasWidth * this.cellWidth
 			this.heightPixels = this.canvasHeight * this.cellHeight
 			localStorage.setItem("firstRun", false)
@@ -149,7 +147,7 @@ class CanvasStore {
 	addCol = () => {
 		this.canvasWidth = this.canvasWidth + 1
 		for (const row of this.canvas) {
-			row.push(EMPTY_CELL)
+			row.push(getEmptyCell())
 		}
 		this.widthPixels = this.canvasWidth * this.cellWidth
 	}
@@ -157,7 +155,7 @@ class CanvasStore {
 	addColLeft = () => {
 		this.canvasWidth = this.canvasWidth + 1
 		for (const row of this.canvas) {
-			row.unshift(EMPTY_CELL)
+			row.unshift(getEmptyCell())
 		}
 		this.widthPixels = this.canvasWidth * this.cellWidth
 	}
@@ -175,7 +173,13 @@ class CanvasStore {
 		this.widthPixels = this.canvasWidth * this.cellWidth
 	}
 
-	getEmptyRow = () => Array.from({ length: this.canvasWidth }, () => EMPTY_CELL)
+	getEmptyCanvas = (size) => {
+		return Array.from({ length: this.canvasHeight }, this.getEmptyRow)
+	}
+
+	getEmptyRow = () => {
+		return Array.from({ length: this.canvasWidth }, () => getEmptyCell())
+	}
 
 	//Change canvas height
 	@action
@@ -243,7 +247,7 @@ class CanvasStore {
 		this.canvasWidth++
 		for (var i = 0; i < this.canvasHeight; i++) {
 			var col = this.canvas[i]
-			col.splice(this.selected_x, 0, EMPTY_CELL)
+			col.splice(this.selected_x, 0, getEmptyCell())
 		}
 		this.widthPixels = this.canvasWidth * this.cellWidth
 	}
@@ -524,7 +528,8 @@ class CanvasStore {
 	}
 	insertEmpty = () => {
 		//space
-		this.canvas[this.selected_y][this.selected_x] = EMPTY_CELL
+		const currentGlyph = this.canvas[this.selected_y][this.selected_x]
+		currentGlyph.replace(getEmptyCell())
 		this.getFontSizeAtSelection()
 	}
 	getSelectedGlyph = () => {
@@ -542,12 +547,15 @@ class CanvasStore {
 	}
 	insert = () => {
 		//q
-		this.canvas[this.selected_y][this.selected_x] = this.getSelectedGlyph()
+		const currentGlyph = this.canvas[this.selected_y][this.selected_x]
+		currentGlyph.replace(this.getSelectedGlyph())
 		this.getFontSizeAtSelection()
 	}
 	backSpace = () => {
 		//backspace
-		this.canvas[this.selected_y][this.selected_x] = EMPTY_CELL
+		const currentGlyph = this.canvas[this.selected_y][this.selected_x]
+		currentGlyph.replace(getEmptyCell())
+		this.getFontSizeAtSelection()
 		if (this.selected_y > 0) {
 			if (this.selected_x > 0) {
 				this.goLeft()
@@ -623,7 +631,7 @@ class CanvasStore {
 						this.selectionArea.start[1] + x_i
 					]
 				)
-				this.canvas[this.selected_y + y_i][this.selected_x + x_i] = copiedGlyph
+				this.canvas[this.selected_y + y_i][this.selected_x + x_i].replace(copiedGlyph)
 			}
 		}
 	}
@@ -643,7 +651,7 @@ class CanvasStore {
 		const [[start_y, start_x], [end_y, end_x]] = range
 		for (let y_i = start_y; y_i <= end_y; y_i++) {
 			for (let x_i = start_x; x_i <= end_x; x_i++) {
-				this.canvas[y_i][x_i] = glyph
+				this.canvas[y_i][x_i].replace(glyph)
 			}
 		}
 	}
@@ -667,7 +675,7 @@ class CanvasStore {
 		if (!this.selectionArea.start) {
 			return
 		}
-		this.paintRange(this.getSelectedArea(), EMPTY_CELL)
+		this.paintRange(this.getSelectedArea(), getEmptyCell())
 	}
 
 	@action
