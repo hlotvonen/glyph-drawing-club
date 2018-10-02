@@ -1,10 +1,9 @@
-import React from 'react';
-import store from '../models/CanvasStore'
-import { action } from 'mobx';
-
+import React from "react";
+import store from "../models/CanvasStore";
+import { action } from "mobx";
 
 class LoadButton extends React.Component {
-	state = {
+  state = {
     waitingForFileUpload: false
   };
 
@@ -18,18 +17,16 @@ class LoadButton extends React.Component {
       };
 
       temporaryFileReader.onload = () => {
-        resolve(
-        	temporaryFileReader.result
-        );
-		    const jsonObj = JSON.parse(temporaryFileReader.result);
-				store.canvasHeight = jsonObj["canvasHeight"]
-				store.canvasWidth = jsonObj["canvasWidth"]
-				store.cellWidth = jsonObj["cellWidth"]
-				store.cellHeight = jsonObj["cellHeight"]
-				store.defaultFontSize = jsonObj["defaultFontSize"]
-				store.canvas = jsonObj["canvas"]
-				store.widthPixels = jsonObj["widthPixels"]
-				store.heightPixels = jsonObj["heightPixels"]
+        resolve(temporaryFileReader.result);
+        const jsonObj = JSON.parse(temporaryFileReader.result);
+        store.canvasHeight = jsonObj["canvasHeight"];
+        store.canvasWidth = jsonObj["canvasWidth"];
+        store.cellWidth = jsonObj["cellWidth"];
+        store.cellHeight = jsonObj["cellHeight"];
+        store.defaultFontSize = jsonObj["defaultFontSize"];
+        store.canvas = jsonObj["canvas"];
+        store.widthPixels = jsonObj["widthPixels"];
+        store.heightPixels = jsonObj["heightPixels"];
       };
       temporaryFileReader.readAsText(inputFile);
     });
@@ -51,7 +48,9 @@ class LoadButton extends React.Component {
     const latestUploadedFile = event.target.files.item(fileList.length - 1);
 
     try {
-			const fileContents = LoadButton.readUploadedFileAsText(latestUploadedFile);
+      const fileContents = LoadButton.readUploadedFileAsText(
+        latestUploadedFile
+      );
       this.setState({
         waitingForFileUpload: false
       });
@@ -63,16 +62,13 @@ class LoadButton extends React.Component {
     }
   };
 
-	render() {
-		return(
-			<div>
-				{'Load from file: '} 
-			 	<input type="file"
-					name="myFile"
-					onChange={this.uploadFile} 
-				/>
-			</div>
-		);
-	}
+  render() {
+    return (
+      <div>
+        {"Load from file: "}
+        <input type="file" name="myFile" onChange={this.uploadFile} />
+      </div>
+    );
+  }
 }
-export default LoadButton
+export default LoadButton;

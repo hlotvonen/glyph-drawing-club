@@ -1,13 +1,15 @@
-import React from 'react';
-import { observer } from 'mobx-react';
+import React from "react";
+import { observer } from "mobx-react";
 
 class GlyphInvertColor extends React.Component {
-
   render() {
     return (
-    	<div>
-          	<button onClick={this.props.handleChangeInvertColor}> {'Invert color (i)'} </button>
-      	</div>
+      <div>
+        <button onClick={this.props.handleChangeInvertColor}>
+          {" "}
+          {"Invert color (i)"}{" "}
+        </button>
+      </div>
     );
   }
 }
