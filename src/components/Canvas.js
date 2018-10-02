@@ -52,6 +52,8 @@ class Canvas extends Component {
 					Q: store.fillArea,
 					I: store.invertColorSelection,
 					x: store.emptySelection,
+					G: store.shiftAreaLeft,
+					H: store.shiftAreaRight,
 
 					m: setstore.handleChangeMapping,
 					//draw glyph from keymap on to canvas

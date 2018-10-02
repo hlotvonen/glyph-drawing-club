@@ -61,6 +61,7 @@ class CanvasStore {
 	@observable cellHeight = 30;
 	@observable defaultFontSize = 30;
 	@observable hideGrid = false;
+	@observable transparentBackground = false;
 	@observable darkTheme = false;
 	@observable widthPixels = 0;
 	@observable heightPixels = 0;
@@ -235,6 +236,11 @@ class CanvasStore {
 	handleChangeHideGrid = () => { 
 		this.hideGrid = !this.hideGrid;
 		document.getElementById('hideGrid').checked = this.hideGrid; 
+	}
+//Toggle Transparent Background
+	handleChangeTransparentBackground = () => { 
+		this.transparentBackground = !this.transparentBackground;
+		document.getElementById('transparentBackground').checked = this.transparentBackground; 
 	}
 //Toggle Clip Cells
 	handleChangeClipCells = () => { 
@@ -527,7 +533,44 @@ class CanvasStore {
     	}
 		}
 	}
+	@action
+	shiftAreaRight = () => { //
+		if (!this.selectionArea.start) {
+			return
+		}
+		const boundingRectangle = this.getSelectedArea()
+		const [[start_y, start_x], [end_y, end_x]] = boundingRectangle
 
+		if(end_x == this.canvasWidth - 1) {
+			return 
+		}
+		
+		for (let y_i = start_y; y_i <= end_y; y_i++) {
+			this.canvas[y_i].splice(end_x + 1, 1);
+			this.canvas[y_i].splice(start_x, 0, EMPTY_CELL);
+		}
+		this.selectionArea.start = [start_y, start_x + 1]
+		this.selectionArea.end = [end_y, end_x + 1]
+	}
+	@action
+	shiftAreaLeft = () => { //
+		if (!this.selectionArea.start) {
+			return
+		}
+		const boundingRectangle = this.getSelectedArea()
+		const [[start_y, start_x], [end_y, end_x]] = boundingRectangle
+		
+		if(start_x == 0) {
+			return 
+		}
+
+		for (let y_i = start_y; y_i <= end_y; y_i++) {
+			this.canvas[y_i].splice(start_x - 1, 1);
+			this.canvas[y_i].splice(end_x, 0, EMPTY_CELL);
+		}
+		this.selectionArea.start = [start_y, start_x - 1]
+		this.selectionArea.end = [end_y, end_x - 1]
+	}
 	@action
 	mapRange = (range, f) => {
 		const [[start_y, start_x], [end_y, end_x]] = range
@@ -680,7 +723,6 @@ class CanvasStore {
 			return
 		}
 		const boundingRectangle = this.getSelectedArea()
-		const [[start_y, start_x], [end_y, end_x]] = boundingRectangle
 
 		this.mapRange(boundingRectangle, glyph => {
 			glyph[6] += 90
@@ -692,7 +734,6 @@ class CanvasStore {
 			return
 		}
 		const boundingRectangle = this.getSelectedArea()
-		const [[start_y, start_x], [end_y, end_x]] = boundingRectangle
 
 		this.mapRange(boundingRectangle, glyph => {
 			glyph[7] *= -1

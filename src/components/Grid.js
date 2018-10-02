@@ -14,17 +14,17 @@ import gridStore from '../models/GridStore'
 
 		const canvas = store.canvas
 		const grid = canvas.map((row, y) =>
-      <div className="row" key={y} style={{width: Number(store.canvasWidth) * Number(store.cellWidth) + 'px', height: Number(store.cellHeight) + 'px'}}>
-        {row.map((col, x) =>
-					<Cell key={`${y}_${x}`} y={y} x={x} clickSelection={store.clickSelection}/>
-        )}
-      </div>
-    );
+	      	<div className="row" key={y} style={{width: Number(store.canvasWidth) * Number(store.cellWidth) + 'px', height: Number(store.cellHeight) + 'px'}}>
+	        {row.map((col, x) =>
+				<Cell key={`${y}_${x}`} y={y} x={x} clickSelection={store.clickSelection}/>
+	        )}
+	     	</div>
+    	);
 
 		const pixelRendering = store.pixelRendering ? 'pixelRendering' : '';
 
 		return (
-			<div id="canvas" className={`grid ${pixelRendering}`} style={{
+			<div id="canvas" className={`grid ${pixelRendering}`  + (store.transparentBackground ? ' transparentBackground' : '')} style={{
 				transform: `translate(${
 						gridStore.settings.posX
 					}px, ${
@@ -33,7 +33,6 @@ import gridStore from '../models/GridStore'
 						gridStore.settings.zoom
 					})`
 			}}>
-
 				<Numbers />
 				<Cursor />
 				{grid}

@@ -133,6 +133,8 @@ npm start
 
 #### To-do in the future (maybe)
 
+- [ ] Place from file
+- [ ] Save selection
 - [ ] Tooltips
 - [ ] Tabbed sidebar
 - [ ] Save& load keymappings

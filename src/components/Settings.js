@@ -7,6 +7,7 @@ import CellHeight from './CellHeight'
 import FontSize from './FontSize'
 import GlyphSelect from './GlyphSelect'
 import HideGrid from './HideGrid'
+import TransparentBackground from './TransparentBackground'
 import DarkTheme from './DarkTheme'
 import GlyphTuning from './GlyphTuning'
 import KeyMappings from './KeyMappings'
@@ -50,6 +51,7 @@ class Settings extends React.Component {
 					<ExportButtons exportSizeMultiplier={store.exportSizeMultiplier} updateExportSizeMultiplier={store.updateExportSizeMultiplier}/>
 
 					<h3>Options</h3>
+					<TransparentBackground transparentBackground={store.transparentBackground} handleChangeTransparentBackground={store.handleChangeTransparentBackground} />
 					<HideGrid hideGrid={store.hideGrid} handleChangeHideGrid={store.handleChangeHideGrid} />
 					<ClipCells clipCells={store.clipCells} handleChangeClipCells={store.handleChangeClipCells} />
 					<TypingMode typingMode={store.typingMode} handleChangeTypingMode={store.handleChangeTypingMode} />
