@@ -24,13 +24,9 @@ const Cell = observer(props => {
 		*/
 	] = props.cell
 
-	let transform = {
-		transform: `scale(${flipGlyph}, -1) rotate(${rotationAmount}deg)`,
-	}
 	const clipCellsClass = store.clipCells ? "clipCells" : ""
 	const glyphInvertedColorClass = glyphInvertedColor ? "invertColor" : ""
 	const classes = `${clipCellsClass} ${glyphInvertedColorClass}`
-	console.log('cell', props.cell)
 
 	return (
 		<div
@@ -40,17 +36,42 @@ const Cell = observer(props => {
 			data-y={props.y}
 			data-x={props.x}
 		>
-			<svg
-				height={Number(store.defaultFontSize) + Number(glyphFontSizeModifier)}
-				viewBox={
-					glyphOffsetX + " " + svgBaseline + " " + svgWidth + " " + svgHeight
-				}
-				style={transform}
-			>
-				<path d={glyphPath} />
-			</svg>
+			{rawSvgCell({
+				glyphPath,
+				svgWidth,
+				svgHeight,
+				svgBaseline,
+				glyphOffsetX,
+				glyphFontSizeModifier,
+				rotationAmount,
+				flipGlyph,
+				glyphInvertedColor,
+			})}
 		</div>
 	)
 })
+
+export const rawSvgCell = ({
+	glyphPath,
+	svgWidth,
+	svgHeight,
+	svgBaseline,
+	glyphOffsetX,
+	glyphFontSizeModifier,
+	rotationAmount,
+	flipGlyph,
+}) => (
+	<svg
+		height={Number(store.defaultFontSize) + Number(glyphFontSizeModifier)}
+		viewBox={
+			glyphOffsetX + " " + svgBaseline + " " + svgWidth + " " + svgHeight
+		}
+		style={{
+			transform: `scale(${flipGlyph}, -1) rotate(${rotationAmount}deg)`,
+		}}
+	>
+		<path d={glyphPath} />
+	</svg>
+)
 
 export default Cell

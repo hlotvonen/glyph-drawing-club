@@ -1,5 +1,5 @@
 import React from "react"
-import { exportJpg } from "../utils/Export"
+import { exportSvg as exportJpg } from "../utils/Export"
 import store from "../models/CanvasStore"
 
 class ExportButtons extends React.Component {

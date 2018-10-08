@@ -10,8 +10,6 @@ import gridStore from "../models/GridStore"
 @observer
 class Grid extends Component {
 	render() {
-		console.log('GRID', store.canvas)
-		
 		const canvas = store.canvas
 		const grid = canvas.map((row, y) => (
 			<div
