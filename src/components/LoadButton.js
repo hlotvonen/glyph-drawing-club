@@ -19,6 +19,18 @@ class LoadButton extends React.Component {
 			temporaryFileReader.onload = () => {
 				resolve(temporaryFileReader.result)
 				const jsonObj = JSON.parse(temporaryFileReader.result)
+
+				//check if we are dealing with an old file that didn't have glyphOffsetY variable
+				//if we are, then reset all offsets
+				if(jsonObj["canvas"][0][0][9] == null) {
+					jsonObj["canvas"].map( function( row ) {
+					    return row.map( function( cell ) { 
+					        cell[9] = 0 //reset offsety
+					        cell[4] = 0 //reset offsetx
+					    } );
+					} )
+				}
+
 				store.canvasHeight = jsonObj["canvasHeight"]
 				store.canvasWidth = jsonObj["canvasWidth"]
 				store.cellWidth = jsonObj["cellWidth"]
@@ -27,6 +39,7 @@ class LoadButton extends React.Component {
 				store.canvas = jsonObj["canvas"]
 				store.widthPixels = jsonObj["widthPixels"]
 				store.heightPixels = jsonObj["heightPixels"]
+				
 			}
 			temporaryFileReader.readAsText(inputFile)
 		})

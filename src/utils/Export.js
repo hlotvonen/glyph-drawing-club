@@ -1,12 +1,11 @@
 import React from "react"
 import ReactDOM from "react-dom"
-
 import domtoimage from "dom-to-image"
 import FileSaver from "file-saver"
 import store from "../models/CanvasStore"
 import { rawSvgCell } from "../components/Cell"
 
-export function exportJpg() {
+export function exportPng() {
 	let scale = "scale(" + store.exportSizeMultiplier + ")"
 	let style = {
 		transform: scale,
@@ -26,9 +25,8 @@ export function exportJpg() {
 
 export function exportSvg() {
 	const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg")
-	svg.setAttribute("style", "border: 1px solid black")
-	svg.setAttribute("width", "600")
-	svg.setAttribute("height", "250")
+	svg.setAttribute("width", Number(store.widthPixels))
+	svg.setAttribute("height", Number(store.heightPixels))
 	svg.setAttributeNS(
 		"http://www.w3.org/2000/xmlns/",
 		"xmlns:xlink",
@@ -36,11 +34,11 @@ export function exportSvg() {
 	)
 
 	const cells = (
-		<g>
+		<g transform={`translate(${((Number(store.canvasWidth) - 2) / 2) * store.cellWidth * -1})`}>
 			{store.canvas.map((row, y) => (
-				<g key={y} transform={`translate(0 ${y * store.cellHeight})`}>
+				<g key={y} transform={`translate(${-(store.cellWidth / 2)} ${y * store.cellHeight})`}>
 					{row.map((cell, x) => (
-						<g key={x} transform={`translate(${x * store.cellWidth})`}>
+						<g key={x} transform={`translate(${(x * store.cellWidth)})`}>
 							{rawSvgCell({
 								glyphPath: cell[0],
 								svgWidth: cell[1],
@@ -50,6 +48,8 @@ export function exportSvg() {
 								glyphFontSizeModifier: cell[5],
 								rotationAmount: cell[6],
 								flipGlyph: cell[7],
+								glyphInvertedColor: cell[8],
+								glyphOffsetY: cell[9],
 							})}
 						</g>
 					))}

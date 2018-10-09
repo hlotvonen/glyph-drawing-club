@@ -7,6 +7,7 @@ class DarkTheme extends React.Component {
 			<div>
 				{"Dark theme (p):"}
 				<input
+					id="darkTheme"
 					type="checkbox"
 					value={this.props.darkTheme}
 					onChange={this.props.handleChangeTheme}

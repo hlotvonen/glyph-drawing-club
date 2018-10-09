@@ -2,9 +2,9 @@ import { action, observable, computed, autorun, toJS } from "mobx"
 import setstore from "./KeymappingsStore"
 import { getBoundingRectangle } from "../utils/geometry"
 
-//[glyphPath, svgWidth, svgHeight, svgBaseline, glyphOffsetX, glyphFontSizeModifier, rotationAmount, flipGlyph, glyphInvertedColor]
+//[glyphPath, svgWidth, svgHeight, svgBaseline, glyphOffsetX, glyphFontSizeModifier, rotationAmount, flipGlyph, glyphInvertedColor, glyphOffsetY]
 export const EMPTY_GLYPH = ["M0 0", "1", "1", "0"]
-const getEmptyCell = () => observable([...EMPTY_GLYPH, "0", "0", "0", "1", false])
+const getEmptyCell = () => observable([...EMPTY_GLYPH, "0", "0", "0", "1", false, "0"])
 
 let storage
 
@@ -307,6 +307,7 @@ class CanvasStore {
 	//Toggle Dark Theme
 	handleChangeTheme = () => {
 		this.darkTheme = !this.darkTheme
+		document.getElementById("darkTheme").checked = this.darkTheme
 	}
 
 	//Update Size of PNG export
@@ -345,14 +346,14 @@ class CanvasStore {
 	}
 	//Glyph offset Y
 	increaseGlyphOffsetY = () => {
-		this.glyphOffsetY = this.canvas[this.selected_y][this.selected_x].slice()[3] //First check the existing offset x value
+		this.glyphOffsetY = this.canvas[this.selected_y][this.selected_x].slice()[9] //First check the existing offset x value
 		this.glyphOffsetY += this.svgHeight / 4 //Set offset amount to 10% of the glyph width
-		this.canvas[this.selected_y][this.selected_x][3] = this.glyphOffsetY //Update canvas
+		this.canvas[this.selected_y][this.selected_x][9] = this.glyphOffsetY //Update canvas
 	}
 	decreaseGlyphOffsetY = () => {
-		this.glyphOffsetY = this.canvas[this.selected_y][this.selected_x].slice()[3] //First check the existing offset x value
+		this.glyphOffsetY = this.canvas[this.selected_y][this.selected_x].slice()[9] //First check the existing offset x value
 		this.glyphOffsetY -= this.svgHeight / 4 //Set offset amount to 10% of the glyph width
-		this.canvas[this.selected_y][this.selected_x][3] = this.glyphOffsetY //Update canvas
+		this.canvas[this.selected_y][this.selected_x][9] = this.glyphOffsetY //Update canvas
 	}
 	//Glyph rotation
 	rotateGlyphRight = () => {
@@ -360,7 +361,7 @@ class CanvasStore {
 			this.selected_x
 		].slice()[6] //First check the existing offset x value
 		if (this.rotationAmount <= -270) {
-			this.rotationAmount = 0
+			this.rotationAmount = Number(0)
 		} else {
 			this.rotationAmount = Number(this.rotationAmount - 90)
 		}
@@ -371,7 +372,7 @@ class CanvasStore {
 			this.selected_x
 		].slice()[6] //First check the existing offset x value
 		if (this.rotationAmount >= 270) {
-			this.rotationAmount = 0
+			this.rotationAmount = Number(0)
 		} else {
 			this.rotationAmount = Number(this.rotationAmount + 90)
 		}
@@ -381,7 +382,6 @@ class CanvasStore {
 	handleChangeInvertColor = () => {
 		this.glyphInvertedColor = this.canvas[this.selected_y][this.selected_x][8]
 		this.glyphInvertedColor = !this.glyphInvertedColor
-		// console.log('i');
 		this.canvas[this.selected_y][this.selected_x][8] = this.glyphInvertedColor //Update canvas
 	}
 
@@ -446,12 +446,13 @@ class CanvasStore {
 		this.glyphOffsetX = 0
 		this.glyphOffsetY = 0
 		this.flipGlyph = 1
-		this.canvas[this.selected_y][this.selected_x][3] = this.svgBaseline //offset y
+		this.canvas[this.selected_y][this.selected_x][3] = 0 //baseline
 		this.canvas[this.selected_y][this.selected_x][4] = 0 //offset x
 		this.canvas[this.selected_y][this.selected_x][5] = 0 //font size modifier
 		this.canvas[this.selected_y][this.selected_x][6] = 0 //rotation
 		this.canvas[this.selected_y][this.selected_x][7] = 1 //flip
 		this.canvas[this.selected_y][this.selected_x][8] = false //invert color
+		this.canvas[this.selected_y][this.selected_x][9] = 0 //offset y
 		this.getFontSizeAtSelection()
 	}
 	emptyCanvas = () => {
@@ -542,6 +543,7 @@ class CanvasStore {
 			this.rotationAmount,
 			this.flipGlyph,
 			this.glyphInvertedColor,
+			this.glyphOffsetY
 		]
 	}
 	insert = () => {
@@ -669,6 +671,7 @@ class CanvasStore {
 		}
 		this.paintRange(this.getSelectedArea(), this.getSelectedGlyph())
 	}
+
 	@action
 	clearArea = () => {
 		if (!this.selectionArea.start) {
@@ -720,6 +723,7 @@ class CanvasStore {
 
 		this.mapRange(boundingRectangle, glyph => (glyph[7] *= -1))
 	}
+
 	@action
 	transposeSelection = () => {
 		if (!this.selectionArea.start) {
@@ -795,6 +799,7 @@ class CanvasStore {
 
 		this.mapRange(boundingRectangle, glyph => (glyph[8] = !glyph[8]))
 	}
+
 	@action
 	rotateIndividuallySelection = () => {
 		//Shift + L
@@ -821,6 +826,7 @@ class CanvasStore {
 			glyph[7] *= -1
 		})
 	}
+
 	@action
 	selectAll = () => {
 		//Shift + A
@@ -828,6 +834,44 @@ class CanvasStore {
 		this.selectionArea.start = [0, 0]
 		this.selectionArea.end = [this.canvasHeight - 1, this.canvasWidth - 1]
 	}
+	/*@action
+	shiftAreaRight = () => {
+		if (!this.selectionArea.start) {
+			return
+		}
+		const boundingRectangle = this.getSelectedArea()
+		const [[start_y, start_x], [end_y, end_x]] = boundingRectangle
+
+		if(end_x == this.canvasWidth - 1) {
+			return 
+		}
+		
+		for (let y_i = start_y; y_i <= end_y; y_i++) {
+			this.canvas[y_i].splice(end_x + 1, 1);
+			this.canvas[y_i].splice(start_x, 0, EMPTY_CELL);
+		}
+		this.selectionArea.start = [start_y, start_x + 1]
+		this.selectionArea.end = [end_y, end_x + 1]
+	}
+	@action
+	shiftAreaLeft = () => {
+		if (!this.selectionArea.start) {
+			return
+		}
+		const boundingRectangle = this.getSelectedArea()
+		const [[start_y, start_x], [end_y, end_x]] = boundingRectangle
+		
+		if(start_x == 0) {
+			return 
+		}
+
+		for (let y_i = start_y; y_i <= end_y; y_i++) {
+			this.canvas[y_i].splice(start_x - 1, 1);
+			this.canvas[y_i].splice(end_x, 0, EMPTY_CELL);
+		}
+		this.selectionArea.start = [start_y, start_x - 1]
+		this.selectionArea.end = [end_y, end_x - 1]
+	}*/
 }
 
 export default new CanvasStore()

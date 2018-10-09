@@ -50,14 +50,6 @@ table {
 /* ~~~~~~~~~~~~~~~~~~~~~
 document lvl
 ~~~~~~~~~~~~~~~~~~~~~ */
-
-@font-face {
-  font-family: "font-name";
-  src: url(data:application/x-font-ttf;charset=utf-8;base64,);
-  font-style: normal;
-  font-weight: 400;
-}
-
 html,
 body {
 	height: 100vh;
@@ -66,17 +58,15 @@ body {
 	font-family: monospace;
 	background: #ccc;
 }
-// Box sizing
 html {
   box-sizing: border-box;
 }
 *, *:before, *:after {
   box-sizing: inherit;
 }
-/*@font-face {
-  font-family: 'unscii-16';
-  src: url('unscii-16.ttf') format('truetype') 
-}*/
+b {
+	font-weight: bold;
+}
 
 /* ~~~~~~~~~~~~~~~~~~~~~
 top wrapper
@@ -90,11 +80,9 @@ top wrapper
     display: flex;
     flex-direction: row;
 }
-b {
-	font-weight: bold;
-}
+
 /* ~~~~~~~~~~~~~~~~~~~~~
-canvas
+canvas & grid
 ~~~~~~~~~~~~~~~~~~~~~ */
 .canvas_container {
 	background: #ddd;
@@ -102,31 +90,6 @@ canvas
 	flex-direction: column;
 	overflow: hidden;
 	flex: 1;
-}
-.canvas_container.hideGrid {
-	background: white;
-}
-.canvas_container.darkTheme {
-	background: black;
-}
-.canvas_container.darkTheme .grid {
-	background: black;
-}
-.canvas_container.darkTheme .row div {
-	fill: white;
-}
-.canvas_container.darkTheme .row div:after {
-	box-shadow: inset 0 0 0 1px rgba(255,255,255,0.3);
-	z-index: 1000;
-	pointer-events: none;
-}
-.canvas_container.darkTheme .row div.invertColor {
-	fill: black;
-	background: white;
-}
-.canvas_container .row div.invertColor {
-	background: black;
-	fill: white;
 }
 .aligner {
 	display: flex;
@@ -141,6 +104,106 @@ canvas
 	background: white;
 	position: relative;
 }
+
+/* ~~~~~~~~~~~~~~~~~~~~~
+cells
+~~~~~~~~~~~~~~~~~~~~~ */
+.row div {
+	display: inline-block;
+	vertical-align:top;
+	overflow: visible;
+	position: relative;
+}
+.row div svg {
+	overflow: visible;
+	position: absolute;
+	top: 0;
+	left: 0;
+}
+.row div svg rect, 
+.row div svg path {
+	pointer-events: none;
+}
+.row div:after {
+	content: '';
+	display: block;
+	width: 100%;
+	height: 100%;
+	box-shadow: inset 0 0 0 1px rgba(0,0,0,0.08);
+	z-index: 1000;
+	position: absolute;
+	pointer-events: none;
+}
+
+/* ~~~~~~~~~~~~~~~~~~~~~
+grid numbers / cursor / selection highlight
+~~~~~~~~~~~~~~~~~~~~~ */
+.rowNums div.rowNum {
+	position: absolute;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 30px;
+	left: -30px;
+	box-shadow: none;
+	text-align: right;
+	font-size: 0.6em;
+	background: none;
+	color: #888;
+}
+.rowNums div.rowNum.highlighted {
+	color: red;
+}
+.colNums {
+	width: 100%;
+	position: relative;
+	height: 0;
+}
+.colNum {
+	width: auto;
+	display: inline-flex;
+	justify-content: center;
+	align-items: center;
+	font-size: 0.6em;
+	background: none;
+	color:#888;
+	position: relative;
+	height: 25px;
+	top: -25px;
+}
+.colNum.highlighted {
+	color: red;
+}
+.cursor {
+	position: absolute;
+    box-shadow: inset 0 0 0 1px rgba(255,0,0,1);
+	z-index: 1000;
+	pointer-events: none;
+}
+.selectionHighlight {
+	opacity: 0.3;
+	background: red;
+	top: 0;
+	left: 0;
+	position: absolute;
+	pointer-events: none;
+}
+.selectionHighlight.isSquare {
+	background: blue;
+}
+
+/* ~~~~~~~~~~~~~~~~~~~~~
+coordinates
+~~~~~~~~~~~~~~~~~~~~~ */
+.coordinates {
+	position: absolute;
+	top: 0;
+	right: 5px;
+}
+
+/* ~~~~~~~~~~~~~~~~~~~~~
+grid move / zoom
+~~~~~~~~~~~~~~~~~~~~~ */
 .grid_controls {
 	position: absolute;
 	bottom: 0;
@@ -174,101 +237,50 @@ canvas
     margin: 3px auto;
     width: 25px;
 }
-.row {
-	position: relative;
+
+/* ~~~~~~~~~~~~~~~~~~~~~
+dark theme checked
+~~~~~~~~~~~~~~~~~~~~~ */
+.canvas_container.darkTheme {
+	background: black;
 }
-.row div {
-	display: inline-block;
-	vertical-align:top;
-	overflow: visible;
-	position: relative;
+.canvas_container.darkTheme .coordinates {
+	color:white;
 }
-.row div:after {
-	content: '';
-	display: block;
-	width: 100%;
-	height: 100%;
-	box-shadow: inset 0 0 0 1px rgba(0,0,0,0.08);
-	z-index: 1000;
-	position: absolute;
-	pointer-events: none;
+
+
+/* ~~~~~~~~~~~~~~~~~~~~~
+hide grid checked
+~~~~~~~~~~~~~~~~~~~~~ */
+.canvas_container.hideGrid {
+	background: white;
 }
-.rowNums div.rowNum {
-	position: absolute;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	width: 30px;
-	left: -30px;
-	box-shadow: none;
-	text-align: right;
-	font-size: 0.6em;
-	background: none;
-	color: #888;
+.canvas_container.hideGrid .row div:after, 
+.canvas_container.hideGrid.darkTheme .row div:after {
+	box-shadow: inset 0 0 0 0 rgba(0,0,0,0);
 }
-.rowNums div.rowNum.highlighted {
-	color: red;
+.canvas_container.hideGrid .cursor,
+.canvas_container.hideGrid .colNums, 
+.canvas_container.hideGrid .rowNums {
+	display: none;
 }
+
+/* ~~~~~~~~~~~~~~~~~~~~~
+clip cells checked
+~~~~~~~~~~~~~~~~~~~~~ */
 .row div.clipCells {
 	overflow: hidden;
 }
-
-.colNums {
-	width: 100%;
-	position: relative;
-	height: 0;
-}
-.colNum {
-	width: auto;
-	display: inline-flex;
-	justify-content: center;
-	align-items: center;
-	font-size: 0.6em;
-	background: none;
-	color:#888;
-	position: relative;
-	height: 25px;
-	top: -25px;
-}
-.colNum.highlighted {
-	color: red;
-}
-.cursor {
-	position: absolute;
-    box-shadow: inset 0 0 0 1px rgba(255,0,0,1);
-	z-index: 1000;
-	pointer-events: none;
+/* ~~~~~~~~~~~~~~~~~~~~~
+pixel rendering checked
+~~~~~~~~~~~~~~~~~~~~~ */
+.pixelRendering svg{
+	shape-rendering:optimizeSpeed;
 }
 
-.canvas_container.hideGrid .cursor {
-	display: none;
-}
-
-.canvas_container.hideGrid .colNums, .canvas_container.hideGrid .rowNums {
-	display: none;
-}
-.selectionHighlight {
-	opacity: 0.3;
-	background: red;
-	top: 0;
-	left: 0;
-	position: absolute;
-	pointer-events: none;
-}
-.canvas_container.hideGrid .row div:after, .canvas_container.hideGrid.darkTheme .row div:after {
-	box-shadow: inset 0 0 0 0 rgba(0,0,0,0);
-}
-
-svg {
-	overflow: visible;
-	transform-origin: 50% 50%;
-	position: absolute;
-	top: 0;
-	left: 0;
-}
-svg path {
-	pointer-events: none;
-}
+/* ~~~~~~~~~~~~~~~~~~~~~
+text styles
+~~~~~~~~~~~~~~~~~~~~~ */
 ol.instructions {
 	list-style: initial;
 	list-style-type:decimal;
@@ -286,16 +298,18 @@ span.hotkey {
 #dropbox-response {
 	color:red;
 }
-.pixelRendering svg{
-	shape-rendering:optimizeSpeed;
+h3 {
+	font-weight: bold;
+	margin: 1em 0 0.5em 0;
 }
+
 /* ~~~~~~~~~~~~~~~~~~~~~
 controls
 ~~~~~~~~~~~~~~~~~~~~~ */
 .controls_container {
 	background: white;
-	width: 420px;
-	padding: 0.5em;
+	width: 425px;
+	padding: 5px;
 	overflow-y: scroll;
 	flex: none;
 }
@@ -307,17 +321,11 @@ controls
 	width: 30%;
 	display:inline-block;
 }
-.control_inputs {
-	display:inline-block;
-}
-h3 {
-	font-weight: bold;
-	margin: 1em 0 0.5em 0;
-}
 button {
 	margin-right: 0.5em;
 }
-.page_selection {
+.page_selection,
+.control_inputs {
 	display: inline-block;
 }
 #page_select_input.input-error {
@@ -332,6 +340,11 @@ button {
 	background-color: lime;
 }
 
+
+
+/* ~~~~~~~~~~~~~~~~~~~~~
+keymappings bar
+~~~~~~~~~~~~~~~~~~~~~ */
 .KeyMappingsBar {
 	width: 100%;
 	background: white;
@@ -342,45 +355,6 @@ button {
 .KeyMappingsBar .Sets {
 	flex: 1;
 }
-.SelectedGlyphContainer {
-	width: 185px;
-	height: 80px;
-    margin-top: auto;
-}
-.SelectedGlyphContainer .selectedGlyph {
-	display: inline-block;
-	width: 80px;
-	height: 80px;
-}
-.SelectedGlyphContainer .selectedGlyph .vector {
-	width: 80px;
-	height: 80px;
-}
-.selectedGlyph {
-	position: relative;
-}
-.selectedGlyph .vector {
-	height: 50px;
-	width: 50px;
-	border: 1px solid black;
-	overflow: visible;
-	box-sizing:border-box;
-	position: relative;
-	display: inline-block;
-}
-#properties {
-	display:inline-block;
-	width: 100px;
-	margin-left: 5px;
-}
-.selectedGlyph .vector svg {
-	height: 100%;
-	overflow: visible;
-	position: absolute;
-	top:0;left:0;right:0;bottom:0;
-	margin:auto;
-}
-
 .KeyMappingsContainer {
 	display: none;
 }
@@ -406,4 +380,50 @@ button {
 .ToggleMapping, .select_set {
 	display: inline-block;
 	margin-right: 5px;
+}
+
+/* ~~~~~~~~~~~~~~~~~~~~~
+selected glyph in keymappings bar
+~~~~~~~~~~~~~~~~~~~~~ */
+.selectedGlyph {
+	position: relative;
+}
+.selectedGlyph .vector {
+	height: 50px;
+	width: 50px;
+	border: 1px solid black;
+	overflow: visible;
+	box-sizing:border-box;
+	position: relative;
+	display: inline-block;
+}
+.SelectedGlyphContainer {
+	width: 185px;
+	height: 80px;
+    margin-top: auto;
+    position: relative;
+}
+.SelectedGlyphContainer .selectedGlyph {
+	display: inline;
+	width: 80px;
+	height: 80px;
+}
+.SelectedGlyphContainer .selectedGlyph .vector {
+	width: 80px;
+	height: 80px;
+}
+#properties {
+	display:block;
+	width: 100px;
+	margin-left: 5px;
+	position: absolute;
+    top: 0;
+    left: 80px;
+}
+.selectedGlyph .vector svg {
+	height: 100%;
+	overflow: visible;
+	position: absolute;
+	top:0;left:0;right:0;bottom:0;
+	margin:auto;
 }

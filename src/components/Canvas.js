@@ -6,6 +6,7 @@ import typingmodestore from "../models/TypingModeStore"
 import Grid from "./Grid"
 import KeymappingsBar from "./KeymappingsBar"
 import GridControls from "./GridControls"
+import Coordinates from "./Coordinates"
 
 class Canvas extends Component {
 	componentDidMount() {
@@ -55,7 +56,10 @@ class Canvas extends Component {
 					E: store.clearArea,
 					Q: store.fillArea,
 					I: store.invertColorSelection,
+					H: store.shiftAreaLeft,
+					L: store.shiftAreaRight,
 					x: store.emptySelection,
+					X: store.emptySelection,
 
 					m: setstore.handleChangeMapping,
 					//draw glyph from keymap on to canvas
@@ -108,6 +112,7 @@ class Canvas extends Component {
 				<div className="aligner">
 					<Grid />
 					<GridControls />
+					<Coordinates />
 				</div>
 				<KeymappingsBar />
 			</div>
