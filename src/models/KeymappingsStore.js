@@ -9,12 +9,13 @@ let keymappingsStorage
 class KeymappingsStore {
 	constructor() {
 		//load from localstorage if it's not the first time
-		if (localStorage.firstRun) {
+		if (localStorage.keymapFirstRun) {
 			keymappingsStorage = JSON.parse(localStorage.keymappingsStorage)
 			this.sets = keymappingsStorage.sets
 			//else create empty canvas
 		} else {
 			this.addSet()
+			localStorage.setItem("keymapFirstRun", false)
 		}
 		//set localstorage, autorun will update it every time something changes
 		autorun(() => {
