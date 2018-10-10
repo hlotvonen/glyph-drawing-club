@@ -1,7 +1,7 @@
 Glyph Drawing Club
 =====================
 
-[GlyphDrawing.club](http://www.glyphdrawing.club/) is a contemporary text art editor that supports any font and glyph. It can be used for making custom modular typography, illustrations, concrete poetry and ASCII art and much more.  
+[GlyphDrawing.club](http://www.glyphdrawing.club/) is a contemporary text art editor that supports any font and glyph. It can be used for making custom modular typography, illustrations, concrete poetry, ASCII art and much more.
 
 ### Basic usage
 
@@ -10,19 +10,22 @@ Glyph Drawing Club
 3. Move around the canvas by pressing <kbd>arrow keys</kbd>.
 4. Press <kbd>f</kbd> to flip, <kbd>r</kbd> to rotate or <kbd>i</kbd> to invert the colors of the glyph.
 5. Check out the keyboard shortcuts below and play around with the settings panel. Have fun!
-6. Before exporting, remember to hide the grid by pressing <kbd>h</kbd>
+6. If you export as PNG, remember to hide the grid by pressing <kbd>h</kbd>
 
 ## Keyboard shortcuts
 
-* <kbd>Arrow keys</kbd> : Move around the canvas
+* <kbd>Arrow keys</kbd> or <kbd>Left mouse click</kbd> : Move around the canvas
 * <kbd>q</kbd> : Insert selected glyph on to the canvas
 * <kbd>Spacebar</kbd> : Delete
 * <kbd>r</kbd> : Rotate glyph
 * <kbd>f</kbd> : Flip glyph
 * <kbd>i</kbd> : Invert glyph color
 * <kbd>h</kbd> : Hide Grid
-* <kbd>p</kbd> : Invert colors of the whole canvas
 * <kbd>Number keys 1–10</kbd> : Insert glyph from set
+* <kbd>Backspace</kbd> : Delete
+* <kbd>Enter</kbd> : Line break
+* <kbd>p</kbd> : Change to black background
+* <kbd>c</kbd> : Clip cells
 
 #### Typing mode
 
@@ -33,10 +36,10 @@ Glyph Drawing Club
 * <kbd>Enter</kbd> : Line break 
 * <kbd>Backspace</kbd> : delete
 
-#### Make area selection
+#### Area selection
 
 * <kbd>Shift + s</kbd> : Start selection area. Press <kbd>arrows keys</kbd> to change selection size. Press <kbd>Shift + s</kbd> again to make selection area
-* <kbd>x</kbd> : Deselect area
+* <kbd>x</kbd> or <kbd>Shift + x</kbd> : Deselect area
 * <kbd>Shift + a</kbd> : Select all
 * <kbd>Shift + c</kbd> : Paste selected area
 * <kbd>Shift + m</kbd> : Mirror selected area
@@ -44,11 +47,14 @@ Glyph Drawing Club
 * <kbd>Shift + q</kbd> : Fill selected area with selected glyph
 * <kbd>Shift + e</kbd> : Empty selected area
 * <kbd>Shift + i</kbd> : Invert the colors of selected area
-* <kbd>Shift + l</kbd> : Rotate glyphs individually in selected area
-* <kbd>Shift + k</kbd> : Flip glyphs individually in selected area
+* <kbd>Shift + o</kbd> : Rotate glyphs individually in selected area
+* <kbd>Shift + p</kbd> : Flip glyphs individually in selected area
 * <kbd>Shift + r</kbd> : Rotate selected area. Selection area has to be square (same amount of cells width & height)
 * <kbd>Shift + t</kbd> : Transpose selected area. Selection area has to be square (same amount of cells width & height)
-
+* <kbd>Shift + h</kbd> : Move selected area left
+* <kbd>Shift + j</kbd> : Move selected area down
+* <kbd>Shift + k</kbd> : Move selected area up
+* <kbd>Shift + l</kbd> : Move selected area right
 
 #### Make glyph sets
 
@@ -126,10 +132,8 @@ npm start
 
 - [ ] Tabbed sidebar
 - [ ] Color tool
-- [ ] Export as vector
 - [ ] Add faster working mode for working with Taiwanese ANSI
 - [ ] UI improvements
-- [ ] Glyph offset x & y needs a rework
 - [ ] Undo/redo functionality
 - [ ] Save & load keymappings
 
@@ -143,12 +147,12 @@ npm start
 - [ ] Feature to overlap characters
 - [ ] Gallery, where users can upload their creations
 - [ ] Frames with onion skin (to make animation)
+- [ ] Top-down & right-to-left writing modes
 
 #### Bugs
 
 - [ ] Chrome & Windows when trying to drag and drop a font gives Uncaught TypeError: Failed to execute 'readAsArrayBuffer' on 'FileReader': parameter 1 is not of type 'Blob'. at HTMLBodyElement.GlyphSelect.\_this.onDrop
 - [ ] Safari export doesn't work
-- [ ] Safari doesn't display grid (lines have to be 1 px in order to show)
 
 ### About
 GlyphDrawing.club has been designed and developed by [@hlotvonen](http://heikkilotvonen.fi) and [@i-tu](https://github.com/i-tu) using React and MobX. For help, ideas, contributions, etc. open an issue or send an email to [hlotvonen@gmail.com](mailto:hlotvonen@gmail.com).

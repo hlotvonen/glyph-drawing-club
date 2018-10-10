@@ -726,6 +726,7 @@ class CanvasStore {
 
 	@action
 	transposeSelection = () => {
+		//Shift + T
 		if (!this.selectionArea.start) {
 			return
 		}
@@ -802,7 +803,7 @@ class CanvasStore {
 
 	@action
 	rotateIndividuallySelection = () => {
-		//Shift + L
+		//Shift + O
 		if (!this.selectionArea.start) {
 			return
 		}
@@ -815,7 +816,7 @@ class CanvasStore {
 	}
 	@action
 	flipIndividuallySelection = () => {
-		//Shift + L
+		//Shift + P
 		if (!this.selectionArea.start) {
 			return
 		}
@@ -834,8 +835,61 @@ class CanvasStore {
 		this.selectionArea.start = [0, 0]
 		this.selectionArea.end = [this.canvasHeight - 1, this.canvasWidth - 1]
 	}
-	/*@action
+	@action
+	shiftAreaDown = () => {
+		//Shift + J
+		if (!this.selectionArea.start) {
+			return
+		}
+		const boundingRectangle = this.getSelectedArea()
+		const [[start_y, start_x], [end_y, end_x]] = boundingRectangle
+
+		if(end_y == this.canvasHeight - 1) {
+			return 
+		}
+		for (let y_i = end_y; y_i >= start_y; y_i--) {
+			for (let x_i = start_x; x_i <= end_x; x_i++) {
+				const temp = this.canvas[y_i][x_i]
+				this.canvas[y_i + 1][x_i].replace(temp)
+			}
+		}
+		for (let x_i = start_x; x_i <= end_x; x_i++) {
+			this.canvas[start_y].splice(x_i, 1, getEmptyCell());
+		}
+		this.selected_y = this.selected_y + 1
+		this.selectionArea.start = [start_y + 1, start_x]
+		this.selectionArea.end = [end_y + 1, end_x]
+
+	}
+	@action
+	shiftAreaUp = () => {
+		//Shift + K
+		if (!this.selectionArea.start) {
+			return
+		}
+		const boundingRectangle = this.getSelectedArea()
+		const [[start_y, start_x], [end_y, end_x]] = boundingRectangle
+
+		if(start_y == 0) {
+			return 
+		}
+		for (let y_i = start_y; y_i <= end_y; y_i++) {
+			for (let x_i = start_x; x_i <= end_x; x_i++) {
+				const temp = this.canvas[y_i][x_i]
+				this.canvas[y_i - 1][x_i].replace(temp)
+			}
+		}
+		for (let x_i = start_x; x_i <= end_x; x_i++) {
+			this.canvas[end_y].splice(x_i, 1, getEmptyCell());
+		}
+		this.selected_y = this.selected_y - 1
+		this.selectionArea.start = [start_y - 1, start_x]
+		this.selectionArea.end = [end_y - 1, end_x]
+
+	}
+	@action
 	shiftAreaRight = () => {
+		//Shift + L
 		if (!this.selectionArea.start) {
 			return
 		}
@@ -848,13 +902,15 @@ class CanvasStore {
 		
 		for (let y_i = start_y; y_i <= end_y; y_i++) {
 			this.canvas[y_i].splice(end_x + 1, 1);
-			this.canvas[y_i].splice(start_x, 0, EMPTY_CELL);
+			this.canvas[y_i].splice(start_x, 0, getEmptyCell());
 		}
+		this.selected_x = this.selected_x + 1
 		this.selectionArea.start = [start_y, start_x + 1]
 		this.selectionArea.end = [end_y, end_x + 1]
 	}
 	@action
 	shiftAreaLeft = () => {
+		//Shift + H
 		if (!this.selectionArea.start) {
 			return
 		}
@@ -867,11 +923,12 @@ class CanvasStore {
 
 		for (let y_i = start_y; y_i <= end_y; y_i++) {
 			this.canvas[y_i].splice(start_x - 1, 1);
-			this.canvas[y_i].splice(end_x, 0, EMPTY_CELL);
+			this.canvas[y_i].splice(end_x, 0, getEmptyCell());
 		}
+		this.selected_x = this.selected_x - 1
 		this.selectionArea.start = [start_y, start_x - 1]
 		this.selectionArea.end = [end_y, end_x - 1]
-	}*/
+	}
 }
 
 export default new CanvasStore()
