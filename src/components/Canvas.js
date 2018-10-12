@@ -11,9 +11,11 @@ import Coordinates from "./Coordinates"
 class Canvas extends Component {
 	componentDidMount() {
 		document.addEventListener("keydown", this.handleKeyPress, false)
+		document.addEventListener("keyup", this.handleKeyPressUp, false)
 	}
 	componentWillUnmount() {
 		document.removeEventListener("keydown", this.handleKeyPress, false)
+		document.removeEventListener("keyup", this.handleKeyPressUp, false)
 	}
 
 	handleKeyPress = event => {
@@ -43,6 +45,9 @@ class Canvas extends Component {
 					i: store.handleChangeInvertColor,
 					c: store.handleChangeClipCells,
 					t: store.handleChangeTypingMode,
+					b: store.handleChangePaintMode,
+					Alt: store.handleAltDown,
+					Control: store.handleCtrlDown,
 
 					//Unused keys:
 					//WYUDGZVBN
@@ -102,6 +107,21 @@ class Canvas extends Component {
 			handler()
 			event.preventDefault()
 		}
+	}
+
+	handleKeyPressUp = event => {
+		const handlers = {
+			Alt: store.handleAltUp,
+			Control: store.handleCtrlUp
+		}
+		const handler = handlers[event.key]
+
+		if (!handler) {
+			return
+		}
+
+		handler()
+		event.preventDefault()
 	}
 
 	render() {

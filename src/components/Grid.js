@@ -27,6 +27,9 @@ class Grid extends Component {
 						x={x}
 						cell={store.canvas[y][x]}
 						clickSelection={store.clickSelection}
+						handleMouseOver={store.handleMouseOver}
+						handleMouseDown={store.handleMouseDown}
+						handleMouseUp={store.handleMouseUp}
 					/>
 				))}
 			</div>

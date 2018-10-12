@@ -25,6 +25,7 @@ import GlyphFlip from "./GlyphFlip"
 import GlyphInvertColor from "./GlyphInvertColor"
 import ClipCells from "./ClipCells"
 import TypingMode from "./TypingMode"
+import PaintMode from "./PaintMode"
 import PixelRendering from "./PixelRendering"
 
 @observer
@@ -86,6 +87,10 @@ class Settings extends React.Component {
 					<TypingMode
 						typingMode={store.typingMode}
 						handleChangeTypingMode={store.handleChangeTypingMode}
+					/>
+					<PaintMode
+						paintMode={store.paintMode}
+						handleChangePaintMode={store.handleChangePaintMode}
 					/>
 					<DarkTheme handleChangeTheme={store.handleChangeTheme} />
 					<PixelRendering

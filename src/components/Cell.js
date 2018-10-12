@@ -33,6 +33,9 @@ const Cell = observer(props => {
 			className={classes}
 			style={{ width: store.cellWidth, height: store.cellHeight }}
 			onClick={props.clickSelection}
+			onMouseUp={props.handleMouseUp}
+			onMouseDown={props.handleMouseDown}
+			onMouseOver={props.handleMouseOver}
 			data-y={props.y}
 			data-x={props.x}
 		>

@@ -36,6 +36,13 @@ Glyph Drawing Club
 * <kbd>Enter</kbd> : Line break 
 * <kbd>Backspace</kbd> : delete
 
+#### Paint mode
+
+* <kbd>b</kbd> : Start/end paint mode
+* <kbd>LMB</kbd> : Hold left mouse button to paint with selected glyph
+* <kbd>Alt</kbd> + <kbd>LMB</kbd> : Erase
+* Note: all other shortcuts work in this mode also! For example, you can do <kbd>r</kbd> to rotate while in paint mode.
+
 #### Area selection
 
 * <kbd>Shift + s</kbd> : Start selection area. Press <kbd>arrows keys</kbd> to change selection size. Press <kbd>Shift + s</kbd> again to make selection area
@@ -131,20 +138,23 @@ npm start
 ### To-do
 
 - [ ] Tabbed sidebar
-- [ ] Color tool
-- [ ] Add faster working mode for working with Taiwanese ANSI
-- [ ] UI improvements
+- [ ] Layers or a feature to overlap characters
+- [ ] Color tool (Edit background and foreground colors separately, save and load color palettes, fast risograph workflow, color editing and coloring tools)
+- [ ] Add faster working mode for working with Taiwanese ANSI (Mainly create keyboard shortcuts for offsetting)
+- [ ] UI improvements (more condensed sidebar, unify button styles and icons across browsers etc.)
 - [ ] Undo/redo functionality
 - [ ] Save & load keymappings
+- [ ] Shift+arrow to move 5 cells across
+- [ ] Make ctrl/cmd/alt keypress modifiers available
+- [ ] Highlight all cells with a glyph in it
+- [ ] Tooltips
 
 #### To-do in the future (maybe)
 
-- [ ] Tooltips
 - [ ] Make a video tutorial
 - [ ] Fill area with random glyphs
-- [ ] Insert glyph with different modifiers (size, rotate, flip, etc)
+- [ ] Insert glyph with incremental modifiers (size, rotate, flip, etc)
 - [ ] Mobile version?
-- [ ] Feature to overlap characters
 - [ ] Gallery, where users can upload their creations
 - [ ] Frames with onion skin (to make animation)
 - [ ] Top-down & right-to-left writing modes
@@ -152,7 +162,7 @@ npm start
 #### Bugs
 
 - [ ] Chrome & Windows when trying to drag and drop a font gives Uncaught TypeError: Failed to execute 'readAsArrayBuffer' on 'FileReader': parameter 1 is not of type 'Blob'. at HTMLBodyElement.GlyphSelect.\_this.onDrop
-- [ ] Safari export doesn't work
+- [ ] Safari export doesn't work... sometimes
 
 ### About
 GlyphDrawing.club has been designed and developed by [@hlotvonen](http://heikkilotvonen.fi) and [@i-tu](https://github.com/i-tu) using React and MobX. For help, ideas, contributions, etc. open an issue or send an email to [hlotvonen@gmail.com](mailto:hlotvonen@gmail.com).

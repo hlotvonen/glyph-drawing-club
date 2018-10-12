@@ -1,7 +1,9 @@
 import { observable } from "mobx"
+import store from "./CanvasStore.js"
 
 class GridStore {
-	posOffset = 50
+	posOffsetX = store.cellWidth
+	posOffsetY = store.cellHeight
 
 	@observable
 	settings = {
@@ -11,16 +13,16 @@ class GridStore {
 	}
 
 	moveUp = () => {
-		this.settings.posY -= this.posOffset
+		this.settings.posY += this.posOffsetY
 	}
 	moveRight = () => {
-		this.settings.posX += this.posOffset
+		this.settings.posX -= this.posOffsetX
 	}
 	moveDown = () => {
-		this.settings.posY += this.posOffset
+		this.settings.posY -= this.posOffsetY
 	}
 	moveLeft = () => {
-		this.settings.posX -= this.posOffset
+		this.settings.posX += this.posOffsetX
 	}
 
 	center = () => {
@@ -29,10 +31,10 @@ class GridStore {
 		this.settings.zoom = 1
 	}
 	zoomIn = () => {
-		this.settings.zoom = this.settings.zoom * 1.1
+		this.settings.zoom = this.settings.zoom * 1.05
 	}
 	zoomOut = () => {
-		this.settings.zoom = this.settings.zoom * 0.9
+		this.settings.zoom = this.settings.zoom * 0.95
 	}
 }
 export default new GridStore()

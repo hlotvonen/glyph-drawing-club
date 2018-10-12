@@ -80,6 +80,8 @@ class CanvasStore {
 	@observable
 	typingMode = false
 	@observable
+	paintMode = false
+	@observable
 	pixelRendering = false
 
 	//SHORTCUTS
@@ -142,6 +144,14 @@ class CanvasStore {
 	@observable
 	glyphInvertedColor = false
 
+	//MOUSE & KEYBOARD MODIFIER EVENTS
+	@observable
+	mouseDown = false
+	@observable
+	altDown = false
+	@observable
+	ctrlDown = false
+	
 	//Change canvas width
 	@action
 	addCol = () => {
@@ -298,6 +308,11 @@ class CanvasStore {
 		this.typingMode = !this.typingMode
 		this.glyphClear()
 		document.getElementById("typingMode").checked = this.typingMode
+	}
+	//Toggle Paint Mode
+	handleChangePaintMode = () => {
+		this.paintMode = !this.paintMode
+		document.getElementById("paintMode").checked = this.paintMode
 	}
 	//Toggle Pixel Rendering
 	handleChangePixelRendering = () => {
@@ -480,6 +495,54 @@ class CanvasStore {
 		this.selected_x = Number(event.target.parentNode.getAttribute("data-x"))
 		this.selected_y = Number(event.target.parentNode.getAttribute("data-y"))
 		this.getFontSizeAtSelection()
+	}
+	@action
+	handleMouseDown = event => {
+		this.mouseDown = true
+		if(this.paintMode) {
+			this.paintCell()
+		}
+	}
+	@action
+	handleMouseUp = event => {
+		this.mouseDown = false
+	}
+	@action
+	handleAltDown = () => {
+		this.altDown = true
+	}
+	@action
+	handleAltUp = () => {
+		this.altDown = false
+	}
+	@action
+	handleCtrlDown = () => {
+		this.ctrlDown = true
+	}
+	@action
+	handleCtrlUp = () => {
+		this.ctrlDown = false
+	}
+	@action
+	handleMouseOver = event => {
+		if(this.paintMode) {
+			event.preventDefault
+			this.selected_x = Number(event.target.parentNode.getAttribute("data-x"))
+			this.selected_y = Number(event.target.parentNode.getAttribute("data-y"))
+			this.paintCell()
+		}
+	}
+	@action
+	paintCell = () => {
+		if(this.mouseDown) {
+			const currentGlyph = this.canvas[this.selected_y][this.selected_x]
+			if(!this.altDown) {
+				currentGlyph.replace(this.getSelectedGlyph())
+			} else {
+				currentGlyph.replace(getEmptyCell())
+			}
+			this.getFontSizeAtSelection()
+		}
 	}
 	@action
 	getFontSizeAtSelection = () => {
