@@ -91,11 +91,11 @@ One of the default font options for the Glyph Drawing.Club is a modular 4×4 fon
 
 The initial inspiration for creating Tesserae Regular was to make a modernised PETSCII font, but with smooth, vectorised curves. However, the font quickly grew to a large collection of carefully crafted shapes that surpass those in any other modular design tool (like FontStruct).
 
-The current version of Tesserae Regular has 382 unique shapes. Inverting the colors and flipping or rotating the shapes creates thousand of different variations, allowing endless possibilities for creating modular designs, be it type design, illustration or anything else.
+Tesserae Regular has hundreds of unique shapes. Inverting the colors and flipping or rotating the shapes creates thousand of different variations, allowing endless possibilities for creating modular designs, be it type design, illustration or anything else.
 
 The font is based on a 4×4 grid. Each anchor point connects to one of the intersections of the grid. This allows for consistent continuation of the shapes when placed next to each other. The font is made of primitive geometric shapes and shapes where the direction point is ¾th of the way to the next anchor point, creating a more interesting asymmetrical shape.
 
-The font is licenced with the *SIL Open Font License*. You can download it from [here](fonts).
+The font is licenced with the *SIL Open Font License, Version 1.1*.
 
 #### Ray Manta C64
 ###### created by Tim Koch
@@ -104,7 +104,7 @@ Ray Manta C64 font is a combination of four different C64 character sets recreat
 * three custom made C64 character sets (Circlex, Jellextend and Squaresounds) designed by [**Tim Koch (Ray Manta / Datadoor)**](http://datadoor.net/)
 * the regular C64 PETSCII character set 
 
-Copyright (c) 2018, Tim Koch (http://datadoor.net/), with Reserved Font Name “Ray Manta C64”. This Font Software is licensed under the SIL Open Font License, Version 1.1.
+Copyright (c) 2018, Tim Koch (http://datadoor.net/). This Font Software is licensed under the SIL Open Font License, Version 1.1.
 
 #### Unscii-16 
 ###### created by Viznut
@@ -118,12 +118,14 @@ Public Domain.
 
 MingLiu font is a Traditional Chinese font in a mincho (serif) stroke style. It's used on Taiwanese PTT Bulletin Board Systems to make Taiwanese ANSI art. Read more: 
 * https://www.ptt.cc/man/asciiart/index.html
-* https://ansi.loli.tw/ 
+* https://ansi.loli.tw/
 
 #### Submona
 ###### created by [Brian Gomes Bascoy](http://peramid.es/)
 
 "The submona web font project attempts to create a lightweight subset (52 KB) of monafont that can render common Shift_JIS text art in an acceptable manner, by removing the embedded bitmap strikes (a.k.a. pixel fonts) and many glyphs from some Unicode ranges." (read more at [https://github.com/pera/submona-web-font](https://github.com/pera/submona-web-font))
+
+Public domain
 
 Developement
 ------

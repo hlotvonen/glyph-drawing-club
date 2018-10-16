@@ -241,13 +241,13 @@ grid move / zoom
 /* ~~~~~~~~~~~~~~~~~~~~~
 dark theme checked
 ~~~~~~~~~~~~~~~~~~~~~ */
-.canvas_container.darkTheme {
+.canvas_container.darkTheme,
+.canvas_container.hideGrid.darkTheme {
 	background: black;
 }
 .canvas_container.darkTheme .coordinates {
 	color:white;
 }
-
 
 /* ~~~~~~~~~~~~~~~~~~~~~
 hide grid checked
