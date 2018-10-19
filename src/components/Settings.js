@@ -18,6 +18,7 @@ import AddRowOrCol from "./AddRowOrCol"
 import ExportButtons from "./ExportButtons"
 import SaveAsButton from "./SaveAsButton"
 import LoadButton from "./LoadButton"
+import LoadAndPlace from "./LoadAndPlace"
 import EmptyCanvas from "./EmptyCanvas"
 import SaveToDropboxButton from "./SaveToDropboxButton"
 import GlyphRotate from "./GlyphRotate"
@@ -70,6 +71,7 @@ class Settings extends React.Component {
 						updateFileName={store.updateFileName}
 					/>
 					<LoadButton />
+					<LoadAndPlace />
 					<ExportButtons
 						exportSizeMultiplier={store.exportSizeMultiplier}
 						updateExportSizeMultiplier={store.updateExportSizeMultiplier}
