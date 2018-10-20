@@ -58,8 +58,12 @@ class CanvasStore {
 	@observable
 	pixelRendering = false
 
+	@observable
 	history = []
+
+	@observable
 	redoHistory = []
+
 	preserveRedoHistory = false
 
 	//SHORTCUTS
@@ -190,9 +194,14 @@ class CanvasStore {
 		localStorage.setItem("firstRun", false)
 	}
 
+	@computed
+	get isUndoAvailable() {
+		return this.history.length >= 2
+	}
+
 	@action
 	undo = () => {
-		if (this.history.length < 2) {
+		if (!this.isUndoAvailable) {
 			return
 		}
 		this.preserveRedoHistory = true
@@ -204,9 +213,14 @@ class CanvasStore {
 		this.setCurrentState(JSON.parse(previousState))
 	}
 
+	@computed
+	get isRedoAvailable() {
+		return this.redoHistory.length >= 1
+	}
+
 	@action
 	redo = () => {
-		if (this.redoHistory.length < 1) {
+		if (!this.isRedoAvailable) {
 			return
 		}
 		this.preserveRedoHistory = true
