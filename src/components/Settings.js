@@ -26,6 +26,7 @@ import GlyphInvertColor from "./GlyphInvertColor"
 import ClipCells from "./ClipCells"
 import TypingMode from "./TypingMode"
 import PixelRendering from "./PixelRendering"
+import HistoryControls from "./HistoryControls"
 
 @observer
 class Settings extends React.Component {
@@ -63,11 +64,14 @@ class Settings extends React.Component {
 					</ol>
 					<hr />
 
+					<HistoryControls />
+
 					<h3>Save / Load</h3>
 					<SaveAsButton
 						fileName={store.fileName}
 						updateFileName={store.updateFileName}
 					/>
+
 					<LoadButton />
 					<ExportButtons
 						exportSizeMultiplier={store.exportSizeMultiplier}

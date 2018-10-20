@@ -6,47 +6,23 @@ import { getBoundingRectangle } from "../utils/geometry"
 export const EMPTY_GLYPH = ["M0 0", "1", "1", "0"]
 const getEmptyCell = () => observable([...EMPTY_GLYPH, "0", "0", "0", "1", false])
 
-let storage
-
 class CanvasStore {
-	//Initialize canvas
 	constructor() {
-		//load from localstorage if it's not the first time
 		if (localStorage.firstRun) {
-			storage = JSON.parse(localStorage.storage)
-			this.canvasWidth = storage.canvasWidth
-			this.canvasHeight = storage.canvasHeight
-			this.canvas = storage.canvas
-			this.cellWidth = storage.cellWidth
-			this.cellHeight = storage.cellHeight
-			this.defaultFontSize = storage.defaultFontSize
-			this.canvas = storage.canvas
-			this.widthPixels = storage.widthPixels
-			this.heightPixels = storage.heightPixels
-			//else create empty canvas
+			this.setCurrentState(JSON.parse(localStorage.storage))
 		} else {
-			this.canvas = this.getEmptyCanvas(this.canvasHeight)
-			this.widthPixels = this.canvasWidth * this.cellWidth
-			this.heightPixels = this.canvasHeight * this.cellHeight
-			localStorage.setItem("firstRun", false)
+			this.createEmptyCanvas()
 		}
 
-		//set localstorage, autorun will update it every time something changes
 		autorun(() => {
-			const localstorage = {
-				name: "unicode-editor-file",
-				timestamp: Math.floor(Date.now() / 1000),
-				firstRun: false,
-				canvasWidth: this.canvasWidth,
-				canvasHeight: this.canvasHeight,
-				cellWidth: this.cellWidth,
-				cellHeight: this.cellHeight,
-				defaultFontSize: this.defaultFontSize,
-				widthPixels: this.widthPixels,
-				heightPixels: this.heightPixels,
-				canvas: this.canvas,
+			const currentState = JSON.stringify(this.getCurrentState())
+			localStorage.setItem("storage", currentState)
+			this.history.push(currentState)
+			if (this.preserveRedoHistory) {
+				this.preserveRedoHistory = false
+			} else {
+				this.redoHistory = []
 			}
-			localStorage.setItem("storage", JSON.stringify(localstorage))
 		})
 	}
 
@@ -81,6 +57,10 @@ class CanvasStore {
 	typingMode = false
 	@observable
 	pixelRendering = false
+
+	history = []
+	redoHistory = []
+	preserveRedoHistory = false
 
 	//SHORTCUTS
 	@observable
@@ -151,6 +131,7 @@ class CanvasStore {
 		}
 		this.widthPixels = this.canvasWidth * this.cellWidth
 	}
+
 	@action
 	addColLeft = () => {
 		this.canvasWidth = this.canvasWidth + 1
@@ -159,6 +140,7 @@ class CanvasStore {
 		}
 		this.widthPixels = this.canvasWidth * this.cellWidth
 	}
+
 	@action
 	deleteCol = () => {
 		if (this.canvasWidth > 1) {
@@ -173,7 +155,67 @@ class CanvasStore {
 		this.widthPixels = this.canvasWidth * this.cellWidth
 	}
 
-	getEmptyCanvas = (size) => {
+	@action
+	setCurrentState = state => {
+		this.canvasWidth = state.canvasWidth
+		this.canvasHeight = state.canvasHeight
+		this.canvas = state.canvas
+		this.cellWidth = state.cellWidth
+		this.cellHeight = state.cellHeight
+		this.defaultFontSize = state.defaultFontSize
+		this.canvas = state.canvas
+		this.widthPixels = state.widthPixels
+		this.heightPixels = state.heightPixels
+	}
+
+	getCurrentState = () => ({
+		name: "unicode-editor-file",
+		timestamp: Math.floor(Date.now() / 1000),
+		firstRun: false,
+		canvasWidth: this.canvasWidth,
+		canvasHeight: this.canvasHeight,
+		cellWidth: this.cellWidth,
+		cellHeight: this.cellHeight,
+		defaultFontSize: this.defaultFontSize,
+		widthPixels: this.widthPixels,
+		heightPixels: this.heightPixels,
+		canvas: this.canvas,
+	})
+
+	@action
+	createEmptyCanvas = () => {
+		this.canvas = this.getEmptyCanvas(this.canvasHeight)
+		this.widthPixels = this.canvasWidth * this.cellWidth
+		this.heightPixels = this.canvasHeight * this.cellHeight
+		localStorage.setItem("firstRun", false)
+	}
+
+	@action
+	undo = () => {
+		if (this.history.length < 2) {
+			return
+		}
+		this.preserveRedoHistory = true
+
+		const currentState = this.history.pop()
+		this.redoHistory.push(currentState)
+
+		const previousState = this.history.pop()
+		this.setCurrentState(JSON.parse(previousState))
+	}
+
+	@action
+	redo = () => {
+		if (this.redoHistory.length < 1) {
+			return
+		}
+		this.preserveRedoHistory = true
+
+		const redoState = this.redoHistory.pop()
+		this.setCurrentState(JSON.parse(redoState))
+	}
+
+	getEmptyCanvas = size => {
 		return Array.from({ length: this.canvasHeight }, this.getEmptyRow)
 	}
 
