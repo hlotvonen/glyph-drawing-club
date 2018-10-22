@@ -6,6 +6,8 @@ import { getBoundingRectangle } from "../utils/geometry"
 export const EMPTY_GLYPH = ["M0 0", "1", "1", "0"]
 const getEmptyCell = () => observable([...EMPTY_GLYPH, "0", "0", "0", "1", false])
 
+const MAX_HISTORY_SIZE = 16
+
 class CanvasStore {
 	constructor() {
 		if (localStorage.firstRun) {
@@ -17,7 +19,7 @@ class CanvasStore {
 		autorun(() => {
 			const currentState = JSON.stringify(this.getCurrentState())
 			localStorage.setItem("storage", currentState)
-			this.history.push(currentState)
+			this.addToUndoHistory(currentState)
 			if (this.preserveRedoHistory) {
 				this.preserveRedoHistory = false
 			} else {
@@ -60,7 +62,6 @@ class CanvasStore {
 
 	@observable
 	history = []
-
 	@observable
 	redoHistory = []
 
@@ -207,7 +208,7 @@ class CanvasStore {
 		this.preserveRedoHistory = true
 
 		const currentState = this.history.pop()
-		this.redoHistory.push(currentState)
+		this.addToRedoHistory(currentState)
 
 		const previousState = this.history.pop()
 		this.setCurrentState(JSON.parse(previousState))
@@ -216,6 +217,22 @@ class CanvasStore {
 	@computed
 	get isRedoAvailable() {
 		return this.redoHistory.length >= 1
+	}
+
+	@action
+	addToUndoHistory = state => {
+		this.history.push(state)
+		if (this.history.length > MAX_HISTORY_SIZE) {
+			this.history.shift()
+		}
+	}
+
+	@action
+	addToRedoHistory = state => {
+		this.redoHistory.push(state)
+		if (this.redoHistory.length > MAX_HISTORY_SIZE) {
+			this.redoHistory.shift()
+		}
 	}
 
 	@action
