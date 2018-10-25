@@ -182,14 +182,14 @@ grid numbers / cursor / selection highlight
 }
 .selectionHighlight {
 	opacity: 0.3;
-	background: red;
+	background: green;
 	top: 0;
 	left: 0;
 	position: absolute;
 	pointer-events: none;
 }
 .selectionHighlight.isSquare {
-	background: blue;
+	background: lime;
 }
 
 /* ~~~~~~~~~~~~~~~~~~~~~
