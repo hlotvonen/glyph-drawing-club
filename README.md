@@ -14,30 +14,28 @@ Glyph Drawing Club
 
 ## Keyboard shortcuts
 
+#### Basics
 * <kbd>Arrow keys</kbd> or <kbd>Left mouse click</kbd> : Move around the canvas
 * <kbd>Alt</kbd>+<kbd>Arrow keys</kbd>: Quickly move around the canvas
 * <kbd>q</kbd> : Insert selected glyph on to the canvas
-* <kbd>Spacebar</kbd> : Delete
+* <kbd>Spacebar</kbd> or <kbd>Backspace</kbd>: Delete
 * <kbd>r</kbd> : Rotate glyph
 * <kbd>f</kbd> : Flip glyph
 * <kbd>i</kbd> : Invert glyph color
-* <kbd>h</kbd> : Hide Grid
 * <kbd>Number keys 1–10</kbd> : Insert glyph from set
-* <kbd>Backspace</kbd> : Delete
 * <kbd>Enter</kbd> : Line break
-* <kbd>p</kbd> : Change to black background
-* <kbd>c</kbd> : Clip cells
 * <kbd>Cmd/Ctrl</kbd>+<kbd>z</kbd>: Undo
 * <kbd>Cmd/Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>z</kbd>: Redo
+
+#### View options
+* <kbd>h</kbd> : Hide Grid
+* <kbd>p</kbd> : Change to black background
+* <kbd>c</kbd> : Clip cells
 
 #### Typing mode
 
 * <kbd>t</kbd> : Start typing mode
 * <kbd>ESC</kbd> : End typing mode
-* <kbd>§</kbd> : Insert selected glyph on to the canvas (same as <kbd>q</kbd>, but only for typing mode)
-* <kbd>Arrow keys</kbd> : Move around the canvas 
-* <kbd>Enter</kbd> : Line break 
-* <kbd>Backspace</kbd> : delete
 
 #### Paint mode
 
