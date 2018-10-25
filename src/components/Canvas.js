@@ -46,11 +46,16 @@ class Canvas extends Component {
 					c: store.handleChangeClipCells,
 					t: store.handleChangeTypingMode,
 					b: store.handleChangePaintMode,
+					z: store.handleUndoRedo,
+
+					//Modifier keys:
 					Alt: store.handleAltDown,
+					Meta: store.handleMetaDown,
 					Control: store.handleCtrlDown,
+					Shift: store.handleShiftDown,
 
 					//Unused keys:
-					//WYUDGZVBN
+					//WYUDGVBN
 					A: store.selectAll,
 					S: store.makeSelection,
 					C: store.copySelection,
@@ -112,7 +117,9 @@ class Canvas extends Component {
 	handleKeyPressUp = event => {
 		const handlers = {
 			Alt: store.handleAltUp,
-			Control: store.handleCtrlUp
+			Control: store.handleCtrlUp,
+			Meta: store.handleMetalUp,
+			Shift: store.handleShiftUp,
 		}
 		const handler = handlers[event.key]
 

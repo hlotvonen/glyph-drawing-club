@@ -1,7 +1,7 @@
 Glyph Drawing Club
 =====================
 
-[GlyphDrawing.club](http://www.glyphdrawing.club/) is a contemporary text art editor that supports any font and glyph. It can be used for making custom modular typography, illustrations, concrete poetry, ASCII art and much more.
+[GlyphDrawing.club](http://www.glyphdrawing.club/) is a new and versatile online text art and modular design editor. It's inspired by the limitations and possibilities of old school ASCII art editors, but brought to modern times; the editor is based on an adjustable grid into which typographic symbols can be inserted from any font. It's best suitable for creating modular type design, illustrations, ASCII art, concrete poetry and more.
 
 ### Basic usage
 
@@ -15,6 +15,7 @@ Glyph Drawing Club
 ## Keyboard shortcuts
 
 * <kbd>Arrow keys</kbd> or <kbd>Left mouse click</kbd> : Move around the canvas
+* <kbd>Alt</kbd>+<kbd>Arrow keys</kbd>: Quickly move around the canvas
 * <kbd>q</kbd> : Insert selected glyph on to the canvas
 * <kbd>Spacebar</kbd> : Delete
 * <kbd>r</kbd> : Rotate glyph
@@ -26,6 +27,8 @@ Glyph Drawing Club
 * <kbd>Enter</kbd> : Line break
 * <kbd>p</kbd> : Change to black background
 * <kbd>c</kbd> : Clip cells
+* <kbd>Cmd/Ctrl</kbd>+<kbd>z</kbd>: Undo
+* <kbd>Cmd/Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>z</kbd>: Redo
 
 #### Typing mode
 
@@ -71,14 +74,11 @@ Glyph Drawing Club
 #### Additional tips
 
 * You can drag & drop any font you have on your computer (.otf/.ttf) to use that font!
-* There is no Undo / Redo. We don't make mistakes, just happy little accidents! (or just save often)
 * You can refresh (or close and come back) the webpage without losing your work.
-* Share your work! I would love to see what you make. You can send artwork to [hlotvonen@gmail.com](mailto:hlotvonen@gmail.com)
 
 ### Examples
 
-* Find some examples [here](examples). You can download the .unscii files and open them with the editor.
-* Follow [@heikkiveikko](https://www.instagram.com/heikkiveikko/) on Instagram for more.
+* Follow [@heikkiveikko](https://www.instagram.com/heikkiveikko/) on Instagram for examples.
 
 
 Fonts
@@ -144,12 +144,10 @@ npm start
 - [ ] Color tool (Edit background and foreground colors separately, save and load color palettes, fast risograph workflow, color editing and coloring tools)
 - [ ] Add faster working mode for working with Taiwanese ANSI (Mainly create keyboard shortcuts for offsetting)
 - [ ] UI improvements (more condensed sidebar, unify button styles and icons across browsers etc.)
-- [ ] Undo/redo functionality
 - [ ] Save & load keymappings
-- [ ] Shift+arrow to move 5 cells across
-- [ ] Make ctrl/cmd/alt keypress modifiers available
 - [ ] Highlight all cells with a glyph in it
 - [ ] Tooltips
+- [ ] Figure out a better shortcut for typing mode
 
 #### To-do in the future (maybe)
 
@@ -164,7 +162,7 @@ npm start
 #### Bugs
 
 - [ ] Chrome & Windows when trying to drag and drop a font gives Uncaught TypeError: Failed to execute 'readAsArrayBuffer' on 'FileReader': parameter 1 is not of type 'Blob'. at HTMLBodyElement.GlyphSelect.\_this.onDrop
-- [ ] Safari export doesn't work... sometimes
+- [ ] Safari export png doesn't work... sometimes? maybe? it's sometimes veeeery slow
 
 ### About
 GlyphDrawing.club has been designed and developed by [@hlotvonen](http://heikkilotvonen.fi) and [@i-tu](https://github.com/i-tu) using React and MobX. For help, ideas, contributions, etc. open an issue or send an email to [hlotvonen@gmail.com](mailto:hlotvonen@gmail.com).

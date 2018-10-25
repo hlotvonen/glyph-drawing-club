@@ -1,5 +1,4 @@
 import { observable } from "mobx"
-import store from "./CanvasStore"
 
 class TypingModeStore {
 	KEY_INTO_UNICODE = {

@@ -14,7 +14,7 @@ class GlyphSelect extends Component {
 		this.state = {
 			off: 0,
 			font: [],
-			num: 100,
+			num: 130,
 			gid: 0,
 			uncd: null,
 			fontfile: "",
@@ -158,7 +158,7 @@ class GlyphSelect extends Component {
 		cont.innerHTML = ""
 		let cnv = document.createElement("canvas")
 		cnv.width = Math.floor(this.getDPR() * 40)
-		cnv.height = Math.floor(this.getDPR() * 45) //scaleCnv(cnv);
+		cnv.height = Math.floor(this.getDPR() * 50) //scaleCnv(cnv);
 		let ctx = cnv.getContext("2d")
 
 		let lim = Math.min(this.state.off + this.state.num, this.glyphCnt())
@@ -193,7 +193,7 @@ class GlyphSelect extends Component {
 
 			ctx.fillStyle = "black"
 			ctx.font = "16px monospace"
-			ctx.fillText(i, 0, 20)
+			ctx.fillText(i+1, 0, 16)
 
 			ctx.scale(scale, -scale)
 			Typr.U.pathToContext(path, ctx)

@@ -1,6 +1,7 @@
-import { action, observable, computed, autorun, toJS } from "mobx"
+import { action, observable, computed, autorunAsync, toJS } from "mobx"
 import setstore from "./KeymappingsStore"
 import { getBoundingRectangle } from "../utils/geometry"
+import { getOS } from "../utils/detectOs"
 
 //[glyphPath, svgWidth, svgHeight, svgBaseline, glyphOffsetX, glyphFontSizeModifier, rotationAmount, flipGlyph, glyphInvertedColor, glyphOffsetY]
 export const EMPTY_GLYPH = ["M0 0", "1", "1", "0"]
@@ -16,7 +17,7 @@ class CanvasStore {
 			this.createEmptyCanvas()
 		}
 
-		autorun(() => {
+		autorunAsync(() => {
 			const currentState = JSON.stringify(this.getCurrentState())
 			localStorage.setItem("storage", currentState)
 			this.addToUndoHistory(currentState)
@@ -25,7 +26,7 @@ class CanvasStore {
 			} else {
 				this.redoHistory = []
 			}
-		})
+		}, 300)
 	}
 
 	//CANVAS
@@ -109,9 +110,7 @@ class CanvasStore {
 	@observable
 	svgBaseline = 0
 	@observable
-	selectedFont = "Reviscii-Regular"
-	@observable
-	fontName = "Reviscii-Regular"
+	fontName = ""
 	@observable
 	selectionGlyphFontSize = 0
 
@@ -136,6 +135,10 @@ class CanvasStore {
 	altDown = false
 	@observable
 	ctrlDown = false
+	@observable
+	metaDown = false
+	@observable
+	shiftDown = false
 	
 	//Change canvas width
 	@action
@@ -184,9 +187,8 @@ class CanvasStore {
 	}
 
 	getCurrentState = () => ({
-		name: "unicode-editor-file",
+		name: "gdc-file",
 		timestamp: Math.floor(Date.now() / 1000),
-		firstRun: false,
 		canvasWidth: this.canvasWidth,
 		canvasHeight: this.canvasHeight,
 		cellWidth: this.cellWidth,
@@ -255,11 +257,11 @@ class CanvasStore {
 		const redoState = this.redoHistory.pop()
 		this.setCurrentState(JSON.parse(redoState))
 	}
-
+	@action
 	getEmptyCanvas = size => {
 		return Array.from({ length: this.canvasHeight }, this.getEmptyRow)
 	}
-
+	@action
 	getEmptyRow = () => {
 		return Array.from({ length: this.canvasWidth }, () => getEmptyCell())
 	}
@@ -380,7 +382,7 @@ class CanvasStore {
 	handleChangeTypingMode = () => {
 		this.typingMode = !this.typingMode
 		this.glyphClear()
-		document.getElementById("typingMode").checked = this.typingMode
+		document.getElementById("typingMode").checked = this.typingMode		
 	}
 	//Toggle Paint Mode
 	handleChangePaintMode = () => {
@@ -597,12 +599,48 @@ class CanvasStore {
 		this.ctrlDown = false
 	}
 	@action
+	handleMetaDown = () => {
+		this.metaDown = true
+	}
+	@action
+	handleMetaUp = () => {
+		this.metaDown = false
+	}
+	@action
+	handleShiftDown = () => {
+		this.shiftDown = true
+	}
+	@action
+	handleShiftUp = () => {
+		this.shiftDown = false
+	}
+	@action
 	handleMouseOver = event => {
 		if(this.paintMode) {
 			event.preventDefault
 			this.selected_x = Number(event.target.parentNode.getAttribute("data-x"))
 			this.selected_y = Number(event.target.parentNode.getAttribute("data-y"))
 			this.paintCell()
+		}
+	}
+	@action	
+	handleUndoRedo = () => {
+		if (getOS() == 'OSX') {
+			if (this.metaDown && !this.shiftDown) {
+				this.undo()
+			} else if (this.metaDown && this.shiftDown) {
+				this.redo()
+			} else {
+				return
+			}
+		} else {
+			if (this.ctrlDown && !this.shiftDown) {
+				this.undo()
+			} else if (this.ctrlDown && this.shiftDown) {
+				this.redo()
+			} else {
+				return
+			}
 		}
 	}
 	@action
@@ -625,40 +663,74 @@ class CanvasStore {
 	}
 	@action
 	goRight = () => {
-		if (this.selected_x < this.canvasWidth - 1) {
-			this.selected_x = Number(this.selected_x) + Number(1)
-		} else if ((this.selected_x = this.canvasWidth)) {
-			this.selected_x = Number(this.selected_x) - Number(1)
+		if (!this.altDown) {
+			if (this.selected_x < this.canvasWidth - 1) {
+				this.selected_x = Number(this.selected_x + 1)
+			} else if (this.selected_x == this.canvasWidth) {
+				return
+			}
+		}
+		if (this.altDown) {
+			if(this.selected_x < this.canvasWidth - 1 && this.selected_x <= this.canvasWidth - 6 ) {
+				this.selected_x = Number(this.selected_x + 5)
+			} else if (this.selected_x > this.canvasWidth - 6) {
+				this.selected_x = this.canvasWidth - 1
+			}
 		}
 		this.getFontSizeAtSelection()
 	}
 	@action
 	goLeft = () => {
 		//ArrowLeft
-		if (this.selected_x > 0) {
-			this.selected_x = Number(this.selected_x) - Number(1)
-		} else if ((this.selected_x = 1)) {
-			this.selected_x = Number(this.selected_x) - Number(1)
+		if(!this.altDown) {
+			if (this.selected_x > 0 ) {
+				this.selected_x = Number(this.selected_x - 1)
+			}
+		}
+		if (this.altDown) {
+			if(this.selected_x > 4 ) {
+				this.selected_x = Number(this.selected_x - 5)
+			} else if (this.selected_x <= 4) {
+				this.selected_x = 0
+			}
 		}
 		this.getFontSizeAtSelection()
 	}
 	@action
 	goDown = () => {
 		//ArrowDown
-		if (this.selected_y < this.canvasHeight - 1) {
-			this.selected_y = Number(this.selected_y) + Number(1)
-		} else if (this.selected_y == this.canvasHeight) {
-			this.selected_y = Number(this.selected_y) - Number(1)
+		if(!this.altDown) {
+			if (this.selected_y < this.canvasHeight - 1) {
+				this.selected_y = Number(this.selected_y + 1)
+			} else if (this.selected_y == this.canvasHeight) {
+				return
+			}	
 		}
+		if (this.altDown) {
+			if(this.selected_y < this.canvasHeight - 1 && this.selected_y <= this.canvasHeight - 6 ) {
+				this.selected_y = Number(this.selected_y + 5)
+			} else if (this.selected_y > this.canvasHeight - 6) {
+				this.selected_y = this.canvasHeight - 1
+			}
+		}
+
 		this.getFontSizeAtSelection()
 	}
 	@action
 	goUp = () => {
 		//ArrowUp
-		if (this.selected_y > 0) {
-			this.selected_y = Number(this.selected_y) - Number(1)
-		} else if ((this.selected_y = 1)) {
-			this.selected_y = Number(this.selected_y) - Number(1)
+		if(!this.altDown) {
+			if (this.selected_y > 0) {
+				this.selected_y = Number(this.selected_y - 1)
+			}
+		}
+		if (this.altDown) {
+			if(this.selected_y > 4 ) {
+				this.selected_y = Number(this.selected_y - 5)
+			} else if (this.selected_y <= 4) {
+				
+				this.selected_y = 0
+			}
 		}
 		this.getFontSizeAtSelection()
 	}

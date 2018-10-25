@@ -66,8 +66,6 @@ class Settings extends React.Component {
 					</ol>
 					<hr />
 
-					<HistoryControls />
-
 					<h3>Save / Load</h3>
 					<SaveAsButton
 						fileName={store.fileName}
@@ -81,7 +79,7 @@ class Settings extends React.Component {
 						updateExportSizeMultiplier={store.updateExportSizeMultiplier}
 					/>
 
-					<h3>Options</h3>
+					<h3>View options</h3>
 					<HideGrid
 						hideGrid={store.hideGrid}
 						handleChangeHideGrid={store.handleChangeHideGrid}
@@ -90,6 +88,14 @@ class Settings extends React.Component {
 						clipCells={store.clipCells}
 						handleChangeClipCells={store.handleChangeClipCells}
 					/>
+					<DarkTheme handleChangeTheme={store.handleChangeTheme} />
+					<PixelRendering
+						pixelRendering={store.pixelRendering}
+						handleChangePixelRendering={store.handleChangePixelRendering}
+					/>
+
+					<h3>Modes & Tools</h3>
+					<HistoryControls />
 					<TypingMode
 						typingMode={store.typingMode}
 						handleChangeTypingMode={store.handleChangeTypingMode}
@@ -97,11 +103,6 @@ class Settings extends React.Component {
 					<PaintMode
 						paintMode={store.paintMode}
 						handleChangePaintMode={store.handleChangePaintMode}
-					/>
-					<DarkTheme handleChangeTheme={store.handleChangeTheme} />
-					<PixelRendering
-						pixelRendering={store.pixelRendering}
-						handleChangePixelRendering={store.handleChangePixelRendering}
 					/>
 
 					<GlyphSelect />
@@ -149,14 +150,16 @@ class Settings extends React.Component {
 
 					<hr />
 
-					<h3>Contribute to future publications!</h3>
+					<h3>Contribute to the new issue of GDC User Guide!</h3>
 					<p>
-						If you would like to contribute your artwork to possible upcoming
-						GD.C zines, use the form below to submit your work. By clicking the
-						button below you give permission to use your artwork. Only your
-						name and country will be published. The contributors will receive a
-						pdf of the zines sent to email. The zines will be sold but only to
-						cover printing costs.
+						If you would like to contribute your artwork to the upcoming
+						GD.C User Guide v.2.0.0. zine, use the form below to submit your work. No limits!
+						<br /><br />
+						The zine will be published 28th of February at Kosminen gallery in Helsinki.
+						All contributions will be included to the zine (unless I get more than 200 submissions, which is when I need to do some curation. I will try to include everything though).
+						<br /><br />
+						Contributors will receive a pdf of the zine sent to email and the physical copy for the price of postage. 
+						The zines will be sold but only to cover printing costs and/or to fund future issues.
 					</p>
 					<br />
 					<SaveToDropboxButton
@@ -167,18 +170,13 @@ class Settings extends React.Component {
 						userCountry={store.userCountry}
 						updateCountry={store.updateCountry}
 					/>
+					<p>
+					<br />
+					By clicking the button above, you give permission to use your artwork in the zine and social media. 
+					Only your name and country will be published.
+					</p>
 
 					<hr />
-					<br />
-					<p>
-						Follow development at{" "}
-						<a
-							href="https://github.com/hlotvonen/unicode-art-editor"
-							target="_blank"
-						>
-							Github
-						</a>
-					</p>
 				</div>
 			</div>
 		)

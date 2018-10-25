@@ -73,9 +73,9 @@ export const rawSvgCell = ({
 			0 + " " + 0 + " " + svgWidth + " " + svgHeight
 		}
 	>	
+	<rect fill={glyphInvertedColor ? "" : "white"} fillOpacity={glyphInvertedColor ? "1" : "0"} width={svgWidth} height={svgHeight}/>
 		<g transform={`translate(${svgWidth / 2} ${svgHeight / 2})`}>
 			<g transform={`translate(${glyphOffsetX} ${glyphOffsetY})`}>
-				<rect fill={glyphInvertedColor ? "" : "white"} fillOpacity={glyphInvertedColor ? "1" : "0"} width={svgWidth} height={svgHeight} transform={`translate(${-(svgWidth / 2)} ${-(svgHeight / 2)})`}/>
 				<g transform={`scale(${flipGlyph} -1) rotate(${rotationAmount}) translate(0 ${-svgBaseline})`}>
 					<path fill={glyphInvertedColor ? "white" : "black"} d={glyphPath} transform={`translate(${-(svgWidth / 2)} ${-(svgHeight / 2)})`} />
 				</g>
