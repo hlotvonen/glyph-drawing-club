@@ -18,6 +18,7 @@ import AddRowOrCol from "./AddRowOrCol"
 import ExportButtons from "./ExportButtons"
 import SaveAsButton from "./SaveAsButton"
 import LoadButton from "./LoadButton"
+import LoadAndPlace from "./LoadAndPlace"
 import EmptyCanvas from "./EmptyCanvas"
 import SaveToDropboxButton from "./SaveToDropboxButton"
 import GlyphRotate from "./GlyphRotate"
@@ -25,6 +26,7 @@ import GlyphFlip from "./GlyphFlip"
 import GlyphInvertColor from "./GlyphInvertColor"
 import ClipCells from "./ClipCells"
 import TypingMode from "./TypingMode"
+import PaintMode from "./PaintMode"
 import PixelRendering from "./PixelRendering"
 import HistoryControls from "./HistoryControls"
 
@@ -73,6 +75,7 @@ class Settings extends React.Component {
 					/>
 
 					<LoadButton />
+					<LoadAndPlace />
 					<ExportButtons
 						exportSizeMultiplier={store.exportSizeMultiplier}
 						updateExportSizeMultiplier={store.updateExportSizeMultiplier}
@@ -90,6 +93,10 @@ class Settings extends React.Component {
 					<TypingMode
 						typingMode={store.typingMode}
 						handleChangeTypingMode={store.handleChangeTypingMode}
+					/>
+					<PaintMode
+						paintMode={store.paintMode}
+						handleChangePaintMode={store.handleChangePaintMode}
 					/>
 					<DarkTheme handleChangeTheme={store.handleChangeTheme} />
 					<PixelRendering

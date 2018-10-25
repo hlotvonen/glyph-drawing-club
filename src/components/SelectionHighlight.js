@@ -22,7 +22,7 @@ const SelectionHighlight = props => {
 
 	return (
 		<div
-			className="selectionHighlight"
+			className={(height === width ? "isSquare " : "") + "selectionHighlight"}
 			style={{
 				width,
 				height,

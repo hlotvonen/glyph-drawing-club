@@ -7,8 +7,8 @@ class GlyphOffsetX extends React.Component {
 		return (
 			<div>
 				{"Glyph offset X:"}
-				<button onClick={this.props.increaseGlyphOffsetX}> {"←"} </button>
-				<button onClick={this.props.decreaseGlyphOffsetX}> {"→"} </button>
+				<button onClick={this.props.decreaseGlyphOffsetX}> {"←"} </button>
+				<button onClick={this.props.increaseGlyphOffsetX}> {"→"} </button>
 				<span>{this.props.glyphOffsetX}</span>
 			</div>
 		)

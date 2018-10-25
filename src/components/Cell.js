@@ -13,9 +13,9 @@ const Cell = observer(props => {
 		rotationAmount,
 		flipGlyph,
 		glyphInvertedColor,
+		glyphOffsetY,
 		/*
 		TO-DO:
-		glyphOffsetY,
 		foregroundColor, //hex r,g,b
 		backgroundColor, //hex
 		color1, //0-100 blue
@@ -33,6 +33,9 @@ const Cell = observer(props => {
 			className={classes}
 			style={{ width: store.cellWidth, height: store.cellHeight }}
 			onClick={props.clickSelection}
+			onMouseUp={props.handleMouseUp}
+			onMouseDown={props.handleMouseDown}
+			onMouseOver={props.handleMouseOver}
 			data-y={props.y}
 			data-x={props.x}
 		>
@@ -46,6 +49,7 @@ const Cell = observer(props => {
 				rotationAmount,
 				flipGlyph,
 				glyphInvertedColor,
+				glyphOffsetY,
 			})}
 		</div>
 	)
@@ -60,17 +64,23 @@ export const rawSvgCell = ({
 	glyphFontSizeModifier,
 	rotationAmount,
 	flipGlyph,
+	glyphInvertedColor,
+	glyphOffsetY
 }) => (
 	<svg
 		height={Number(store.defaultFontSize) + Number(glyphFontSizeModifier)}
 		viewBox={
-			glyphOffsetX + " " + svgBaseline + " " + svgWidth + " " + svgHeight
+			0 + " " + 0 + " " + svgWidth + " " + svgHeight
 		}
-		style={{
-			transform: `scale(${flipGlyph}, -1) rotate(${rotationAmount}deg)`,
-		}}
-	>
-		<path d={glyphPath} />
+	>	
+		<g transform={`translate(${svgWidth / 2} ${svgHeight / 2})`}>
+			<g transform={`translate(${glyphOffsetX} ${glyphOffsetY})`}>
+				<rect fill={glyphInvertedColor ? "" : "white"} fillOpacity={glyphInvertedColor ? "1" : "0"} width={svgWidth} height={svgHeight} transform={`translate(${-(svgWidth / 2)} ${-(svgHeight / 2)})`}/>
+				<g transform={`scale(${flipGlyph} -1) rotate(${rotationAmount}) translate(0 ${-svgBaseline})`}>
+					<path fill={glyphInvertedColor ? "white" : "black"} d={glyphPath} transform={`translate(${-(svgWidth / 2)} ${-(svgHeight / 2)})`} />
+				</g>
+			</g>
+		</g>
 	</svg>
 )
 

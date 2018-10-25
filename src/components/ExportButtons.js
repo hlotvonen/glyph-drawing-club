@@ -1,12 +1,13 @@
 import React from "react"
-import { exportSvg as exportJpg } from "../utils/Export"
+import { exportPng, exportSvg } from "../utils/Export"
 import store from "../models/CanvasStore"
 
 class ExportButtons extends React.Component {
 	render() {
 		return (
-			<div className="exportJpg">
-				<button onClick={() => exportJpg()}> {"Export PNG"} </button>
+			<div>
+			<div className="exportPng">
+				<button onClick={() => exportPng()}> {"Export PNG"} </button>
 				Size:
 				<input
 					type="number"
@@ -20,6 +21,10 @@ class ExportButtons extends React.Component {
 				({store.widthPixels * store.exportSizeMultiplier}
 				px &times; {store.heightPixels * store.exportSizeMultiplier}
 				px)
+			</div>
+			<div className="exportSvg">
+				<button onClick={() => exportSvg()}> {"Export Svg"} </button>
+			</div>
 			</div>
 		)
 	}

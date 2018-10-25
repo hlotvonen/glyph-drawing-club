@@ -158,9 +158,8 @@ class GlyphSelect extends Component {
 		cont.innerHTML = ""
 		let cnv = document.createElement("canvas")
 		cnv.width = Math.floor(this.getDPR() * 40)
-		cnv.height = Math.floor(this.getDPR() * 60) //scaleCnv(cnv);
+		cnv.height = Math.floor(this.getDPR() * 45) //scaleCnv(cnv);
 		let ctx = cnv.getContext("2d")
-		ctx.font = "20px sans"
 
 		let lim = Math.min(this.state.off + this.state.num, this.glyphCnt())
 		let scale = (32 * this.getDPR()) / this.state.font.head.unitsPerEm
@@ -170,7 +169,17 @@ class GlyphSelect extends Component {
 			let path = Typr.U.glyphToPath(this.state.font, i)
 
 			cnv.width = cnv.width
-			ctx.translate(10 * this.getDPR(), Math.round(36 * this.getDPR()))
+			ctx.translate(5 * this.getDPR(), Math.round(30 * this.getDPR()))
+
+			if ( this.selectedFont == "Tesserae-Regular") {
+				ctx.fillStyle = "#f5f5f5"
+				ctx.fillRect(
+					0,
+					Math.round(-25.7 * this.getDPR()),
+					Math.round(25.7 * this.getDPR()),
+					Math.round(25.7 * this.getDPR())
+				)
+			}
 
 			if (this.state.inverted) {
 				ctx.fillStyle = "black"
@@ -182,13 +191,15 @@ class GlyphSelect extends Component {
 				)
 			}
 
+			ctx.fillStyle = "black"
+			ctx.font = "16px monospace"
 			ctx.fillText(i, 0, 20)
 
 			ctx.scale(scale, -scale)
 			Typr.U.pathToContext(path, ctx)
 
 			if (this.state.inverted) {
-				ctx.fillStyle = "white"
+				ctx.fillStyle = "#f5f5f5"
 			} else {
 				ctx.fillStyle = "black"
 			}

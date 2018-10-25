@@ -6,13 +6,16 @@ import typingmodestore from "../models/TypingModeStore"
 import Grid from "./Grid"
 import KeymappingsBar from "./KeymappingsBar"
 import GridControls from "./GridControls"
+import Coordinates from "./Coordinates"
 
 class Canvas extends Component {
 	componentDidMount() {
 		document.addEventListener("keydown", this.handleKeyPress, false)
+		document.addEventListener("keyup", this.handleKeyPressUp, false)
 	}
 	componentWillUnmount() {
 		document.removeEventListener("keydown", this.handleKeyPress, false)
+		document.removeEventListener("keyup", this.handleKeyPressUp, false)
 	}
 
 	handleKeyPress = event => {
@@ -42,20 +45,30 @@ class Canvas extends Component {
 					i: store.handleChangeInvertColor,
 					c: store.handleChangeClipCells,
 					t: store.handleChangeTypingMode,
+					b: store.handleChangePaintMode,
+					Alt: store.handleAltDown,
+					Control: store.handleCtrlDown,
 
+					//Unused keys:
+					//WYUDGZVBN
 					A: store.selectAll,
 					S: store.makeSelection,
 					C: store.copySelection,
 					M: store.mirrorSelection,
 					T: store.transposeSelection,
 					R: store.rotateSelection,
-					L: store.rotateIndividuallySelection,
-					K: store.flipIndividuallySelection,
+					O: store.rotateIndividuallySelection,
+					P: store.flipIndividuallySelection,
 					F: store.flipSelection,
 					E: store.clearArea,
 					Q: store.fillArea,
 					I: store.invertColorSelection,
+					H: store.shiftAreaLeft,
+					J: store.shiftAreaDown,
+					K: store.shiftAreaUp,
+					L: store.shiftAreaRight,
 					x: store.emptySelection,
+					X: store.emptySelection,
 
 					m: setstore.handleChangeMapping,
 					//draw glyph from keymap on to canvas
@@ -96,6 +109,21 @@ class Canvas extends Component {
 		}
 	}
 
+	handleKeyPressUp = event => {
+		const handlers = {
+			Alt: store.handleAltUp,
+			Control: store.handleCtrlUp
+		}
+		const handler = handlers[event.key]
+
+		if (!handler) {
+			return
+		}
+
+		handler()
+		event.preventDefault()
+	}
+
 	render() {
 		return (
 			<div
@@ -108,6 +136,7 @@ class Canvas extends Component {
 				<div className="aligner">
 					<Grid />
 					<GridControls />
+					<Coordinates />
 				</div>
 				<KeymappingsBar />
 			</div>

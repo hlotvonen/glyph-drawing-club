@@ -18,11 +18,13 @@ class SetSelect extends React.Component {
 
 		return (
 			<div className="select_set">
-				{"Add set "}
 				<button type="button" onClick={this.props.addSet}>
-					+
+					Add
 				</button>
-				{"Select set: "}
+				<button type="button" onClick={this.props.deleteSet}>
+					Delete
+				</button>
+				{"Select: "}
 				{selectSetButtons}
 			</div>
 		)

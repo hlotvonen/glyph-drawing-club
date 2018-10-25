@@ -2,7 +2,7 @@ import React from "react"
 import store from "../models/CanvasStore"
 import { action } from "mobx"
 
-class LoadButton extends React.Component {
+class LoadAndPlace extends React.Component {
 	state = {
 		waitingForFileUpload: false,
 	}
@@ -30,15 +30,20 @@ class LoadButton extends React.Component {
 					    } );
 					} )
 				}
+				let canvasHeight = jsonObj["canvasHeight"]
+				let canvasWidth = jsonObj["canvasWidth"]
 
-				store.canvasHeight = jsonObj["canvasHeight"]
-				store.canvasWidth = jsonObj["canvasWidth"]
-				store.cellWidth = jsonObj["cellWidth"]
-				store.cellHeight = jsonObj["cellHeight"]
-				store.defaultFontSize = jsonObj["defaultFontSize"]
-				store.canvas = jsonObj["canvas"]
-				store.widthPixels = jsonObj["widthPixels"]
-				store.heightPixels = jsonObj["heightPixels"]
+				for (let y_i = 0; y_i < canvasHeight; y_i++) {
+					for (let x_i = 0; x_i < canvasWidth; x_i++) {
+						if (
+							store.selected_y + y_i >= store.canvasHeight ||
+							store.selected_x + x_i >= store.canvasWidth
+						) {
+							continue
+						}
+						store.canvas[store.selected_y + y_i][store.selected_x + x_i].replace(jsonObj["canvas"][y_i][x_i])
+					}
+				}
 				
 			}
 			temporaryFileReader.readAsText(inputFile)
@@ -61,7 +66,7 @@ class LoadButton extends React.Component {
 		const latestUploadedFile = event.target.files.item(fileList.length - 1)
 
 		try {
-			const fileContents = LoadButton.readUploadedFileAsText(latestUploadedFile)
+			const fileContents = LoadAndPlace.readUploadedFileAsText(latestUploadedFile)
 			this.setState({
 				waitingForFileUpload: false,
 			})
@@ -76,10 +81,10 @@ class LoadButton extends React.Component {
 	render() {
 		return (
 			<div>
-				{"Load from file: "}
+				{"Place from file: "}
 				<input type="file" name="myFile" onChange={this.uploadFile} />
 			</div>
 		)
 	}
 }
-export default LoadButton
+export default LoadAndPlace
