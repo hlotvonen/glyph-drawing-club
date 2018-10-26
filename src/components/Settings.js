@@ -153,12 +153,11 @@ class Settings extends React.Component {
 					<h3>Contribute to the new issue of GDC User Guide!</h3>
 					<p>
 						If you would like to contribute your artwork to the upcoming
-						GD.C User Guide v.2.0.0. zine, use the form below to submit your work. No limits!
+						GD.C User Guide v.2.0.0. zine, use the form below to submit your work. All contributions will be included to the zine. No limits!
 						<br /><br />
-						The zine will be published 28th of February at Kosminen gallery in Helsinki.
-						All contributions will be included to the zine (unless I get more than 200 submissions, which is when I need to do some curation. I will try to include everything though).
+						Last day to submit: 15.1.2019. The zine will be published 28th of February at Kosminen gallery in Helsinki.
 						<br /><br />
-						Contributors will receive a pdf of the zine sent to email and the physical copy for the price of postage. 
+						Contributors will receive a pdf of the zine sent to email and can get the physical copy for the price of postage. 
 						The zines will be sold but only to cover printing costs and/or to fund future issues.
 					</p>
 					<br />

@@ -12,8 +12,6 @@ class Numbers extends Component {
 					width: store.cellWidth,
 					height: store.cellHeight,
 					transform: `translate(${store.selected_x * store.cellWidth}px, ${store.selected_y * store.cellHeight}px)`
-					//top: store.selected_y * store.cellHeight,
-					//left: store.selected_x * store.cellWidth,
 				}}
 			/>
 		)
