@@ -84,15 +84,17 @@ class Settings extends React.Component {
 						hideGrid={store.hideGrid}
 						handleChangeHideGrid={store.handleChangeHideGrid}
 					/>
-					<ClipCells
+					<DarkTheme handleChangeTheme={store.handleChangeTheme} />
+					{/*
+						<ClipCells
 						clipCells={store.clipCells}
 						handleChangeClipCells={store.handleChangeClipCells}
 					/>
-					<DarkTheme handleChangeTheme={store.handleChangeTheme} />
 					<PixelRendering
 						pixelRendering={store.pixelRendering}
 						handleChangePixelRendering={store.handleChangePixelRendering}
-					/>
+					/>	
+					*/}
 
 					<h3>Modes & Tools</h3>
 					<HistoryControls />

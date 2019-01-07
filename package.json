@@ -49,6 +49,7 @@
     "mobx-store": "^3.4.0",
     "react": "^15.1.0",
     "react-dom": "^15.1.0",
+    "save-svg-as-png": "^1.4.6",
     "uglifyjs-webpack-plugin": "^1.3.0"
   },
   "prettier": {
