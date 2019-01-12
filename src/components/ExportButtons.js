@@ -1,5 +1,5 @@
 import React from "react"
-import { exportAsSvg, exportAsPng } from "../utils/Export"
+import { exportAs } from "../utils/Export"
 import store from "../models/CanvasStore"
 
 class ExportButtons extends React.Component {
@@ -23,7 +23,7 @@ class ExportButtons extends React.Component {
 				px)
 			</div>*/}
 			<div className="exportPng">
-				<button onClick={() => exportAsPng()}> {"Export Png"} </button>	Size:
+				<button onClick={() => exportAs("png")}> {"Export Png"} </button>	Size:
 				<input
 					type="number"
 					min="1"
@@ -38,7 +38,7 @@ class ExportButtons extends React.Component {
 				px) 
 			</div>
 			<div className="exportSvg">
-				<button onClick={() => exportAsSvg()}> {"Export Svg"} </button>
+				<button onClick={() => exportAs("svg")}> {"Export Svg"} </button>
 			</div>
 			</div>
 		)
