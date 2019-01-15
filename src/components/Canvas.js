@@ -8,6 +8,7 @@ import KeymappingsBar from "./KeymappingsBar"
 import GridControls from "./GridControls"
 import Coordinates from "./Coordinates"
 
+
 class Canvas extends Component {
 	componentDidMount() {
 		document.addEventListener("keydown", this.handleKeyPress, false)

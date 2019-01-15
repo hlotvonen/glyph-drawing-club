@@ -1,4 +1,4 @@
-import domtoimage from "dom-to-image"
+//import domtoimage from "dom-to-image"
 import { saveSvgAsPng } from "save-svg-as-png"
 import { Dropbox } from "dropbox"
 import store from "../models/CanvasStore"
@@ -41,11 +41,11 @@ export function saveToDropbox() {
 	)
 
 	const cells = (
-		<g transform={`translate(${((Number(store.canvasWidth) - 2) / 2) * store.cellWidth * -1})`}>
+		<g transform={`translate(${((store.canvasWidth - 1) / 2) * store.cellWidth * -1} 0)`}>
 			{store.canvas.map((row, y) => (
-				<g key={y} transform={`translate(${-(store.cellWidth / 2)} ${y * store.cellHeight})`}>
+				<g key={y} transform={`translate(0 ${y * store.cellHeight})`}>
 					{row.map((cell, x) => (
-						<g key={x} transform={`translate(${(x * store.cellWidth)})`}>
+						<g key={x} transform={`translate(${(x * store.cellWidth + cell[5] / 2)})`}>
 							{rawSvgCell({
 								glyphPath: cell[0],
 								svgWidth: cell[1],
@@ -96,7 +96,8 @@ export function saveToDropbox() {
 			console.error(error)
 		})
 
-	/*domtoimage
+	/*
+	domtoimage
 		.toBlob(document.getElementById("canvas"), {
 			style: style,
 			height: store.heightPixels * store.exportSizeMultiplier,

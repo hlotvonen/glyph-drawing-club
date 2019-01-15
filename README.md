@@ -137,7 +137,6 @@ npm start
 
 ### To-do
 
-- [ ] Saving large canvases as PNG crashes the browser (and/or takes a long time)
 - [ ] Tabbed sidebar
 - [ ] Layers or a feature to overlap characters
 - [ ] Color tool (Edit background and foreground colors separately, save and load color palettes, fast risograph workflow, color editing and coloring tools)

@@ -26,7 +26,7 @@ const Cell = observer(props => {
 
 	const clipCellsClass = store.clipCells ? "clipCells" : ""
 	const glyphInvertedColorClass = glyphInvertedColor ? "invertColor" : ""
-	const classes = `${clipCellsClass} ${glyphInvertedColorClass}`
+	const classes = `cell ${clipCellsClass} ${glyphInvertedColorClass}`
 
 	return (
 		<div

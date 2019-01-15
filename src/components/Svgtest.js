@@ -36,7 +36,7 @@ class Svgtest extends Component {
 		)
 
 		return (
-			<div width={store.canvasWidth * store.cellWidth} style={{position: "absolute", left: "0"}} >
+			<div width={store.canvasWidth * store.cellWidth} >
 					<svg style={{background: "white"}} width={store.canvasWidth * store.cellWidth} height={store.canvasHeight * store.cellHeight}>	
 						{cells}
 					</svg>

@@ -1,6 +1,6 @@
 import React from "react"
 import ReactDOM from "react-dom"
-import domtoimage from "dom-to-image"
+//import domtoimage from "dom-to-image"
 import FileSaver from "file-saver"
 import store from "../models/CanvasStore"
 import { rawSvgCell } from "../components/Cell"
