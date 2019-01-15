@@ -567,8 +567,8 @@ class CanvasStore {
 	@action
 	clickSelection = event => {
 		event.preventDefault
-		this.selected_x = Number(event.target.parentNode.getAttribute("data-x"))
-		this.selected_y = Number(event.target.parentNode.getAttribute("data-y"))
+		this.selected_x = Number(event.target.getAttribute("data-x"))
+		this.selected_y = Number(event.target.getAttribute("data-y"))
 		this.getFontSizeAtSelection()
 	}
 	@action
@@ -618,8 +618,8 @@ class CanvasStore {
 	handleMouseOver = event => {
 		if(this.paintMode) {
 			event.preventDefault
-			this.selected_x = Number(event.target.parentNode.getAttribute("data-x"))
-			this.selected_y = Number(event.target.parentNode.getAttribute("data-y"))
+			this.selected_x = Number(event.target.getAttribute("data-x"))
+			this.selected_y = Number(event.target.getAttribute("data-y"))
 			this.paintCell()
 		}
 	}

@@ -28,31 +28,46 @@ const Cell = observer(props => {
 	const glyphInvertedColorClass = glyphInvertedColor ? "invertColor" : ""
 	const classes = `cell ${clipCellsClass} ${glyphInvertedColorClass}`
 
-	return (
-		<div
-			className={classes}
-			style={{ width: store.cellWidth, height: store.cellHeight }}
-			onClick={props.clickSelection}
-			onMouseUp={props.handleMouseUp}
-			onMouseDown={props.handleMouseDown}
-			onMouseOver={props.handleMouseOver}
-			data-y={props.y}
-			data-x={props.x}
-		>
-			{rawSvgCell({
-				glyphPath,
-				svgWidth,
-				svgHeight,
-				svgBaseline,
-				glyphOffsetX,
-				glyphFontSizeModifier,
-				rotationAmount,
-				flipGlyph,
-				glyphInvertedColor,
-				glyphOffsetY,
-			})}
-		</div>
-	)
+	if (glyphPath == "M0 0") {
+		return(
+			<div
+				className={classes}
+				style={{ width: store.cellWidth, height: store.cellHeight }}
+				onClick={props.clickSelection}
+				onMouseUp={props.handleMouseUp}
+				onMouseDown={props.handleMouseDown}
+				onMouseOver={props.handleMouseOver}
+				data-y={props.y}
+				data-x={props.x}
+			></div>
+		)
+	} else {
+		return (
+			<div
+				className={classes}
+				style={{ width: store.cellWidth, height: store.cellHeight }}
+				onClick={props.clickSelection}
+				onMouseUp={props.handleMouseUp}
+				onMouseDown={props.handleMouseDown}
+				onMouseOver={props.handleMouseOver}
+				data-y={props.y}
+				data-x={props.x}
+			>
+				{rawSvgCell({
+					glyphPath,
+					svgWidth,
+					svgHeight,
+					svgBaseline,
+					glyphOffsetX,
+					glyphFontSizeModifier,
+					rotationAmount,
+					flipGlyph,
+					glyphInvertedColor,
+					glyphOffsetY,
+				})}
+			</div>
+		)
+	}
 })
 
 export const rawSvgCell = ({

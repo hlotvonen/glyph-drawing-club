@@ -35,12 +35,10 @@ class Grid extends Component {
 			</div>
 		))
 
-		const pixelRendering = store.pixelRendering ? "pixelRendering" : ""
-
 		return (
 			<div
 				id="canvas"
-				className={`grid ${pixelRendering}`}
+				className={`grid`}
 				style={{
 					transform: `translate(${gridStore.settings.posX}px, ${
 						gridStore.settings.posY
