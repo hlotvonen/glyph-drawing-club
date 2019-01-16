@@ -41,34 +41,6 @@ const Cell = observer(props => {
 			>
 			</div>
 		)
-	} else if (glyphPath == "M0 0" && glyphInvertedColor == true ) {
-		return( 
-			<div
-					style={{ 
-						width: store.cellWidth, 
-						height: store.cellHeight,
-					}}
-					onClick={props.clickSelection}
-					onMouseUp={props.handleMouseUp}
-					onMouseDown={props.handleMouseDown}
-					onMouseOver={props.handleMouseOver}
-					data-y={props.y}
-					data-x={props.x}
-
-			>
-				<svg
-				height={Number(store.defaultFontSize) + Number(glyphFontSizeModifier)}
-				viewBox={0 + " " + 0 + " " + 800 / (store.cellHeight / store.cellWidth) + " " + 800}
-				>	
-					<rect 
-						fill={glyphInvertedColor ? "black" : ""}
-						fillOpacity={glyphInvertedColor ? "1" : "0"} 
-						width={800 / (store.cellHeight / store.cellWidth)} 
-						height={800}
-					/>
-				</svg>
-			</div>
-		)
 	} else {
 		return (
 			<div
