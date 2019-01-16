@@ -24,28 +24,58 @@ const Cell = observer(props => {
 		*/
 	] = props.cell
 
-	const clipCellsClass = store.clipCells ? "clipCells" : ""
-	const glyphInvertedColorClass = glyphInvertedColor ? "invertColor" : ""
-	const classes = `cell ${clipCellsClass} ${glyphInvertedColorClass}`
-
-	if (glyphPath == "M0 0") {
+	if (glyphPath == "M0 0" && glyphInvertedColor == false) {
 		return(
 			<div
-				className={classes}
-				style={{ width: store.cellWidth, height: store.cellHeight }}
+				style={{ 
+					width: store.cellWidth, 
+					height: store.cellHeight,
+				}}
 				onClick={props.clickSelection}
 				onMouseUp={props.handleMouseUp}
 				onMouseDown={props.handleMouseDown}
 				onMouseOver={props.handleMouseOver}
 				data-y={props.y}
 				data-x={props.x}
-			></div>
+
+			>
+			</div>
+		)
+	} else if (glyphPath == "M0 0" && glyphInvertedColor == true ) {
+		return( 
+			<div
+					style={{ 
+						width: store.cellWidth, 
+						height: store.cellHeight,
+					}}
+					onClick={props.clickSelection}
+					onMouseUp={props.handleMouseUp}
+					onMouseDown={props.handleMouseDown}
+					onMouseOver={props.handleMouseOver}
+					data-y={props.y}
+					data-x={props.x}
+
+			>
+				<svg
+				height={Number(store.defaultFontSize) + Number(glyphFontSizeModifier)}
+				viewBox={0 + " " + 0 + " " + 800 / (store.cellHeight / store.cellWidth) + " " + 800}
+				>	
+					<rect 
+						fill={glyphInvertedColor ? "black" : ""}
+						fillOpacity={glyphInvertedColor ? "1" : "0"} 
+						width={800 / (store.cellHeight / store.cellWidth)} 
+						height={800}
+					/>
+				</svg>
+			</div>
 		)
 	} else {
 		return (
 			<div
-				className={classes}
-				style={{ width: store.cellWidth, height: store.cellHeight }}
+				style={{ 
+					width: store.cellWidth, 
+					height: store.cellHeight 
+				}}
 				onClick={props.clickSelection}
 				onMouseUp={props.handleMouseUp}
 				onMouseDown={props.handleMouseDown}
@@ -84,16 +114,26 @@ export const rawSvgCell = ({
 }) => (
 	<svg
 		height={Number(store.defaultFontSize) + Number(glyphFontSizeModifier)}
-		viewBox={
-			0 + " " + 0 + " " + svgWidth + " " + svgHeight
-		}
+		viewBox={0 + " " + 0 + " " + 800 / (store.cellHeight / store.cellWidth) + " " + 800}
 	>	
-		<g transform={`translate(${svgWidth / 2} ${svgHeight / 2})`}>
-			<g transform={`translate(${glyphOffsetX} ${glyphOffsetY})`}>
-				<rect fill={glyphInvertedColor ? "" : "white"} fillOpacity={glyphInvertedColor ? "1" : "0"} width={svgWidth} height={svgHeight} transform={`translate(${-(svgWidth / 2)} ${-(svgHeight / 2)})`}/>
-				<g transform={`scale(${flipGlyph} -1) rotate(${rotationAmount}) translate(0 ${-svgBaseline})`}>
-					<path fill={glyphInvertedColor ? "white" : "black"} d={glyphPath} transform={`translate(${-(svgWidth / 2)} ${-(svgHeight / 2)})`} />
-				</g>
+		<g transform={`translate(${Number(400) + Number(glyphOffsetX)} ${Number(400) + Number(glyphOffsetY)})`}> 
+			<rect 
+				fill={glyphInvertedColor ? "black" : "white"} 
+				fillOpacity={glyphInvertedColor ? "1" : "0"} 
+				width={800 / (store.cellHeight / store.cellWidth)} 
+				height={800}
+				transform={`translate(${-400} ${-400})`}
+			/>
+			<g transform={`
+				scale(${flipGlyph * (800 / svgHeight) } -${800 / svgHeight}) 
+				rotate(${rotationAmount}) 
+				translate(0 ${-svgBaseline})
+			`}>
+				<path 
+					fill={glyphInvertedColor ? "white" : "black"} 
+					d={glyphPath} 
+					transform={`translate(${-(svgHeight / 2)} ${-(svgHeight / 2)})`} 
+				/>
 			</g>
 		</g>
 	</svg>
