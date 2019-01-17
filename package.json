@@ -3,10 +3,10 @@
   "version": "1.0.0",
   "description": "Boilerplate for MobX + React project with JSX, ES6 and decorator compilation",
   "scripts": {
-    "start": "webpack-dev-server --hot --open",
+    "start": "webpack-dev-server --hot --open --env dev",
     "lint": "./node_modules/.bin/eslint src",
     "prettier": "./node_modules/.bin/prettier --write src/**/*.js",
-    "build": "webpack"
+    "build": "webpack --env prod"
   },
   "repository": {
     "type": "git",
