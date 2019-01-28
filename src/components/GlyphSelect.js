@@ -14,7 +14,7 @@ class GlyphSelect extends Component {
 		this.state = {
 			off: 0,
 			font: [],
-			num: 130,
+			num: 100,
 			gid: 0,
 			uncd: null,
 			fontfile: "",
@@ -241,30 +241,7 @@ class GlyphSelect extends Component {
 
 	glyphClick = e => {
 		this.setState({ gid: e.target.gid })
-		this.displayUnicode()
 		this.glyphToSVG()
-	}
-
-	displayUnicode() {
-		let props = document.getElementById("properties")
-		let hex = "---",
-			str = "---"
-		let ucode = this.state.uncd[this.state.gid]
-		if (ucode != null) {
-			hex = ucode[0].toString(16)
-			while (hex.length < 4) hex = "0" + hex
-			str = String.fromCharCode(ucode[0])
-			//update unicode number in the store
-			store.selectedUnicode = ucode[0]
-		}
-		props.innerHTML =
-			"Hex: #" +
-			hex +
-			"</br> Dec: #" +
-			ucode +
-			"</br> <span> " +
-			str +
-			"</span>"
 	}
 	getDPR() {
 		return window["devicePixelRatio"] || 1
@@ -323,10 +300,7 @@ class GlyphSelect extends Component {
 					<option value="Submona">Submona (Swift_JIS)</option>
 				</select>
 				<br />
-				<b>Or drag and drop a font file (otf/ttf)</b>
 				<br />
-				<br />
-				<div>Currently selected font: {store.fontName}</div>
 				<button type="button" onClick={() => this.drawPrev()}>
 					Previous
 				</button>

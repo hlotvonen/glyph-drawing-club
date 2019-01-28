@@ -51,6 +51,7 @@
     "mobx-store": "^3.4.0",
     "react": "^15.1.0",
     "react-dom": "^15.1.0",
+    "react-tabs": "^3.0.0",
     "save-svg-as-png": "^1.4.6"
   },
   "prettier": {

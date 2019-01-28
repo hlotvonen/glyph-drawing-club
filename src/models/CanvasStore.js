@@ -35,15 +35,15 @@ class CanvasStore {
 
 	//SETTINGS
 	@observable
-	canvasWidth = 10
+	canvasWidth = 40
 	@observable
-	canvasHeight = 10
+	canvasHeight = 25
 	@observable
-	cellWidth = 30
+	cellWidth = 20
 	@observable
-	cellHeight = 30
+	cellHeight = 20
 	@observable
-	defaultFontSize = 30
+	defaultFontSize = 20
 	@observable
 	hideGrid = false
 	@observable
@@ -528,11 +528,11 @@ class CanvasStore {
 		this.glyphClear
 		this.selected_y = 0
 		this.selected_x = 0
-		this.canvasWidth = 10
-		this.canvasHeight = 10
-		this.cellWidth = 30
-		this.cellHeight = 30
-		this.defaultFontSize = 30
+		this.canvasWidth = 40
+		this.canvasHeight = 25
+		this.cellWidth = 20
+		this.cellHeight = 20
+		this.defaultFontSize = 20
 		this.widthPixels = this.canvasWidth * this.cellWidth
 		this.heightPixels = this.canvasHeight * this.cellHeight
 		this.canvas = Array.from({ length: this.canvasHeight }, () =>

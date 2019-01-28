@@ -4,10 +4,9 @@ import store from "../models/CanvasStore.js"
 import setstore from "../models/KeymappingsStore"
 import typingmodestore from "../models/TypingModeStore"
 import Grid from "./Grid"
-import KeymappingsBar from "./KeymappingsBar"
 import GridControls from "./GridControls"
 import Coordinates from "./Coordinates"
-
+import SelectedGlyph from "./SelectedGlyph"
 
 class Canvas extends Component {
 	componentDidMount() {
@@ -135,14 +134,22 @@ class Canvas extends Component {
 			<div
 				className={
 					"canvas_container" +
-					(store.hideGrid ? " hideGrid" : "")				}
+					(store.hideGrid ? " hideGrid" : "")
+				}
 			>
 				<div className="aligner">
 					<Grid />
 					<GridControls />
 					<Coordinates />
+					<div className="SelectedGlyphContainer">
+						<SelectedGlyph
+							glyphPath={store.glyphPath}
+							svgWidth={store.svgWidth}
+							svgHeight={store.svgHeight}
+							svgBaseline={store.svgBaseline}
+						/>
+					</div>
 				</div>
-				<KeymappingsBar />
 			</div>
 		)
 	}

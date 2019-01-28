@@ -109,6 +109,7 @@ canvas & grid
 	top:0;
 	left:0;
 	pointer-events: none;
+	opacity: 0.5;
 }
 .UiLayer {
 	position: absolute;
@@ -270,22 +271,47 @@ ol.instructions {
 	list-style: initial;
 	list-style-type:decimal;
 	list-style-position: inside;
+	margin-top: 0;
 }
-ol.instructions li {
-	margin-top: 3px;
+ol li {
+	margin-top: 5px;
 }
 span.hotkey {
-	background: #333;
-	padding: 3px;
+	background: #eee;
+	padding: 2px;
 	border-radius: 5px;
-	color:white;
 }
 #dropbox-response {
 	color:red;
 }
 h3 {
+	width: 100%;
+	background: #eee;
+	font-weight: bold;
+	padding: 0.5em;
+	margin: 1em 0 0.5em 0;
+	text-transform: uppercase;
+	letter-spacing: 1px;
+}
+h4 {
 	font-weight: bold;
 	margin: 1em 0 0.5em 0;
+}
+table,
+tr {
+	width: 100%;
+}
+tr {
+	border-bottom:1px dotted grey;
+}
+td {
+	padding-bottom: 2px;
+}
+table tr td {
+	width: 65%;
+}
+table tr td:first-child {
+	width: 35%;
 }
 
 /* ~~~~~~~~~~~~~~~~~~~~~
@@ -297,6 +323,8 @@ controls
 	padding: 5px;
 	overflow-y: scroll;
 	flex: none;
+	box-shadow: 0 0 2px 0 rgba(0,0,0,0.3);
+
 }
 .control_component {
 	display:block;
@@ -356,15 +384,16 @@ keymappings bar
 .KeyMappingsContainer .KeyMappingsFlexer > div {
 	text-align: center;
 	box-sizing:border-box;
-	width: 60px;
+	width: 40px;
 	border:none;
 	display: inline-block;
 	position: relative;
 	overflow: visible;
 }
-.ToggleMapping, .select_set {
+.ToggleMapping, 
+.select_set {
 	display: inline-block;
-	margin-right: 5px;
+	margin-right: 4px;
 }
 
 /* ~~~~~~~~~~~~~~~~~~~~~
@@ -374,8 +403,8 @@ selected glyph in keymappings bar
 	position: relative;
 }
 .selectedGlyph .vector {
-	height: 50px;
-	width: 50px;
+	height: 30px;
+	width: 30px;
 	border: 1px solid black;
 	overflow: visible;
 	box-sizing:border-box;
@@ -384,18 +413,21 @@ selected glyph in keymappings bar
 }
 .SelectedGlyphContainer {
 	width: 185px;
-	height: 80px;
+	height: 50px;
     margin-top: auto;
-    position: relative;
+    position: absolute;
+    left:10px;
+    bottom: 10px;
 }
 .SelectedGlyphContainer .selectedGlyph {
 	display: inline;
-	width: 80px;
-	height: 80px;
+	width: 50px;
+	height: 50px;
 }
 .SelectedGlyphContainer .selectedGlyph .vector {
-	width: 80px;
-	height: 80px;
+	width: 50px;
+	height: 50px;
+	background: white;
 }
 #properties {
 	display:block;
@@ -411,4 +443,64 @@ selected glyph in keymappings bar
 	position: absolute;
 	top:0;left:0;right:0;bottom:0;
 	margin:auto;
+}
+
+/* ~~~~~~~~~~~~~~~~~~~~~
+react-tabs
+~~~~~~~~~~~~~~~~~~~~~ */
+.react-tabs {
+  -webkit-tap-highlight-color: transparent;
+}
+
+.react-tabs__tab-list {
+  border-bottom: 1px solid #aaa;
+  margin: 0 0 10px;
+  padding: 0;
+}
+
+.react-tabs__tab {
+  display: inline-block;
+  border: 1px solid transparent;
+  border-bottom: none;
+  bottom: -1px;
+  position: relative;
+  list-style: none;
+  padding: 6px 12px;
+  cursor: pointer;
+}
+
+.react-tabs__tab--selected {
+  background: #fff;
+  border-color: #aaa;
+  color: black;
+  border-radius: 5px 5px 0 0;
+}
+
+.react-tabs__tab--disabled {
+  color: GrayText;
+  cursor: default;
+}
+
+.react-tabs__tab:focus {
+  box-shadow: 0 0 5px hsl(208, 99%, 50%);
+  border-color: hsl(208, 99%, 50%);
+  outline: none;
+}
+
+.react-tabs__tab:focus:after {
+  content: "";
+  position: absolute;
+  height: 5px;
+  left: -4px;
+  right: -4px;
+  bottom: -5px;
+  background: #fff;
+}
+
+.react-tabs__tab-panel {
+  display: none;
+}
+
+.react-tabs__tab-panel--selected {
+  display: block;
 }
