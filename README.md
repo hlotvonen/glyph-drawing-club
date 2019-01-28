@@ -17,32 +17,6 @@ npm install
 npm start
 ```
 
-### To-do
-
-- [ ] Layers or a feature to overlap characters
-- [ ] Color tool (Edit background and foreground colors separately, save and load color palettes, fast risograph workflow, color editing and coloring tools)
-- [ ] UI improvements (more condensed sidebar, unify button styles and icons across browsers etc.)
-- [ ] Save & load keymappings
-- [ ] Highlight all cells with a glyph in it
-- [ ] Tooltips
-- [ ] Figure out a better shortcut for typing mode
-
-#### To-do in the future (maybe)
-
-- [ ] Make a video tutorial
-- [ ] Fill area with random glyphs
-- [ ] Insert glyph with incremental modifiers (size, rotate, flip, etc)
-- [ ] Mobile version?
-- [ ] Gallery, where users can upload their creations
-- [ ] Frames with onion skin (to make animation)
-- [ ] Top-down & right-to-left writing modes
-- [ ] Add faster working mode for working with Taiwanese ANSI (Mainly create keyboard shortcuts for offsetting)
-
-
-#### Bugs
-
-- [ ] Chrome & Windows when trying to drag and drop a font gives Uncaught TypeError: Failed to execute 'readAsArrayBuffer' on 'FileReader': parameter 1 is not of type 'Blob'. at HTMLBodyElement.GlyphSelect.\_this.onDrop
-
 ### About
 GlyphDrawing.club has been designed and developed by [@hlotvonen](http://heikkilotvonen.fi) and [@i-tu](https://github.com/i-tu) using React and MobX. For help, ideas, contributions, etc. open an issue or send an email to [hlotvonen@gmail.com](mailto:hlotvonen@gmail.com).
 
