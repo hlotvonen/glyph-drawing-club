@@ -5,7 +5,7 @@ Glyph Drawing Club
 
 Check "Help" tab on the site for keyboard shortcuts and usage.
 
-###Font Licences
+### Font Licences
 
 Check detailed licencing info for fonts from the [wiki](https://github.com/hlotvonen/glyph-drawing-club/wiki/Fonts)
 
