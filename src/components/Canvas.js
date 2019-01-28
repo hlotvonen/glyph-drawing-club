@@ -42,9 +42,7 @@ class Canvas extends Component {
 					r: store.rotateGlyphRight,
 					f: store.handleChangeFlip,
 					h: store.handleChangeHideGrid,
-					p: store.handleChangeTheme,
 					i: store.handleChangeInvertColor,
-					c: store.handleChangeClipCells,
 					t: store.handleChangeTypingMode,
 					b: store.handleChangePaintMode,
 					z: store.handleUndoRedo,
@@ -137,9 +135,7 @@ class Canvas extends Component {
 			<div
 				className={
 					"canvas_container" +
-					(store.hideGrid ? " hideGrid" : "") +
-					(store.darkTheme ? " darkTheme" : "")
-				}
+					(store.hideGrid ? " hideGrid" : "")				}
 			>
 				<div className="aligner">
 					<Grid />

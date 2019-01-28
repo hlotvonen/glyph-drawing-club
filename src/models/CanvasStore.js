@@ -47,21 +47,15 @@ class CanvasStore {
 	@observable
 	hideGrid = false
 	@observable
-	darkTheme = false
-	@observable
 	widthPixels = 0
 	@observable
 	heightPixels = 0
 	@observable
 	copiedRow = []
 	@observable
-	clipCells = false
-	@observable
 	typingMode = false
 	@observable
 	paintMode = false
-	@observable
-	pixelRendering = false
 
 	@observable
 	history = []
@@ -373,11 +367,6 @@ class CanvasStore {
 		this.hideGrid = !this.hideGrid
 		document.getElementById("hideGrid").checked = this.hideGrid
 	}
-	//Toggle Clip Cells
-	handleChangeClipCells = () => {
-		this.clipCells = !this.clipCells
-		document.getElementById("clipCells").checked = this.clipCells
-	}
 	//Toggle Typing Mode
 	handleChangeTypingMode = () => {
 		this.typingMode = !this.typingMode
@@ -388,16 +377,6 @@ class CanvasStore {
 	handleChangePaintMode = () => {
 		this.paintMode = !this.paintMode
 		document.getElementById("paintMode").checked = this.paintMode
-	}
-	//Toggle Pixel Rendering
-	handleChangePixelRendering = () => {
-		this.pixelRendering = !this.pixelRendering
-		document.getElementById("pixelRendering").checked = this.pixelRendering
-	}
-	//Toggle Dark Theme
-	handleChangeTheme = () => {
-		this.darkTheme = !this.darkTheme
-		document.getElementById("darkTheme").checked = this.darkTheme
 	}
 
 	//Update Size of PNG export

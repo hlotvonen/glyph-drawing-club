@@ -7,7 +7,6 @@ import CellHeight from "./CellHeight"
 import FontSize from "./FontSize"
 import GlyphSelect from "./GlyphSelect"
 import HideGrid from "./HideGrid"
-import DarkTheme from "./DarkTheme"
 import GlyphTuning from "./GlyphTuning"
 import KeyMappings from "./KeyMappings"
 import SelectedGlyph from "./SelectedGlyph"
@@ -24,10 +23,8 @@ import SaveToDropboxButton from "./SaveToDropboxButton"
 import GlyphRotate from "./GlyphRotate"
 import GlyphFlip from "./GlyphFlip"
 import GlyphInvertColor from "./GlyphInvertColor"
-import ClipCells from "./ClipCells"
 import TypingMode from "./TypingMode"
 import PaintMode from "./PaintMode"
-import PixelRendering from "./PixelRendering"
 import HistoryControls from "./HistoryControls"
 
 @observer
@@ -79,23 +76,6 @@ class Settings extends React.Component {
 						updateExportSizeMultiplier={store.updateExportSizeMultiplier}
 					/>
 
-					<h3>View options</h3>
-					<HideGrid
-						hideGrid={store.hideGrid}
-						handleChangeHideGrid={store.handleChangeHideGrid}
-					/>
-					<DarkTheme handleChangeTheme={store.handleChangeTheme} />
-					{/*
-						<ClipCells
-						clipCells={store.clipCells}
-						handleChangeClipCells={store.handleChangeClipCells}
-					/>
-					<PixelRendering
-						pixelRendering={store.pixelRendering}
-						handleChangePixelRendering={store.handleChangePixelRendering}
-					/>	
-					*/}
-
 					<h3>Modes & Tools</h3>
 					<HistoryControls />
 					<TypingMode
@@ -106,7 +86,11 @@ class Settings extends React.Component {
 						paintMode={store.paintMode}
 						handleChangePaintMode={store.handleChangePaintMode}
 					/>
-
+					<HideGrid
+						hideGrid={store.hideGrid}
+						handleChangeHideGrid={store.handleChangeHideGrid}
+					/>
+					
 					<GlyphSelect />
 
 					<h3>Canvas Settings</h3>
@@ -157,9 +141,9 @@ class Settings extends React.Component {
 						If you would like to contribute your artwork to the upcoming
 						GD.C User Guide v.2.0.0. zine, use the form below to submit your work. All contributions will be included to the zine. No limits!
 						<br /><br />
-						Last day to submit: 15.1.2019. The zine will be published 28th of February at Kosminen gallery in Helsinki.
+						Last day to submit: 30.2.2019. The zine will be published during the late spring (date TBA) at Kosminen gallery in Helsinki.
 						<br /><br />
-						Contributors will receive a pdf of the zine sent to email and can get the physical copy for the price of postage. 
+						Contributors will receive a scanned pdf of the zine sent to email and can get the physical copy for the price of postage. 
 						The zines will be sold but only to cover printing costs and/or to fund future issues.
 					</p>
 					<br />

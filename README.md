@@ -29,8 +29,6 @@ Glyph Drawing Club
 
 #### View options
 * <kbd>h</kbd> : Hide Grid
-* <kbd>p</kbd> : Change to black background
-* <kbd>c</kbd> : Clip cells
 
 #### Typing mode
 
@@ -131,6 +129,7 @@ Developement
 ### Run locally
 
 ```
+git clone git://github.com/hlotvonen/glyph-drawing-club/
 npm install
 npm start
 ```

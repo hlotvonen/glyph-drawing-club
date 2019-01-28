@@ -104,7 +104,18 @@ canvas & grid
 	background: white;
 	position: relative;
 }
-
+.UiGrid {
+	position: absolute;
+	top:0;
+	left:0;
+	pointer-events: none;
+}
+.UiLayer {
+	position: absolute;
+	top:0;
+	left:0;
+	pointer-events: none;
+}
 /* ~~~~~~~~~~~~~~~~~~~~~
 cells
 ~~~~~~~~~~~~~~~~~~~~~ */
@@ -125,19 +136,8 @@ cells
 .row div svg path {
 	pointer-events: none;
 }
-.row div:after {
-	content: '';
-	display: block;
-	width: 100%;
-	height: 100%;
-	box-shadow: inset 0 0 0 1px rgba(0,0,0,0.08);
-	z-index: 1000;
-	position: absolute;
-	pointer-events: none;
-}
-
 /* ~~~~~~~~~~~~~~~~~~~~~
-grid numbers / cursor / selection highlight
+grid numbers / cursor
 ~~~~~~~~~~~~~~~~~~~~~ */
 .rowNums div.rowNum {
 	position: absolute;
@@ -175,13 +175,27 @@ grid numbers / cursor / selection highlight
 .colNum.highlighted {
 	color: red;
 }
+/* ~~~~~~~~~~~~~~~~~~~~~
+selection highlight
+~~~~~~~~~~~~~~~~~~~~~ */
 .selectionHighlight {
-	opacity: 0.3;
-	background: #fbff00;
 	top: 0;
 	left: 0;
 	position: absolute;
 	pointer-events: none;
+	background-image: linear-gradient(90deg, red 50%, transparent 50%), linear-gradient(90deg, red 50%, transparent 50%), linear-gradient(0deg, red 50%, transparent 50%), linear-gradient(0deg, red 50%, transparent 50%);
+    background-repeat: repeat-x, repeat-x, repeat-y, repeat-y;
+    background-size: 15px 1px, 15px 1px, 1px 15px, 1px 15px;
+    background-position: left top, right bottom, left bottom, right   top;
+    animation: border-dance 1s infinite linear;
+}
+@keyframes border-dance {
+	0% {
+		background-position: left top, right bottom, left bottom, right   top;
+	}
+	100% {
+		background-position: left 15px top, right 15px bottom , left bottom 15px , right   top 15px;
+	}
 }
 .selectionHighlight.isSquare:after {
 	content: 's';
@@ -237,43 +251,16 @@ grid move / zoom
 }
 
 /* ~~~~~~~~~~~~~~~~~~~~~
-dark theme checked
-~~~~~~~~~~~~~~~~~~~~~ */
-.canvas_container.darkTheme,
-.canvas_container.hideGrid.darkTheme {
-	background: black;
-}
-.canvas_container.darkTheme .coordinates {
-	color:white;
-}
-
-/* ~~~~~~~~~~~~~~~~~~~~~
 hide grid checked
 ~~~~~~~~~~~~~~~~~~~~~ */
 .canvas_container.hideGrid {
 	background: white;
 }
-.canvas_container.hideGrid .row div:after, 
-.canvas_container.hideGrid.darkTheme .row div:after {
-	box-shadow: inset 0 0 0 0 rgba(0,0,0,0);
-}
 .canvas_container.hideGrid .cursor,
 .canvas_container.hideGrid .colNums, 
-.canvas_container.hideGrid .rowNums {
+.canvas_container.hideGrid .rowNums,
+.canvas_container.hideGrid .UiGrid {
 	display: none;
-}
-
-/* ~~~~~~~~~~~~~~~~~~~~~
-clip cells checked
-~~~~~~~~~~~~~~~~~~~~~ */
-.row div.clipCells {
-	overflow: hidden;
-}
-/* ~~~~~~~~~~~~~~~~~~~~~
-pixel rendering checked
-~~~~~~~~~~~~~~~~~~~~~ */
-.pixelRendering svg{
-	shape-rendering:optimizeSpeed;
 }
 
 /* ~~~~~~~~~~~~~~~~~~~~~

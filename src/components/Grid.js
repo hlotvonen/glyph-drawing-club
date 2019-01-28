@@ -2,9 +2,7 @@ import React, { Component } from "react"
 import { observer } from "mobx-react"
 import store from "../models/CanvasStore"
 import Cell from "./Cell"
-import SelectionHighlight from "./SelectionHighlight"
-import Numbers from "./Numbers"
-import Cursor from "./Cursor"
+import UiLayer from "./UiLayer"
 import gridStore from "../models/GridStore"
 
 @observer
@@ -45,10 +43,8 @@ class Grid extends Component {
 					}px) scale(${gridStore.settings.zoom})`,
 				}}
 			>
-				<Numbers />
-				<Cursor />
 				{grid}
-				<SelectionHighlight />
+				<UiLayer />
 			</div>
 		)
 	}
