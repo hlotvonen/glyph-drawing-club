@@ -1,9 +1,12 @@
 import store from "../models/CanvasStore"
 import React, { Component } from "react"
-import { rawSvgCell, rawSvgCellBg } from "../components/Cell"
+import { rawSvgCell } from "../components/Cell"
+import { rawSvgCellBg } from "../components/CellBg"
 
 export const cellsAsSvg = () => (
-	<g>
+
+	<g transform={`translate(${((store.canvasWidth - 1) / 2) * store.cellWidth * -1} 0)`}>
+		
 		{store.canvas.map((row, y) => (
 			<g key={"bg"+y} transform={`translate(0 ${y * store.cellHeight})`}>
 				{row.map((cell, x) => (
@@ -15,7 +18,7 @@ export const cellsAsSvg = () => (
 				))}
 			</g>
 		))}
-	<g transform={`translate(${((store.canvasWidth - 1) / 2) * store.cellWidth * -1} 0)`}>
+
 		{store.canvas.map((row, y) => (
 			<g key={y} transform={`translate(0 ${y * store.cellHeight})`}>
 				{row.map((cell, x) => (
@@ -36,6 +39,6 @@ export const cellsAsSvg = () => (
 				))}
 			</g>
 		))}
-	</g>
+		
 	</g>
 )

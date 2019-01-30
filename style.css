@@ -104,6 +104,11 @@ canvas & grid
 	background: white;
 	position: relative;
 }
+.gridBg,
+.gridFg {
+	position: absolute;
+	top:0;left:0;
+}
 .UiGrid {
 	position: absolute;
 	top:0;

@@ -1,7 +1,6 @@
 import React, { Component } from "react"
 import { observer } from "mobx-react"
 import store from "../models/CanvasStore"
-import { rawSvgCell } from "../components/Cell"
 import { cellsAsSvg } from "../utils/cellsAsSvg"
 import ReactDOM from "react-dom"
 

@@ -14,73 +14,28 @@ const Cell = observer(props => {
 		flipGlyph,
 		glyphInvertedColor,
 		glyphOffsetY,
-		/*
-		TO-DO:
-		foregroundColor, //hex r,g,b
-		backgroundColor, //hex
-		color1, //0-100 blue
-		color2, //0-100 pink
-		color3  //0-100 yellow
-		*/
 	] = props.cell
 
-	if (glyphPath == "M0 0" && glyphInvertedColor == false) {
-		return(
-			<div
-				style={{ 
-					width: store.cellWidth, 
-					height: store.cellHeight,
-				}}
-				onClick={props.clickSelection}
-				onMouseUp={props.handleMouseUp}
-				onMouseDown={props.handleMouseDown}
-				onMouseOver={props.handleMouseOver}
-				data-y={props.y}
-				data-x={props.x}
-
-			>
-			</div>
-		)
+	if (glyphPath == "M0 0") {
+		return (null)
 	} else {
 		return (
-			<div
-				style={{ 
-					width: store.cellWidth, 
-					height: store.cellHeight 
-				}}
-				onClick={props.clickSelection}
-				onMouseUp={props.handleMouseUp}
-				onMouseDown={props.handleMouseDown}
-				onMouseOver={props.handleMouseOver}
-				data-y={props.y}
-				data-x={props.x}
-			>
-				{rawSvgCellBg({glyphInvertedColor})}
-				{rawSvgCell({
-					glyphPath,
-					svgWidth,
-					svgHeight,
-					svgBaseline,
-					glyphOffsetX,
-					glyphFontSizeModifier,
-					rotationAmount,
-					flipGlyph,
-					glyphInvertedColor,
-					glyphOffsetY,
-				})}
-			</div>
+			rawSvgCell({
+				glyphPath,
+				svgWidth,
+				svgHeight,
+				svgBaseline,
+				glyphOffsetX,
+				glyphFontSizeModifier,
+				rotationAmount,
+				flipGlyph,
+				glyphInvertedColor,
+				glyphOffsetY
+			})
 		)
 	}
 })
 
-export const rawSvgCellBg = ({glyphInvertedColor}) => (
-	<svg
-		height={store.defaultFontSize}
-		viewBox={0 + " " + 0 + " " + 800 / (store.cellHeight / store.cellWidth) + " " + 800}
-	>	
-		<rect width="100%" height="100%" fill={glyphInvertedColor ? "black" : "white"} />
-	</svg>
-)
 export const rawSvgCell = ({
 	glyphPath,
 	svgWidth,
@@ -111,7 +66,6 @@ export const rawSvgCell = ({
 			</g>
 		</g>
 	</svg>
-	
 )
 
 export default Cell
