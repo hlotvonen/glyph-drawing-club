@@ -240,6 +240,10 @@ class Settings extends React.Component {
 								<td>h</td>
 								<td>Hide Grid</td>
 							</tr>
+							<tr>
+								<td>(hold) p</td>
+								<td>Preview</td>
+							</tr>
 						</tbody></table>
 
 						<h4>Typing mode</h4>
