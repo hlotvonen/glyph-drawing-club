@@ -27,4 +27,4 @@ class Preview extends Component {
 		)
 	}
 }
-export default Svgtest
+export default Preview

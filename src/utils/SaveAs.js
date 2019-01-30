@@ -6,3 +6,7 @@ export function saveAs() {
 	var blob = new Blob([json], { type: "application/json;charset=utf-8" })
 	FileSaver.saveAs(blob, store.fileName + ".gdc")
 }
+
+export function saveSelectionAs() {
+	console.log(store.selectionAreaCanvas)
+}

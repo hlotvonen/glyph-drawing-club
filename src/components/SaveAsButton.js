@@ -1,11 +1,11 @@
 import React from "react"
 import store from "../models/CanvasStore"
-import { saveAs } from "../utils/SaveAs"
+import { saveAs, saveSelectionAs } from "../utils/SaveAs"
 
 class SaveAsButton extends React.Component {
 	render() {
 		return (
-			<div className="exportJpg">
+			<div>
 				Filename:
 				<input
 					type="text"
@@ -16,6 +16,8 @@ class SaveAsButton extends React.Component {
 					onBlur={() => store.toggleWriting()}
 				/>
 				<button onClick={() => saveAs()}> {"Save"} </button>
+
+				<button onClick={() => saveSelectionAs()}> {"Save Selection"} </button>
 			</div>
 		)
 	}

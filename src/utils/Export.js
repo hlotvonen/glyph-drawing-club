@@ -1,10 +1,10 @@
 import React from "react"
 import ReactDOM from "react-dom"
-//import domtoimage from "dom-to-image"
 import FileSaver from "file-saver"
 import store from "../models/CanvasStore"
 import { rawSvgCell } from "../components/Cell"
 import { saveSvgAsPng } from "save-svg-as-png"
+import { cellsAsSvg } from "./cellsAsSvg"
 
 export function exportAs(type) {
 	//Create SVG element
@@ -17,32 +17,7 @@ export function exportAs(type) {
 		"http://www.w3.org/1999/xlink"
 	)
 
-	const cells = (
-		<g transform={`translate(${((store.canvasWidth - 1) / 2) * store.cellWidth * -1} 0)`}>
-			{store.canvas.map((row, y) => (
-				<g key={y} transform={`translate(0 ${y * store.cellHeight})`}>
-					{row.map((cell, x) => (
-						<g key={x} transform={`translate(${(x * store.cellWidth + cell[5] / 2)})`}>
-							{rawSvgCell({
-								glyphPath: cell[0],
-								svgWidth: cell[1],
-								svgHeight: cell[2],
-								svgBaseline: cell[3],
-								glyphOffsetX: cell[4],
-								glyphFontSizeModifier: cell[5],
-								rotationAmount: cell[6],
-								flipGlyph: cell[7],
-								glyphInvertedColor: cell[8],
-								glyphOffsetY: cell[9],
-							})}
-						</g>
-					))}
-				</g>
-			))}
-		</g>
-	)
-
-	ReactDOM.render(cells, svg)
+	ReactDOM.render(React.createElement(cellsAsSvg), svg)
 
 	const blob = new Blob([
 		`<?xml version="1.0" standalone="no"?>${svg.outerHTML}`,
@@ -60,22 +35,3 @@ export function exportAs(type) {
 		return false
 	} 
 }
-
-//Old & Slow, saves the image from the html dom
-/*export function exportPng() {
-	let scale = "scale(" + store.exportSizeMultiplier + ")"
-	let style = {
-		transform: scale,
-		"transform-origin": "top left",
-	}
-
-	domtoimage
-		.toBlob(document.getElementById("canvas"), {
-			style: style,
-			height: Number(store.heightPixels) * Number(store.exportSizeMultiplier),
-			width: Number(store.widthPixels) * Number(store.exportSizeMultiplier),
-		})
-		.then(function(blob) {
-			FileSaver.saveAs(blob, store.fileName + ".png")
-		})
-}*/

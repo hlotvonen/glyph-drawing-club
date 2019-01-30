@@ -134,6 +134,9 @@ class CanvasStore {
 	@observable
 	shiftDown = false
 	
+	@observable
+	togglePreview = false
+	
 	//Change canvas width
 	@action
 	addCol = () => {
@@ -594,6 +597,19 @@ class CanvasStore {
 		this.shiftDown = false
 	}
 	@action
+	showPreview = () => {
+		if(!this.togglePreview) {
+			this.togglePreview = true
+		} else {
+			return
+		}
+	}
+	@action
+	hidePreview = () => {
+		this.togglePreview = false
+	}
+
+	@action
 	handleMouseOver = event => {
 		if(this.paintMode) {
 			event.preventDefault
@@ -607,6 +623,7 @@ class CanvasStore {
 		if (getOS() == 'OSX') {
 			if (this.metaDown && !this.shiftDown) {
 				this.undo()
+				console.log(this.metaDown)
 			} else if (this.metaDown && this.shiftDown) {
 				this.redo()
 			} else {

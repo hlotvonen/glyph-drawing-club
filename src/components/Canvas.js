@@ -45,6 +45,7 @@ class Canvas extends Component {
 					t: store.handleChangeTypingMode,
 					b: store.handleChangePaintMode,
 					z: store.handleUndoRedo,
+					p: store.showPreview,
 
 					//Modifier keys:
 					Alt: store.handleAltDown,
@@ -116,8 +117,9 @@ class Canvas extends Component {
 		const handlers = {
 			Alt: store.handleAltUp,
 			Control: store.handleCtrlUp,
-			Meta: store.handleMetalUp,
+			Meta: store.handleMetaUp,
 			Shift: store.handleShiftUp,
+			p: store.hidePreview,
 		}
 		const handler = handlers[event.key]
 
