@@ -1,8 +1,20 @@
 import store from "../models/CanvasStore"
 import React, { Component } from "react"
-import { rawSvgCell } from "../components/Cell"
+import { rawSvgCell, rawSvgCellBg } from "../components/Cell"
 
 export const cellsAsSvg = () => (
+	<g>
+		{store.canvas.map((row, y) => (
+			<g key={"bg"+y} transform={`translate(0 ${y * store.cellHeight})`}>
+				{row.map((cell, x) => (
+					<g key={"bg"+x} transform={`translate(${(x * store.cellWidth)})`}>
+						{rawSvgCellBg({
+							glyphInvertedColor: cell[8],
+						})}
+					</g>
+				))}
+			</g>
+		))}
 	<g transform={`translate(${((store.canvasWidth - 1) / 2) * store.cellWidth * -1} 0)`}>
 		{store.canvas.map((row, y) => (
 			<g key={y} transform={`translate(0 ${y * store.cellHeight})`}>
@@ -24,5 +36,6 @@ export const cellsAsSvg = () => (
 				))}
 			</g>
 		))}
+	</g>
 	</g>
 )

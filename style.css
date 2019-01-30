@@ -353,6 +353,9 @@ button {
 	background-color: lime;
 }
 
+/* ~~~~~~~~~~~~~~~~~~~~~
+Preview
+~~~~~~~~~~~~~~~~~~~~~ */
 .preview.showPreview {
 	display: block;
 }
@@ -374,6 +377,9 @@ button {
     transform: translateX(-50%) translateY(-50%);
     max-width: 100%;
     max-height: 100%;
+}
+.preview svg {
+	overflow: visible;
 }
 
 /* ~~~~~~~~~~~~~~~~~~~~~

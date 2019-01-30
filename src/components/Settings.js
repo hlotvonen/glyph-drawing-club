@@ -159,7 +159,7 @@ class Settings extends React.Component {
 					</TabPanel>
 
 					<TabPanel>
-						<h3>How do I use this editor? Get started with this:</h3>
+						<h3>Basic tutorial</h3>
 						<ol className="instructions">
 							<li>
 								Click the <span className="hotkey">Draw</span> tab from the sidebar

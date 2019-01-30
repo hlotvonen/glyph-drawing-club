@@ -55,6 +55,7 @@ const Cell = observer(props => {
 				data-y={props.y}
 				data-x={props.x}
 			>
+				{rawSvgCellBg({glyphInvertedColor})}
 				{rawSvgCell({
 					glyphPath,
 					svgWidth,
@@ -72,6 +73,14 @@ const Cell = observer(props => {
 	}
 })
 
+export const rawSvgCellBg = ({glyphInvertedColor}) => (
+	<svg
+		height={store.defaultFontSize}
+		viewBox={0 + " " + 0 + " " + 800 / (store.cellHeight / store.cellWidth) + " " + 800}
+	>	
+		<rect width="100%" height="100%" fill={glyphInvertedColor ? "black" : "white"} />
+	</svg>
+)
 export const rawSvgCell = ({
 	glyphPath,
 	svgWidth,
@@ -89,13 +98,6 @@ export const rawSvgCell = ({
 		viewBox={0 + " " + 0 + " " + 800 / (store.cellHeight / store.cellWidth) + " " + 800}
 	>	
 		<g transform={`translate(${Number(400) + Number(glyphOffsetX)} ${Number(400) + Number(glyphOffsetY)})`}> 
-			<rect 
-				fill={glyphInvertedColor ? "black" : "white"} 
-				fillOpacity={glyphInvertedColor ? "1" : "0"} 
-				width={800 / (store.cellHeight / store.cellWidth)} 
-				height={800}
-				transform={`translate(${-400} ${-400})`}
-			/>
 			<g transform={`
 				scale(${flipGlyph * (800 / svgHeight) } -${800 / svgHeight}) 
 				rotate(${rotationAmount}) 
@@ -109,6 +111,7 @@ export const rawSvgCell = ({
 			</g>
 		</g>
 	</svg>
+	
 )
 
 export default Cell
