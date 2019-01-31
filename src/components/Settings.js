@@ -1,18 +1,14 @@
 import React from "react"
 import { observer } from "mobx-react"
-import CanvasHeight from "./CanvasHeight"
-import CanvasWidth from "./CanvasWidth"
+import store from "../models/CanvasStore"
+import CanvasSizeModification from "./CanvasSizeModification"
 import CellWidth from "./CellWidth"
 import CellHeight from "./CellHeight"
 import FontSize from "./FontSize"
 import GlyphSelect from "./GlyphSelect"
 import HideGrid from "./HideGrid"
-import GlyphTuning from "./GlyphTuning"
 import KeyMappings from "./KeyMappings"
 import SelectedGlyph from "./SelectedGlyph"
-import store from "../models/CanvasStore"
-import DeleteRowOrCol from "./DeleteRowOrCol"
-import AddRowOrCol from "./AddRowOrCol"
 import ExportButtons from "./ExportButtons"
 import SaveAsButton from "./SaveAsButton"
 import LoadButton from "./LoadButton"
@@ -25,6 +21,10 @@ import GlyphInvertColor from "./GlyphInvertColor"
 import TypingMode from "./TypingMode"
 import PaintMode from "./PaintMode"
 import HistoryControls from "./HistoryControls"
+import GlyphOffset from "./GlyphOffset"
+import GlyphFontSizeModifier from "./GlyphFontSizeModifier"
+import GlyphClear from "./GlyphClear"
+import CanvasSizeInMillimeters from "./CanvasSizeInMillimeters"
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs'
 
 
@@ -65,7 +65,31 @@ class Settings extends React.Component {
 							handleChangeHideGrid={store.handleChangeHideGrid}
 						/>
 
-						<GlyphTuning />
+						<h3>Glyph fine tuning</h3>
+						Font size at current selection: {store.selectionGlyphFontSize} px
+						<GlyphFontSizeModifier
+							glyphFontSize={store.glyphFontSize}
+							increaseGlyphFontSizeModifier={store.increaseGlyphFontSizeModifier}
+							decreaseGlyphFontSizeModifier={store.decreaseGlyphFontSizeModifier}
+							increaseByOneCellGlyphFontSizeModifier={
+								store.increaseByOneCellGlyphFontSizeModifier
+							}
+							decreaseByOneCellGlyphFontSizeModifier={
+								store.decreaseByOneCellGlyphFontSizeModifier
+							}
+						/>
+						<GlyphOffset />
+						
+						<GlyphRotate
+							rotationAmount={store.rotationAmount}
+							rotateGlyphRight={store.rotateGlyphRight}
+							rotateGlyphLeft={store.rotateGlyphLeft}
+						/>
+						<GlyphFlip handleChangeFlip={store.handleChangeFlip} />
+						<GlyphInvertColor
+							handleChangeInvertColor={store.handleChangeInvertColor}
+						/>
+						<GlyphClear glyphClear={store.glyphClear} />
 
 					</TabPanel>
 
@@ -73,37 +97,16 @@ class Settings extends React.Component {
 					</TabPanel>
 
 					<TabPanel>
-						<h3>Canvas Settings</h3>
-						<CanvasWidth
-							addCol={store.addCol}
-							deleteCol={store.deleteCol}
-							canvasWidth={store.canvasWidth}
-						/>
-						<CanvasHeight
-							addRow={store.addRow}
-							deleteRow={store.deleteRow}
-							canvasHeight={store.canvasHeight}
-						/>
-						<DeleteRowOrCol
-							deleteRowAtSelection={store.deleteRowAtSelection}
-							deleteColAtSelection={store.deleteColAtSelection}
-						/>
-						<AddRowOrCol
-							addRowAtSelection={store.addRowAtSelection}
-							addColAtSelection={store.addColAtSelection}
-						/>
-						<EmptyCanvas emptyCanvas={store.emptyCanvas} />
+						<h3>Canvas size</h3>
+						<CanvasSizeModification />
+						<EmptyCanvas />
 
-						<CellWidth
-							increaseCellWidth={store.increaseCellWidth}
-							decreaseCellWidth={store.decreaseCellWidth}
-							cellWidth={store.cellWidth}
-						/>
-						<CellHeight
-							increaseCellHeight={store.increaseCellHeight}
-							decreaseCellHeight={store.decreaseCellHeight}
-							cellHeight={store.cellHeight}
-						/>
+						<h3>Canvas size in millimeters</h3>
+						<CanvasSizeInMillimeters />
+
+						<h3>Cell size</h3>
+						<CellWidth />
+						<CellHeight />
 						<FontSize
 							increaseFontSize={store.increaseFontSize}
 							decreaseFontSize={store.decreaseFontSize}

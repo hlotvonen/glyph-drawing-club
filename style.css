@@ -104,6 +104,9 @@ canvas & grid
 	background: white;
 	position: relative;
 }
+.gridBg {
+	background: white;
+}
 .gridBg,
 .gridFg {
 	position: absolute;
@@ -340,6 +343,7 @@ controls
 }
 button {
 	margin-right: 0.5em;
+	font-family:monospace;
 }
 .page_selection,
 .control_inputs {
@@ -356,7 +360,9 @@ button {
 .select_set button.active {
 	background-color: lime;
 }
-
+.settingsBlock {
+	padding-bottom: 1em;
+}
 /* ~~~~~~~~~~~~~~~~~~~~~
 Preview
 ~~~~~~~~~~~~~~~~~~~~~ */

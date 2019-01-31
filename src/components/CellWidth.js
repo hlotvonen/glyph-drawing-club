@@ -7,9 +7,9 @@ class CellWidth extends React.Component {
 		return (
 			<div>
 				{"Cell width:"}
-				<button onClick={this.props.decreaseCellWidth}> {"-1"} </button>
-				<button onClick={this.props.increaseCellWidth}> {"+1"} </button>
-				<span>{this.props.cellWidth} px</span>
+				<button onClick={store.decreaseCellWidth}> {"-1"} </button>
+				<button onClick={store.increaseCellWidth}> {"+1"} </button>
+				<span>{store.cellWidth} px</span>
 			</div>
 		)
 	}

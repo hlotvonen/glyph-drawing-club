@@ -95,40 +95,4 @@ export function saveToDropbox() {
 				"Sorry something went wrong! Contact hlotvonen@gmail.com"
 			console.error(error)
 		})
-
-	/*
-	domtoimage
-		.toBlob(document.getElementById("canvas"), {
-			style: style,
-			height: store.heightPixels * store.exportSizeMultiplier,
-			width: store.widthPixels * store.exportSizeMultiplier,
-		})
-		.then(function(blob) {
-			dbx
-				.filesUpload({
-					path:
-						"/" +
-						store.fileName +
-						" " +
-						store.userFullName +
-						" " +
-						store.userEmail +
-						" " +
-						store.userCountry +
-						".png",
-					contents: blob,
-				})
-				.then(function(response) {
-					document.getElementById("dropbox-response").innerText =
-						"Sent successfully! Thank you!"
-					console.log(response)
-				})
-				.catch(function(error) {
-					document.getElementById("dropbox-response").innerText =
-						"Sorry something went wrong! Contact hlotvonen@gmail.com"
-					console.error(error)
-				})
-			return false
-		})
-	*/
 }
