@@ -51,6 +51,7 @@ export const rawSvgCell = ({
 	<svg
 		height={Number(store.defaultFontSize) + Number(glyphFontSizeModifier)}
 		viewBox={0 + " " + 0 + " " + 800 / (store.cellHeight / store.cellWidth) + " " + 800}
+		style={{ overflow: "visible" }}
 	>	
 		<g transform={`translate(${Number(400) + Number(glyphOffsetX)} ${Number(400) + Number(glyphOffsetY)})`}> 
 			<g transform={`
@@ -59,7 +60,7 @@ export const rawSvgCell = ({
 				translate(0 ${-svgBaseline})
 			`}>
 				<path 
-					fill={glyphInvertedColor ? "white" : "black"} 
+					fill={glyphInvertedColor ? "white" : "black"}
 					d={glyphPath} 
 					transform={`translate(${-(svgHeight / 2)} ${-(svgHeight / 2)})`} 
 				/>

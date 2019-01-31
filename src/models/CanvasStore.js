@@ -408,23 +408,23 @@ class CanvasStore {
 	//Glyph offset X
 	increaseGlyphOffsetX = () => {
 		this.glyphOffsetX = this.canvas[this.selected_y][this.selected_x].slice()[4] //First check the existing offset x value
-		this.glyphOffsetX += this.svgWidth / 4 //Set offset amount to 10% of the glyph width
+		this.glyphOffsetX += this.svgWidth / 8 //Set offset amount to 10% of the glyph width
 		this.canvas[this.selected_y][this.selected_x][4] = this.glyphOffsetX //Update canvas
 	}
 	decreaseGlyphOffsetX = () => {
 		this.glyphOffsetX = this.canvas[this.selected_y][this.selected_x].slice()[4] //First check the existing offset x value
-		this.glyphOffsetX -= this.svgWidth / 4 //Set offset amount to 10% of the glyph width
+		this.glyphOffsetX -= this.svgWidth / 8 //Set offset amount to 10% of the glyph width
 		this.canvas[this.selected_y][this.selected_x][4] = this.glyphOffsetX //Update canvas
 	}
 	//Glyph offset Y
 	increaseGlyphOffsetY = () => {
 		this.glyphOffsetY = this.canvas[this.selected_y][this.selected_x].slice()[9] //First check the existing offset x value
-		this.glyphOffsetY += this.svgHeight / 4 //Set offset amount to 10% of the glyph width
+		this.glyphOffsetY += this.svgHeight / 8 //Set offset amount to 10% of the glyph width
 		this.canvas[this.selected_y][this.selected_x][9] = this.glyphOffsetY //Update canvas
 	}
 	decreaseGlyphOffsetY = () => {
 		this.glyphOffsetY = this.canvas[this.selected_y][this.selected_x].slice()[9] //First check the existing offset x value
-		this.glyphOffsetY -= this.svgHeight / 4 //Set offset amount to 10% of the glyph width
+		this.glyphOffsetY -= this.svgHeight / 8 //Set offset amount to 10% of the glyph width
 		this.canvas[this.selected_y][this.selected_x][9] = this.glyphOffsetY //Update canvas
 	}
 	//Glyph rotation

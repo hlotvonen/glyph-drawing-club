@@ -16,8 +16,6 @@ class SaveAsButton extends React.Component {
 					onBlur={() => store.toggleWriting()}
 				/>
 				<button onClick={() => saveAs()}> {"Save"} </button>
-
-				<button onClick={() => saveSelectionAs()}> {"Save Selection"} </button>
 			</div>
 		)
 	}

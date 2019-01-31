@@ -38,7 +38,7 @@ export const rawSvgCellBg = ({glyphInvertedColor}) => (
 		height={store.defaultFontSize}
 		viewBox={0 + " " + 0 + " " + 800 / (store.cellHeight / store.cellWidth) + " " + 800}
 	>	
-		<rect width="100%" height="100%" fill={glyphInvertedColor ? "black" : "white"} />
+		<rect width={800} height={800} fill={glyphInvertedColor ? "black" : "white"} />
 	</svg>
 
 )
