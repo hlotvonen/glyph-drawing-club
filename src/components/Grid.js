@@ -21,12 +21,12 @@ class Grid extends Component {
 				}}
 			>
 				{row.map((col, x) => (
-						<CellBg
-							y={y}
-							x={x}
-							key={`${y}_${x}`}
-							cell={store.canvas[y][x]}
-						/>
+					<CellBg
+						y={y}
+						x={x}
+						key={`${y}_${x}`}
+						cell={store.canvas[y][x][4]}
+					/>
 				))}
 			</div>
 		))

@@ -1,4 +1,4 @@
-import { observable } from "mobx"
+import { observable, action } from "mobx"
 import store from "./CanvasStore.js"
 
 class GridStore {
@@ -11,28 +11,33 @@ class GridStore {
 		posY: 0,
 		zoom: 1,
 	}
-
+	@action
 	moveUp = () => {
 		this.settings.posY += this.posOffsetY
 	}
+	@action
 	moveRight = () => {
 		this.settings.posX -= this.posOffsetX
 	}
+	@action
 	moveDown = () => {
 		this.settings.posY -= this.posOffsetY
 	}
+	@action
 	moveLeft = () => {
 		this.settings.posX += this.posOffsetX
 	}
-
+	@action
 	center = () => {
 		this.settings.posX = 0
 		this.settings.posY = 0
 		this.settings.zoom = 1
 	}
+	@action
 	zoomIn = () => {
 		this.settings.zoom = this.settings.zoom * 1.05
 	}
+	@action
 	zoomOut = () => {
 		this.settings.zoom = this.settings.zoom * 0.95
 	}

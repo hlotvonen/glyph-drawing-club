@@ -67,6 +67,11 @@ html {
 b {
 	font-weight: bold;
 }
+em {
+	font-style:italic;
+	margin:10px 0;
+	display: block;
+}
 
 /* ~~~~~~~~~~~~~~~~~~~~~
 top wrapper
@@ -220,6 +225,42 @@ coordinates
 	top: 0;
 	right: 5px;
 }
+/* ~~~~~~~~~~~~~~~~~~~~~
+colors
+~~~~~~~~~~~~~~~~~~~~~ */
+.colorPalette {
+	display: flex;
+	flex-wrap: wrap;
+	background: #eee;
+}
+.color {
+	float:left;
+	width:25px;
+	height:25px;
+	cursor:pointer;
+	font-size:9px;
+}
+.selectedColor {
+	box-shadow: 0 0 0 1px rgba(0,255,0,1);
+}
+.colorSliders {
+	margin-top: 10px;
+	display: flex;
+}
+.rgbSliders {
+	flex: 1;
+}
+.rgbSlider input[type="range"] {
+  -webkit-appearance: none;
+  outline: none;
+  border-radius:10px;
+}
+.colorPreview {
+	flex: 1;
+}
+.intensitySlider {
+	float: left;
+}
 
 /* ~~~~~~~~~~~~~~~~~~~~~
 grid move / zoom
@@ -362,6 +403,12 @@ button {
 }
 .settingsBlock {
 	padding-bottom: 1em;
+}
+.layerSelect {
+	display: flex;
+}
+.layerSelect div {
+	flex:1;
 }
 /* ~~~~~~~~~~~~~~~~~~~~~
 Preview

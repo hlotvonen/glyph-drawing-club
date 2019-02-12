@@ -1,31 +1,51 @@
-import { action, observable, computed, autorunAsync, toJS } from "mobx"
+import { action, observable, computed, autorunAsync, toJS, useStrict } from "mobx"
 import setstore from "./KeymappingsStore"
+import colorstore from "./ColorStore"
 import { getBoundingRectangle } from "../utils/geometry"
 import { getOS } from "../utils/detectOs"
 
-//[glyphPath, svgWidth, svgHeight, svgBaseline, glyphOffsetX, glyphFontSizeModifier, rotationAmount, flipGlyph, glyphInvertedColor, glyphOffsetY]
-export const EMPTY_GLYPH = ["M0 0", "1", "1", "0"]
-const getEmptyCell = () => observable([...EMPTY_GLYPH, "0", "0", "0", "1", false, "0"])
+useStrict(true)
+
+/*
+0: glyphPath, 
+1: svgWidth,
+2: svgHeight, 
+3: svgBaseline, 
+4: glyphOffsetX, 
+5: glyphFontSizeModifier, 
+6: rotationAmount, 
+7: flipGlyph, 
+8: glyphInvertedShape, 
+9: glyphOffsetY
+10: color
+*/
+
+export const EMPTY_CELL = []
+EMPTY_CELL[0] = new Array ("M0 0", "1", "1", "0", "0", "0", "0", "1", false, "0", 0) //LAYER 1
+EMPTY_CELL[1] = new Array ("M0 0", "1", "1", "0", "0", "0", "0", "1", false, "0", 0) //LAYER 2
+EMPTY_CELL[2] = new Array ("M0 0", "1", "1", "0", "0", "0", "0", "1", false, "0", 0) //LAYER 3
+EMPTY_CELL[3] = new Array ("M0 0", "1", "1", "0", "0", "0", "0", "1", false, "0", 0) //LAYER 4
+EMPTY_CELL[4] = new Array ("255") //BG LAYER
+const getEmptyCell = () => observable([...EMPTY_CELL])
+const getEmptyLayer = () => observable(EMPTY_CELL[0])
 
 const MAX_HISTORY_SIZE = 16
 
 class CanvasStore {
 	constructor() {
 		if (localStorage.firstRun) {
+			//get canvas from localstorage
 			this.setCurrentState(JSON.parse(localStorage.storage))
 		} else {
+			//else start with a new empty canvas
 			this.createEmptyCanvas()
 		}
-
 		autorunAsync(() => {
+			//save canvas (and history) to localstorage every 300ms
 			const currentState = JSON.stringify(this.getCurrentState())
 			localStorage.setItem("storage", currentState)
 			this.addToUndoHistory(currentState)
-			if (this.preserveRedoHistory) {
-				this.preserveRedoHistory = false
-			} else {
-				this.redoHistory = []
-			}
+			this.initHistory()
 		}, 300)
 	}
 
@@ -35,28 +55,26 @@ class CanvasStore {
 
 	//SETTINGS
 	@observable
-	canvasWidth = 40
+	canvasWidth = 20
 	@observable
-	canvasHeight = 25
+	canvasHeight = 10
 	@observable
 	cellWidth = 20
 	@observable
 	cellHeight = 20
 	@observable
 	defaultFontSize = 20
+
 	@observable
 	hideGrid = false
-	@observable
-	widthPixels = 0
-	@observable
-	heightPixels = 0
-	@observable
-	copiedRow = []
 	@observable
 	typingMode = false
 	@observable
 	paintMode = false
+	@observable
+	togglePreview = false
 
+	//HISTORY
 	@observable
 	history = []
 	@observable
@@ -84,17 +102,23 @@ class CanvasStore {
 	@observable
 	userCountry = ""
 
-	//SELECTION AREA
+	//CURSOR
 	@observable
 	selected_x = 0
 	@observable
 	selected_y = 0
+
+	//LAYERS
+	@observable
+	selectedLayer = 0
+	@observable
+	hiddenLayers = [null, null, null, null]
+
+	//SELECTION AREA
 	@observable
 	selectionArea = { start: null, end: null }
 
-	//SELECTION
-	@observable
-	selectedUnicode = 0
+	//GLYPH
 	@observable
 	glyphPath = "M0 0"
 	@observable
@@ -104,23 +128,19 @@ class CanvasStore {
 	@observable
 	svgBaseline = 0
 	@observable
-	fontName = ""
+	rotationAmount = 90
 	@observable
-	selectionGlyphFontSize = 0
+	flipGlyph = -1
+	@observable
+	glyphInvertedShape = false
 
-	//Glyph fine tuning
+	//LAYER MODIFICATION
 	@observable
 	glyphOffsetX = 0
 	@observable
 	glyphOffsetY = 0
 	@observable
 	glyphFontSizeModifier = 0
-	@observable
-	rotationAmount = 0
-	@observable
-	flipGlyph = 1
-	@observable
-	glyphInvertedColor = false
 
 	//MOUSE & KEYBOARD MODIFIER EVENTS
 	@observable
@@ -133,43 +153,23 @@ class CanvasStore {
 	metaDown = false
 	@observable
 	shiftDown = false
-	
-	@observable
-	togglePreview = false
-	
-	//Change canvas width
-	@action
-	addCol = () => {
-		this.canvasWidth = this.canvasWidth + 1
-		for (const row of this.canvas) {
-			row.push(getEmptyCell())
-		}
-		this.widthPixels = this.canvasWidth * this.cellWidth
-	}
 
-	@action
-	addColLeft = () => {
-		this.canvasWidth = this.canvasWidth + 1
-		for (const row of this.canvas) {
-			row.unshift(getEmptyCell())
-		}
-		this.widthPixels = this.canvasWidth * this.cellWidth
-	}
+/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+		
+	INITIALIZATION
 
-	@action
-	deleteCol = () => {
-		if (this.canvasWidth > 1) {
-			this.canvasWidth = this.canvasWidth - 1
-			if (this.selected_x == this.canvasWidth) {
-				this.selected_x = this.selected_x - 1
-			}
-			for (const row of this.canvas) {
-				row.pop()
-			}
-		}
-		this.widthPixels = this.canvasWidth * this.cellWidth
-	}
-
+   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+	//create object that will be saved to localstorage 
+	getCurrentState = () => ({
+		name: "gdc-file",
+		timestamp: Math.floor(Date.now() / 1000),
+		canvasWidth: this.canvasWidth,
+		canvasHeight: this.canvasHeight,
+		cellWidth: this.cellWidth,
+		cellHeight: this.cellHeight,
+		defaultFontSize: this.defaultFontSize,
+		canvas: this.canvas,
+	})
 	@action
 	setCurrentState = state => {
 		this.canvasWidth = state.canvasWidth
@@ -179,36 +179,126 @@ class CanvasStore {
 		this.cellHeight = state.cellHeight
 		this.defaultFontSize = state.defaultFontSize
 		this.canvas = state.canvas
-		this.widthPixels = state.widthPixels
-		this.heightPixels = state.heightPixels
 	}
-
-	getCurrentState = () => ({
-		name: "gdc-file",
-		timestamp: Math.floor(Date.now() / 1000),
-		canvasWidth: this.canvasWidth,
-		canvasHeight: this.canvasHeight,
-		cellWidth: this.cellWidth,
-		cellHeight: this.cellHeight,
-		defaultFontSize: this.defaultFontSize,
-		widthPixels: this.widthPixels,
-		heightPixels: this.heightPixels,
-		canvas: this.canvas,
-	})
-
+	getEmptyCanvas = () => {
+		return Array.from({ length: this.canvasHeight }, this.getEmptyRow)
+	}
+	getEmptyRow = () => {
+		return Array.from({ length: this.canvasWidth }, () => getEmptyCell())
+	}
 	@action
 	createEmptyCanvas = () => {
-		this.canvas = this.getEmptyCanvas(this.canvasHeight)
-		this.widthPixels = this.canvasWidth * this.cellWidth
-		this.heightPixels = this.canvasHeight * this.cellHeight
+		this.canvas = this.getEmptyCanvas()
 		localStorage.setItem("firstRun", false)
 	}
+/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+		
+	CANVAS SIZE SETTINGS
 
+   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+	//Change canvas width
+	@action
+	addCol = () => {
+		this.canvasWidth += 1
+		for (const row of this.canvas) {
+			row.push(getEmptyCell())
+		}
+	}
+	@action
+	deleteCol = () => {
+		if (this.canvasWidth > 1) {
+			this.canvasWidth -= 1
+			for (const row of this.canvas) {
+				row.pop()
+			}
+			if (this.selected_x == this.canvasWidth) {
+				this.selected_x -= 1
+			}
+		}
+	}
+	@action
+	addRow = () => {
+		this.canvasHeight += 1
+		this.canvas.push(this.getEmptyRow())
+	}
+	@action
+	deleteRow = () => {
+		if (this.canvasHeight > 1) {
+			this.canvasHeight -= 1
+			this.canvas.pop()
+			if (this.selected_y == this.canvasHeight) {
+				this.selected_y -= 1
+			}
+		}
+	}
+	@action
+	deleteRowAtSelection = () => {
+		this.canvas.splice(this.selected_y, 1)
+		this.canvasHeight -= 1
+		if (this.canvasHeight >= this.selected_y) {
+			this.selected_y -= 1
+		}
+		if (this.selected_y <= 0) {
+			this.selected_y += 1
+		}
+	}
+	@action
+	deleteColAtSelection = () => {
+		for (var i = 0; i < this.canvasHeight; i++) {
+			var col = this.canvas[i]
+			col.splice(this.selected_x, 1)
+		}
+		this.canvasWidth -= 1
+		if (this.canvasWidth >= this.selected_x) {
+			this.selected_x -= 1
+		}
+		if (this.selected_x <= 0) {
+			this.selected_x += 1
+		}
+	}
+	@action
+	addRowAtSelection = () => {
+		this.canvasHeight++
+		this.canvas.splice(this.selected_y, 0, this.getEmptyRow())
+	}
+	@action
+	addColAtSelection = () => {
+		this.canvasWidth++
+		for (var i = 0; i < this.canvasHeight; i++) {
+			var col = this.canvas[i]
+			col.splice(this.selected_x, 0, getEmptyCell())
+		}
+	}
+	@action
+	emptyCanvas = () => {
+		this.selected_y = 0
+		this.selected_x = 0
+		this.canvasWidth = 20
+		this.canvasHeight = 10
+		this.cellWidth = 20
+		this.cellHeight = 20
+		this.defaultFontSize = 20
+		this.canvas = this.getEmptyCanvas()
+		this.flipGlyph = 1
+		this.rotationAmount = 0
+	}
+/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+		
+	HISTORY
+
+   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+   	@action
+   	initHistory = () => {
+		if (this.preserveRedoHistory) {
+			this.preserveRedoHistory = false
+		} else {
+			this.redoHistory = []
+		}
+   	} 
 	@computed
 	get isUndoAvailable() {
 		return this.history.length >= 2
 	}
-
 	@action
 	undo = () => {
 		if (!this.isUndoAvailable) {
@@ -222,12 +312,10 @@ class CanvasStore {
 		const previousState = this.history.pop()
 		this.setCurrentState(JSON.parse(previousState))
 	}
-
 	@computed
 	get isRedoAvailable() {
 		return this.redoHistory.length >= 1
 	}
-
 	@action
 	addToUndoHistory = state => {
 		this.history.push(state)
@@ -235,7 +323,6 @@ class CanvasStore {
 			this.history.shift()
 		}
 	}
-
 	@action
 	addToRedoHistory = state => {
 		this.redoHistory.push(state)
@@ -243,7 +330,6 @@ class CanvasStore {
 			this.redoHistory.shift()
 		}
 	}
-
 	@action
 	redo = () => {
 		if (!this.isRedoAvailable) {
@@ -254,140 +340,128 @@ class CanvasStore {
 		const redoState = this.redoHistory.pop()
 		this.setCurrentState(JSON.parse(redoState))
 	}
-	@action
-	getEmptyCanvas = size => {
-		return Array.from({ length: this.canvasHeight }, this.getEmptyRow)
-	}
-	@action
-	getEmptyRow = () => {
-		return Array.from({ length: this.canvasWidth }, () => getEmptyCell())
-	}
-
-	//Change canvas height
-	@action
-	addRow = () => {
-		this.canvasHeight = this.canvasHeight + 1
-		this.canvas.push(this.getEmptyRow())
-		this.heightPixels = this.canvasHeight * this.cellHeight
-	}
-	@action
-	addRowTop = () => {
-		this.canvasHeight = this.canvasHeight + 1
-		this.canvas.unshift(this.getEmptyRow())
-		this.heightPixels = this.canvasHeight * this.cellHeight
-	}
-	@action
-	deleteRow = () => {
-		if (this.canvasHeight > 1) {
-			this.canvasHeight = this.canvasHeight - 1
-			if (this.selected_y == this.canvasHeight) {
-				this.selected_y = this.selected_y - 1
+	@action	
+	handleUndoRedo = () => {
+		if (getOS() == 'OSX') {
+			if (this.metaDown && !this.shiftDown) {
+				this.undo()
+			} else if (this.metaDown && this.shiftDown) {
+				this.redo()
+			} else {
+				return
 			}
-			this.canvas.pop()
+		} else {
+			if (this.ctrlDown && !this.shiftDown) {
+				this.undo()
+			} else if (this.ctrlDown && this.shiftDown) {
+				this.redo()
+			} else {
+				return
+			}
 		}
-		this.heightPixels = this.canvasHeight * this.cellHeight
 	}
-	//Remove row at selection
-	@action
-	deleteRowAtSelection = () => {
-		this.canvas.splice(this.selected_y, 1)
-		this.canvasHeight = this.canvasHeight - 1
-		if (this.canvasHeight >= this.selected_y) {
-			this.selected_y = this.selected_y - 1
-		}
-		if (this.selected_y <= 0) {
-			this.selected_y = this.selected_y + 1
-		}
-		this.heightPixels = this.canvasHeight * this.cellHeight
-	}
-	//Remove col at selection
-	@action
-	deleteColAtSelection = () => {
-		for (var i = 0; i < this.canvasHeight; i++) {
-			var col = this.canvas[i]
-			col.splice(this.selected_x, 1)
-		}
-		this.canvasWidth = this.canvasWidth - 1
-		if (this.canvasWidth >= this.selected_x) {
-			this.selected_x = this.selected_x - 1
-		}
-		if (this.selected_x <= 0) {
-			this.selected_x = this.selected_x + 1
-		}
-		this.widthPixels = this.canvasWidth * this.cellWidth
-	}
-	//Add row at selection
-	@action
-	addRowAtSelection = () => {
-		this.canvasHeight++
-		this.canvas.splice(this.selected_y, 0, this.getEmptyRow())
-		this.heightPixels = this.canvasHeight * this.cellHeight
-	}
-	//Add col at selection
-	@action
-	addColAtSelection = () => {
-		this.canvasWidth++
-		for (var i = 0; i < this.canvasHeight; i++) {
-			var col = this.canvas[i]
-			col.splice(this.selected_x, 0, getEmptyCell())
-		}
-		this.widthPixels = this.canvasWidth * this.cellWidth
-	}
+	
+/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+		
+	CELL SETTINGS
 
-	//Change cell height
+   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+	@action
 	increaseCellHeight = () => {
-		this.cellHeight = this.cellHeight + 1
-		this.heightPixels = this.canvasHeight * this.cellHeight
+		this.cellHeight += 1
 	}
+	@action
 	decreaseCellHeight = () => {
 		if (this.cellHeight > 1) {
-			this.cellHeight = this.cellHeight - 1
-			this.heightPixels = this.canvasHeight * this.cellHeight
+			this.cellHeight -= 1
 		}
 	}
-	//Change cell width
+	@action
 	increaseCellWidth = () => {
-		this.cellWidth = this.cellWidth + 1
-		this.widthPixels = this.canvasWidth * this.cellWidth
+		this.cellWidth += 1
 	}
+	@action
 	decreaseCellWidth = () => {
 		if (this.cellWidth > 1) {
-			this.cellWidth = this.cellWidth - 1
+			this.cellWidth -= 1
 		}
-		this.widthPixels = this.canvasWidth * this.cellWidth
 	}
-	//Change font size
+	@action
 	increaseFontSize = () => {
-		this.defaultFontSize = this.defaultFontSize + 1
+		this.defaultFontSize += 1
 	}
+	@action
 	decreaseFontSize = () => {
 		if (this.defaultFontSize > 1) {
-			this.defaultFontSize = this.defaultFontSize - 1
+			this.defaultFontSize -= 1
 		}
 	}
-	//Toggle Hide Grid
+/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+		
+	MODES AND OPTIONS
+
+   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+	@action
 	handleChangeHideGrid = () => {
 		this.hideGrid = !this.hideGrid
 		document.getElementById("hideGrid").checked = this.hideGrid
 	}
-	//Toggle Typing Mode
+	@action
 	handleChangeTypingMode = () => {
 		this.typingMode = !this.typingMode
 		this.glyphClear()
 		document.getElementById("typingMode").checked = this.typingMode		
 	}
-	//Toggle Paint Mode
+	@action
+	toggleWriting = () => {
+		this.disableShortcuts = !this.disableShortcuts
+	}
+	@action
 	handleChangePaintMode = () => {
 		this.paintMode = !this.paintMode
 		document.getElementById("paintMode").checked = this.paintMode
 	}
+	@action
+	showPreview = () => {
+		if(!this.togglePreview) {
+			this.togglePreview = true
+		} else {
+			return
+		}
+	}
+	@action
+	hidePreview = () => {
+		this.togglePreview = false
+	}
+	@action
+	layerSelect = event => {
+		this.selectedLayer = event.target.value
+	}
+	@action
+	hideLayer = event => {
+		if(this.hiddenLayers[event.target.value] == event.target.value) {
+			this.hiddenLayers[event.target.value] = null
+		} else {
+			this.hiddenLayers[event.target.value] = event.target.value
+		}
+	}
+	@action
+	switchLayersUp = event => {
+		[this.canvas[this.selected_y][this.selected_x][Number(event.target.value)], this.canvas[this.selected_y][this.selected_x][Number(event.target.value) + 1]] = [this.canvas[this.selected_y][this.selected_x][Number(event.target.value) + 1], this.canvas[this.selected_y][this.selected_x][Number(event.target.value)]]
+	}
+	@action
+	switchLayersDown = event => {
+		[this.canvas[this.selected_y][this.selected_x][Number(event.target.value)], this.canvas[this.selected_y][this.selected_x][Number(event.target.value) - 1]] = [this.canvas[this.selected_y][this.selected_x][Number(event.target.value) - 1], this.canvas[this.selected_y][this.selected_x][Number(event.target.value)]]
+	}
+/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+		
+	SAVE, LOAD, EXPORT
 
-	//Update Size of PNG export
+   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 	@action
 	updateExportSizeMultiplier = evt => {
 		this.exportSizeMultiplier = evt.target.value
 	}
-	//Update File Name
 	@action
 	updateFileName = evt => {
 		this.fileName = evt.target.value
@@ -405,337 +479,285 @@ class CanvasStore {
 	updateCountry = evt => {
 		this.userCountry = evt.target.value
 	}
-	//Glyph offset X
-	increaseGlyphOffsetX = () => {
-		this.glyphOffsetX = this.canvas[this.selected_y][this.selected_x].slice()[4] //First check the existing offset x value
-		this.glyphOffsetX += this.svgWidth / 8 //Set offset amount to 10% of the glyph width
-		this.canvas[this.selected_y][this.selected_x][4] = this.glyphOffsetX //Update canvas
-	}
-	decreaseGlyphOffsetX = () => {
-		this.glyphOffsetX = this.canvas[this.selected_y][this.selected_x].slice()[4] //First check the existing offset x value
-		this.glyphOffsetX -= this.svgWidth / 8 //Set offset amount to 10% of the glyph width
-		this.canvas[this.selected_y][this.selected_x][4] = this.glyphOffsetX //Update canvas
-	}
-	//Glyph offset Y
-	increaseGlyphOffsetY = () => {
-		this.glyphOffsetY = this.canvas[this.selected_y][this.selected_x].slice()[9] //First check the existing offset x value
-		this.glyphOffsetY += this.svgHeight / 8 //Set offset amount to 10% of the glyph width
-		this.canvas[this.selected_y][this.selected_x][9] = this.glyphOffsetY //Update canvas
-	}
-	decreaseGlyphOffsetY = () => {
-		this.glyphOffsetY = this.canvas[this.selected_y][this.selected_x].slice()[9] //First check the existing offset x value
-		this.glyphOffsetY -= this.svgHeight / 8 //Set offset amount to 10% of the glyph width
-		this.canvas[this.selected_y][this.selected_x][9] = this.glyphOffsetY //Update canvas
-	}
-	//Glyph rotation
-	rotateGlyphRight = () => {
-		this.rotationAmount = this.canvas[this.selected_y][
-			this.selected_x
-		].slice()[6] //First check the existing offset x value
-		if (this.rotationAmount <= -270) {
-			this.rotationAmount = Number(0)
-		} else {
-			this.rotationAmount = Number(this.rotationAmount - 90)
-		}
-		this.canvas[this.selected_y][this.selected_x][6] = this.rotationAmount //Update canvas
-	}
-	rotateGlyphLeft = () => {
-		this.rotationAmount = this.canvas[this.selected_y][
-			this.selected_x
-		].slice()[6] //First check the existing offset x value
-		if (this.rotationAmount >= 270) {
-			this.rotationAmount = Number(0)
-		} else {
-			this.rotationAmount = Number(this.rotationAmount + 90)
-		}
-		this.canvas[this.selected_y][this.selected_x][6] = this.rotationAmount //Update canvas
-	}
-	//Toggle Glyph Invert Color
-	handleChangeInvertColor = () => {
-		this.glyphInvertedColor = this.canvas[this.selected_y][this.selected_x][8]
-		this.glyphInvertedColor = !this.glyphInvertedColor
-		this.canvas[this.selected_y][this.selected_x][8] = this.glyphInvertedColor //Update canvas
-	}
+/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+		
+	GLYPH OFFSET
 
-	//Glyph font size
+   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+	@action
+	increaseGlyphOffsetX = () => {
+		this.canvas[this.selected_y][this.selected_x][this.selectedLayer][4] = this.glyphOffsetX += this.svgWidth / 8 //Update canvas
+	}
+	@action
+	decreaseGlyphOffsetX = () => {
+		this.canvas[this.selected_y][this.selected_x][this.selectedLayer][4] = this.glyphOffsetX -= this.svgWidth / 8 
+	}
+	@action
+	increaseGlyphOffsetY = () => {
+		this.canvas[this.selected_y][this.selected_x][this.selectedLayer][9] = this.glyphOffsetY += this.svgHeight / 8
+	}
+	@action
+	decreaseGlyphOffsetY = () => {
+		this.canvas[this.selected_y][this.selected_x][this.selectedLayer][9] = this.glyphOffsetY -= this.svgHeight / 8
+	}
+/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+		
+	LAYER & CELL MODIFICATIONS
+
+   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+	@action
+	rotateGlyphRight = () => {
+		this.rotationAmount = this.canvas[this.selected_y][this.selected_x][this.selectedLayer][6]
+		if(this.ctrlDown) {
+			//Rotate Cell if ctrl down
+			if(this.rotationAmount <= -270) {
+				this.rotationAmount = this.canvas[this.selected_y][this.selected_x][6] = 0
+			} else {
+				this.rotationAmount = this.canvas[this.selected_y][this.selected_x][6] -= 90
+			}
+		} else {
+			//Rotate Layer if just "r" is pressed
+			if(this.rotationAmount <= -270) { 
+				this.rotationAmount = this.canvas[this.selected_y][this.selected_x][this.selectedLayer][6] = 0
+			} else {
+				this.rotationAmount = this.canvas[this.selected_y][this.selected_x][this.selectedLayer][6] -= 90
+			}	 	
+		}
+	}
+	@action
+	handleChangeFlip = () => {
+		if(this.ctrlDown) {
+			this.canvas[this.selected_y][this.selected_x][4][1] = this.flipGlyph *= -1
+		} else {
+			this.canvas[this.selected_y][this.selected_x][this.selectedLayer][7] = this.flipGlyph *= -1
+		}
+	}
+	@action
+	handleChangeInvertColor = () => {
+		this.canvas[this.selected_y][this.selected_x][this.selectedLayer][8] = this.glyphInvertedShape = !this.canvas[this.selected_y][this.selected_x][this.selectedLayer][8]
+	}
 	@computed
 	get glyphFontSize() {
 		return this.defaultFontSize + this.glyphFontSizeModifier
 	}
+	@action
 	increaseGlyphFontSizeModifier = () => {
-		this.glyphFontSizeModifier = this.canvas[this.selected_y][
-			this.selected_x
-		].slice()[5] //First check the existing glyphFontSizeModifier
-		this.glyphFontSizeModifier++
-		this.canvas[this.selected_y][
-			this.selected_x
-		][5] = this.glyphFontSizeModifier //Update canvas
-		this.getFontSizeAtSelection()
+		this.canvas[this.selected_y][this.selected_x][this.selectedLayer][5]++
 	}
+	@action
 	decreaseGlyphFontSizeModifier = () => {
 		if (this.glyphFontSize > 1) {
-			this.glyphFontSizeModifier = this.canvas[this.selected_y][
-				this.selected_x
-			].slice()[5] //First check the existing glyphFontSizeModifier
-			this.glyphFontSizeModifier--
-			this.canvas[this.selected_y][
-				this.selected_x
-			][5] = this.glyphFontSizeModifier //Update canvas
-			this.getFontSizeAtSelection()
+			this.canvas[this.selected_y][this.selected_x][this.selectedLayer][5]-- 
 		}
 	}
+	@action
 	increaseByOneCellGlyphFontSizeModifier = () => {
-		this.glyphFontSizeModifier =
-			Number(this.canvas[this.selected_y][this.selected_x].slice()[5]) +
-			Number(this.defaultFontSize) //First check the existing glyphFontSizeModifier
-		this.canvas[this.selected_y][
-			this.selected_x
-		][5] = this.glyphFontSizeModifier //Update canvas
-		this.getFontSizeAtSelection()
+		this.canvas[this.selected_y][this.selected_x][this.selectedLayer][5] += this.defaultFontSize
 	}
+	@action
 	decreaseByOneCellGlyphFontSizeModifier = () => {
 		if (this.glyphFontSize - this.defaultFontSize >= 1) {
-			this.glyphFontSizeModifier =
-				Number(this.canvas[this.selected_y][this.selected_x].slice()[5]) -
-				Number(this.defaultFontSize) //First check the existing glyphFontSizeModifier
-			this.canvas[this.selected_y][
-				this.selected_x
-			][5] = this.glyphFontSizeModifier //Update canvas
-			this.getFontSizeAtSelection()
+			this.canvas[this.selected_y][this.selected_x][this.selectedLayer][5] -= this.defaultFontSize
 		}
 	}
-	//Flip glyph
-	handleChangeFlip = () => {
-		this.flipGlyph = this.canvas[this.selected_y][this.selected_x][7]
-		this.flipGlyph = this.flipGlyph *= -1
-		this.canvas[this.selected_y][this.selected_x][7] = this.flipGlyph
-	}
+
 	//GlyphClear - reset selection to default
+	@action
 	glyphClear = () => {
 		this.glyphFontSizeModifier = 0
-		this.glyphInvertedColor = false
+		this.glyphInvertedShape = false
 		this.rotationAmount = 0
 		this.glyphOffsetX = 0
 		this.glyphOffsetY = 0
 		this.flipGlyph = 1
-		this.canvas[this.selected_y][this.selected_x][3] = 0 //baseline
-		this.canvas[this.selected_y][this.selected_x][4] = 0 //offset x
-		this.canvas[this.selected_y][this.selected_x][5] = 0 //font size modifier
-		this.canvas[this.selected_y][this.selected_x][6] = 0 //rotation
-		this.canvas[this.selected_y][this.selected_x][7] = 1 //flip
-		this.canvas[this.selected_y][this.selected_x][8] = false //invert color
-		this.canvas[this.selected_y][this.selected_x][9] = 0 //offset y
-		this.getFontSizeAtSelection()
+		this.canvas[this.selected_y][this.selected_x][this.selectedLayer][4] = 0 //offset x
+		this.canvas[this.selected_y][this.selected_x][this.selectedLayer][5] = 0 //font size modifier
+		this.canvas[this.selected_y][this.selected_x][this.selectedLayer][6] = 0 //rotation
+		this.canvas[this.selected_y][this.selected_x][this.selectedLayer][7] = 1 //flip
+		this.canvas[this.selected_y][this.selected_x][this.selectedLayer][8] = false //invert color
+		this.canvas[this.selected_y][this.selected_x][this.selectedLayer][9] = 0 //offset y
 	}
-	emptyCanvas = () => {
-		this.glyphClear
-		this.selected_y = 0
-		this.selected_x = 0
-		this.canvasWidth = 40
-		this.canvasHeight = 25
-		this.cellWidth = 20
-		this.cellHeight = 20
-		this.defaultFontSize = 20
-		this.widthPixels = this.canvasWidth * this.cellWidth
-		this.heightPixels = this.canvasHeight * this.cellHeight
-		this.canvas = Array.from({ length: this.canvasHeight }, () =>
-			this.getEmptyRow()
-		)
-	}
-	toggleWriting = () => {
-		this.disableShortcuts = !this.disableShortcuts
-	}
+/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+		
+	MOUSE AND CLICK EVENTS
+
+   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 	//Tools
 	@action
 	clickSelection = event => {
-		event.preventDefault
+		event.preventDefault()
 		this.selected_x = Number(event.target.getAttribute("data-x"))
 		this.selected_y = Number(event.target.getAttribute("data-y"))
-		this.getFontSizeAtSelection()
 	}
 	@action
 	handleMouseDown = event => {
+		event.preventDefault()
 		this.mouseDown = true
 		if(this.paintMode) {
-			this.paintCell()
+			this.paintLayer()
+		}
+		if(colorstore.coloringModeFg) {
+			this.colorLayer()
+		}
+		if(colorstore.coloringModeBg) {
+			this.colorBgLayer()
 		}
 	}
 	@action
 	handleMouseUp = event => {
-		this.mouseDown = false
+		this.mouseDown = false 
 	}
-	@action
-	handleAltDown = () => {
-		this.altDown = true
-	}
-	@action
-	handleAltUp = () => {
-		this.altDown = false
-	}
-	@action
-	handleCtrlDown = () => {
-		this.ctrlDown = true
-	}
-	@action
-	handleCtrlUp = () => {
-		this.ctrlDown = false
-	}
-	@action
-	handleMetaDown = () => {
-		this.metaDown = true
-	}
-	@action
-	handleMetaUp = () => {
-		this.metaDown = false
-	}
-	@action
-	handleShiftDown = () => {
-		this.shiftDown = true
-	}
-	@action
-	handleShiftUp = () => {
-		this.shiftDown = false
-	}
-	@action
-	showPreview = () => {
-		if(!this.togglePreview) {
-			this.togglePreview = true
-		} else {
-			return
-		}
-	}
-	@action
-	hidePreview = () => {
-		this.togglePreview = false
-	}
-
 	@action
 	handleMouseOver = event => {
-		if(this.paintMode) {
-			event.preventDefault
+		if(this.paintMode || colorstore.coloringModeFg || colorstore.coloringModeBg ) {
+			event.preventDefault()
 			this.selected_x = Number(event.target.getAttribute("data-x"))
 			this.selected_y = Number(event.target.getAttribute("data-y"))
-			this.paintCell()
-		}
-	}
-	@action	
-	handleUndoRedo = () => {
-		if (getOS() == 'OSX') {
-			if (this.metaDown && !this.shiftDown) {
-				this.undo()
-				console.log(this.metaDown)
-			} else if (this.metaDown && this.shiftDown) {
-				this.redo()
-			} else {
-				return
+			if(this.paintMode) {
+				this.paintLayer()
 			}
-		} else {
-			if (this.ctrlDown && !this.shiftDown) {
-				this.undo()
-			} else if (this.ctrlDown && this.shiftDown) {
-				this.redo()
-			} else {
-				return
+			if(colorstore.coloringModeFg) {
+				this.colorLayer()
+			}
+			if(colorstore.coloringModeBg) {
+				this.colorBgLayer()
 			}
 		}
 	}
 	@action
-	paintCell = () => {
+	paintLayer = () => {
 		if(this.mouseDown) {
-			const currentGlyph = this.canvas[this.selected_y][this.selected_x]
+			const currentGlyph = this.canvas[this.selected_y][this.selected_x][this.selectedLayer]
 			if(!this.altDown) {
 				currentGlyph.replace(this.getSelectedGlyph())
-			} else {
-				currentGlyph.replace(getEmptyCell())
+			} 
+			if(this.altDown) {
+				currentGlyph.replace(getEmptyLayer())
 			}
-			this.getFontSizeAtSelection()
 		}
 	}
 	@action
-	getFontSizeAtSelection = () => {
-		this.selectionGlyphFontSize =
-			Number(this.defaultFontSize) +
-			Number(this.canvas[this.selected_y][this.selected_x][5])
+	colorLayer = () => {
+		if(this.mouseDown) {
+			if(!this.altDown) {
+				this.canvas[this.selected_y][this.selected_x][this.selectedLayer][10] = colorstore.colorIndex
+			} 
+			if(this.altDown) {
+				this.canvas[this.selected_y][this.selected_x][this.selectedLayer][10] = 0
+			}
+		}
 	}
 	@action
+	colorBgLayer = () => {
+		if(this.mouseDown) {
+			if(!this.altDown) {
+				this.canvas[this.selected_y][this.selected_x][4][0] = colorstore.bgColorIndex
+			} 
+			if(this.altDown) {
+				this.canvas[this.selected_y][this.selected_x][4][0] = 255
+			}
+		}
+	}
+/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+		
+	KEY MODIFIER EVENTS
+
+   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+	@action
+	handleAltDown = () => { this.altDown = true }
+	@action
+	handleAltUp = () => { this.altDown = false }
+	@action
+	handleCtrlDown = () => { this.ctrlDown = true }
+	@action
+	handleCtrlUp = () => { this.ctrlDown = false }
+	@action
+	handleMetaDown = () => { this.metaDown = true }
+	@action
+	handleMetaUp = () => { this.metaDown = false }
+	@action
+	handleShiftDown = () => { this.shiftDown = true }
+	@action
+	handleShiftUp = () => { this.shiftDown = false }
+/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+		
+	CANVAS CURSOR
+
+   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+	@action
 	goRight = () => {
+		//ArrowRight
 		if (!this.altDown) {
 			if (this.selected_x < this.canvasWidth - 1) {
-				this.selected_x = Number(this.selected_x + 1)
-			} else if (this.selected_x == this.canvasWidth) {
+				this.selected_x++
+			} else {
 				return
 			}
 		}
 		if (this.altDown) {
 			if(this.selected_x < this.canvasWidth - 1 && this.selected_x <= this.canvasWidth - 6 ) {
-				this.selected_x = Number(this.selected_x + 5)
-			} else if (this.selected_x > this.canvasWidth - 6) {
+				this.selected_x += +5
+			} else {
 				this.selected_x = this.canvasWidth - 1
 			}
 		}
-		this.getFontSizeAtSelection()
 	}
 	@action
 	goLeft = () => {
 		//ArrowLeft
 		if(!this.altDown) {
 			if (this.selected_x > 0 ) {
-				this.selected_x = Number(this.selected_x - 1)
+				this.selected_x -= 1
 			}
 		}
 		if (this.altDown) {
 			if(this.selected_x > 4 ) {
-				this.selected_x = Number(this.selected_x - 5)
-			} else if (this.selected_x <= 4) {
+				this.selected_x -= 5
+			} else {
 				this.selected_x = 0
 			}
 		}
-		this.getFontSizeAtSelection()
 	}
 	@action
 	goDown = () => {
 		//ArrowDown
 		if(!this.altDown) {
 			if (this.selected_y < this.canvasHeight - 1) {
-				this.selected_y = Number(this.selected_y + 1)
-			} else if (this.selected_y == this.canvasHeight) {
+				this.selected_y++
+			} else {
 				return
 			}	
 		}
 		if (this.altDown) {
 			if(this.selected_y < this.canvasHeight - 1 && this.selected_y <= this.canvasHeight - 6 ) {
-				this.selected_y = Number(this.selected_y + 5)
-			} else if (this.selected_y > this.canvasHeight - 6) {
-				this.selected_y = this.canvasHeight - 1
+				this.selected_y += 5
+			} else {
+				this.selected_y -= 1
 			}
 		}
 
-		this.getFontSizeAtSelection()
 	}
 	@action
 	goUp = () => {
 		//ArrowUp
 		if(!this.altDown) {
 			if (this.selected_y > 0) {
-				this.selected_y = Number(this.selected_y - 1)
+				this.selected_y -= 1
 			}
 		}
 		if (this.altDown) {
 			if(this.selected_y > 4 ) {
-				this.selected_y = Number(this.selected_y - 5)
-			} else if (this.selected_y <= 4) {
-				
+				this.selected_y -= 5
+			} else {
 				this.selected_y = 0
 			}
 		}
-		this.getFontSizeAtSelection()
 	}
-	insertEmpty = () => {
-		//space
-		const currentGlyph = this.canvas[this.selected_y][this.selected_x]
-		currentGlyph.replace(getEmptyCell())
-		this.getFontSizeAtSelection()
-	}
+/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+		
+	INSERT FUNCTIONS
+
+   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 	getSelectedGlyph = () => {
 		return [
 			this.glyphPath,
@@ -746,57 +768,134 @@ class CanvasStore {
 			this.glyphFontSizeModifier,
 			this.rotationAmount,
 			this.flipGlyph,
-			this.glyphInvertedColor,
-			this.glyphOffsetY
+			this.glyphInvertedShape,
+			this.glyphOffsetY,
+			colorstore.colorIndex
 		]
 	}
+	getBgColor = () => {
+		return [colorstore.bgColorIndex]
+	}
+   	@action
+	insertEmpty = () => {
+		//space
+		const currentLayer = this.canvas[this.selected_y][this.selected_x][this.selectedLayer]
+		currentLayer.replace(getEmptyLayer())
+	}
+	@action
+	insertEmptyCell = () => {
+		//ctrl + e
+		if(!this.ctrlDown) {
+			this.insertEmpty()
+		} else {
+			const currentGlyph = this.canvas[this.selected_y][this.selected_x]
+			currentGlyph.replace(getEmptyCell())
+		}
+	}
+	@action
 	insert = () => {
 		//q
-		const currentGlyph = this.canvas[this.selected_y][this.selected_x]
-		currentGlyph.replace(this.getSelectedGlyph())
-		this.getFontSizeAtSelection()
+		const currentLayer = this.canvas[this.selected_y][this.selected_x][this.selectedLayer]
+		currentLayer.replace(this.getSelectedGlyph())
 	}
+	@action
+	insertBackground = () => {
+		//w
+		this.canvas[this.selected_y][this.selected_x][4].replace(this.getBgColor())
+	}
+	@action
+	colorFg = () => {
+		//b
+		if(!this.ctrlDown) {
+			this.canvas[this.selected_y][this.selected_x][this.selectedLayer][10] = colorstore.colorIndex
+		} else {
+			for(let z_i = 0; z_i <= 3; z_i++) {
+				this.canvas[this.selected_y][this.selected_x][z_i][10] = colorstore.colorIndex
+			}
+		}
+
+	}
+
+	@action
 	backSpace = () => {
 		//backspace
-		const currentGlyph = this.canvas[this.selected_y][this.selected_x]
-		currentGlyph.replace(getEmptyCell())
-		this.getFontSizeAtSelection()
+		const currentGlyph = this.canvas[this.selected_y][this.selected_x][this.selectedLayer]
+		currentGlyph.replace(getEmptyLayer())
 		if (this.selected_y > 0) {
 			if (this.selected_x > 0) {
 				this.goLeft()
-			} else if (this.selected_x <= 0) {
-				this.selected_y = this.selected_y - 1
+			} else {
+				this.selected_y -= 1
 				this.selected_x = this.canvasWidth - 1
 			}
 		} else {
 			if (this.selected_x > 0) {
 				this.goLeft()
-			}
-			if (this.selected_x == 0) {
+			} else {
 				return
 			}
 		}
 	}
+	@action
 	enter = () => {
 		this.goDown()
 		this.selected_x = 0
 	}
 
+/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+		
+	AREA SELECTION FUNCTIONS & ACTIONS
+
+   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+
 	getSelectedArea = () => {
 		if (!this.selectionArea.start) {
 			return null
 		}
-
 		if (this.selectionArea.start && !this.selectionArea.end) {
 			return getBoundingRectangle(this.selectionArea.start, [
 				this.selected_y,
 				this.selected_x,
 			])
 		}
-
 		return [this.selectionArea.start, this.selectionArea.end]
 	}
-
+	mapRangeAllLayers = (range, f) => {
+		const [[start_y, start_x], [end_y, end_x]] = range
+		for(let z_i = 0; z_i <= 3; z_i++) {
+			for (let y_i = start_y; y_i <= end_y; y_i++) {
+				for (let x_i = start_x; x_i <= end_x; x_i++) {
+					f(this.canvas[y_i][x_i][z_i])
+				}
+			}
+		}
+	}
+	mapRangeSelectedLayer = (range, f) => {
+		const [[start_y, start_x], [end_y, end_x]] = range
+		for (let y_i = start_y; y_i <= end_y; y_i++) {
+			for (let x_i = start_x; x_i <= end_x; x_i++) {
+				f(this.canvas[y_i][x_i][this.selectedLayer])
+			}
+		}
+	}
+	paintRangeAllLayers = (range, glyph) => {
+		const [[start_y, start_x], [end_y, end_x]] = range
+		for (let y_i = start_y; y_i <= end_y; y_i++) {
+			for (let x_i = start_x; x_i <= end_x; x_i++) {
+				for(let z_i = 0; z_i <= 3; z_i++) {
+					this.canvas[y_i][x_i][z_i].replace(glyph)
+				}
+			}
+		}
+	}
+	paintRangeSelectedLayer = (range, glyph, layer) => {
+		const [[start_y, start_x], [end_y, end_x]] = range
+		for (let y_i = start_y; y_i <= end_y; y_i++) {
+			for (let x_i = start_x; x_i <= end_x; x_i++) {
+				this.canvas[y_i][x_i][layer].replace(glyph)
+			}
+		}
+	}
 	@action
 	makeSelection = () => {
 		//shift + s
@@ -809,7 +908,6 @@ class CanvasStore {
 			this.selectionArea.end = null
 		}
 	}
-
 	@action
 	copySelection = () => {
 		//shift + c
@@ -821,91 +919,183 @@ class CanvasStore {
 			this.selectionArea.end[1] - this.selectionArea.start[1]
 		const selectionHeight =
 			this.selectionArea.end[0] - this.selectionArea.start[0]
-
-		for (let y_i = 0; y_i <= selectionHeight; y_i++) {
-			for (let x_i = 0; x_i <= selectionWidth; x_i++) {
-				if (
-					this.selected_y + y_i >= this.canvasHeight ||
-					this.selected_x + x_i >= this.canvasWidth
-				) {
-					continue
+		if(this.ctrlDown) { //SELECTED LAYER ONLY
+			for (let y_i = 0; y_i <= selectionHeight; y_i++) {
+				for (let x_i = 0; x_i <= selectionWidth; x_i++) {
+					if ( this.selected_y + y_i >= this.canvasHeight || this.selected_x + x_i >= this.canvasWidth ) {
+						continue
+					}
+					const copiedGlyph = toJS(this.canvas[this.selectionArea.start[0] + y_i][this.selectionArea.start[1] + x_i][this.selectedLayer])
+					this.canvas[this.selected_y + y_i][this.selected_x + x_i][this.selectedLayer].replace(copiedGlyph)
 				}
-
-				const copiedGlyph = toJS(
-					this.canvas[this.selectionArea.start[0] + y_i][
-						this.selectionArea.start[1] + x_i
-					]
-				)
-				this.canvas[this.selected_y + y_i][this.selected_x + x_i].replace(copiedGlyph)
+			}
+		} else { //ALL LAYERS
+			for(let z_i = 0; z_i <= 3; z_i++) {
+				for (let y_i = 0; y_i <= selectionHeight; y_i++) {
+					for (let x_i = 0; x_i <= selectionWidth; x_i++) {
+						if ( this.selected_y + y_i >= this.canvasHeight || this.selected_x + x_i >= this.canvasWidth ) {
+							continue
+						}
+						const copiedGlyph = toJS(this.canvas[this.selectionArea.start[0] + y_i][this.selectionArea.start[1] + x_i][z_i])
+						this.canvas[this.selected_y + y_i][this.selected_x + x_i][z_i].replace(copiedGlyph)
+					}
+				}
 			}
 		}
 	}
-
-	@action
-	mapRange = (range, f) => {
-		const [[start_y, start_x], [end_y, end_x]] = range
-		for (let y_i = start_y; y_i <= end_y; y_i++) {
-			for (let x_i = start_x; x_i <= end_x; x_i++) {
-				f(this.canvas[y_i][x_i])
-			}
-		}
-	}
-
-	@action
-	paintRange = (range, glyph) => {
-		const [[start_y, start_x], [end_y, end_x]] = range
-		for (let y_i = start_y; y_i <= end_y; y_i++) {
-			for (let x_i = start_x; x_i <= end_x; x_i++) {
-				this.canvas[y_i][x_i].replace(glyph)
-			}
-		}
-	}
-
 	@action
 	emptySelection = () => {
-		//x
+		//shift + d
 		this.selectionArea.start = null
 		this.selectionArea.end = null
 	}
-
 	@action
 	fillArea = () => {
+		//shift + q or ctrl + shift + q
 		if (!this.selectionArea.start) {
 			return
 		}
-		this.paintRange(this.getSelectedArea(), this.getSelectedGlyph())
+		if(!this.ctrlDown) {
+			this.paintRangeSelectedLayer(this.getSelectedArea(), this.getSelectedGlyph(), this.selectedLayer)
+		} else {
+			this.paintRangeAllLayers(this.getSelectedArea(), this.getSelectedGlyph())
+		}
 	}
+	@action
+	colorFgSelectionArea = () => {
+		//shift + b
+		if (!this.selectionArea.start) {
+			return
+		}
+		const [[start_y, start_x], [end_y, end_x]] = this.getSelectedArea()
+		if (!this.ctrlDown) {
+			for (let y_i = start_y; y_i <= end_y; y_i++) {
+				for (let x_i = start_x; x_i <= end_x; x_i++) {
+					this.canvas[y_i][x_i][this.selectedLayer][10] = colorstore.colorIndex
+				}
+			}
+		} else {
+			for (let y_i = start_y; y_i <= end_y; y_i++) {
+				for (let x_i = start_x; x_i <= end_x; x_i++) {
+					for(let z_i = 0; z_i <= 3; z_i++) {
+						this.canvas[y_i][x_i][z_i][10] = colorstore.colorIndex
+					}
+				}
+			}			
+		}
 
+	}
+	@action
+	fillBackgroundArea = () => {
+		//shift + w
+
+		if(!this.ctrlDown) {
+			this.paintRangeSelectedLayer(this.getSelectedArea(), this.getBgColor(), 4)
+		} else {
+			this.paintRangeSelectedLayer(this.getSelectedArea(), [255], 4)
+		}
+	}
 	@action
 	clearArea = () => {
+		//shift + e or ctrl + shift + e
 		if (!this.selectionArea.start) {
 			return
 		}
-		this.paintRange(this.getSelectedArea(), getEmptyCell())
+		if(!this.ctrlDown) {
+			this.paintRangeSelectedLayer(this.getSelectedArea(), getEmptyLayer(), this.selectedLayer)
+		} else {
+			this.paintRangeAllLayers(this.getSelectedArea(), getEmptyLayer())
+		}
 	}
+	@action
+	rotateSelection = () => {
+		// Shift + R
+		if (!this.selectionArea.start) {
+			return
+		}
+		const boundingRectangle = this.getSelectedArea()
+		const [[start_y, start_x], [end_y, end_x]] = boundingRectangle
+		//if selection is not square, do nothing
+		if (end_x - start_x !== end_y - start_y) {
+			return
+		}
 
+		const w = end_y - start_y + 1
+		if(!this.ctrlDown) { //SELECTED LAYER ONLY
+			for (let i = 0; i <= w; i++) {
+				for (let j = i; j < w - i - 1; j++) {
+					const temp = this.canvas[start_y + i][start_x + j][this.selectedLayer]
+					this.canvas[start_y + i][start_x + j][this.selectedLayer] = this.canvas[start_y + w - j - 1][start_x + i][this.selectedLayer]
+					this.canvas[start_y + w - j - 1][start_x + i][this.selectedLayer] = this.canvas[start_y + w - i - 1][start_x + w - j - 1][this.selectedLayer]
+					this.canvas[start_y + w - i - 1][start_x + w - j - 1][this.selectedLayer] = this.canvas[start_y + j][start_x + w - i - 1][this.selectedLayer]
+					this.canvas[start_y + j][start_x + w - i - 1][this.selectedLayer] = temp
+				}
+			}
+			this.mapRangeSelectedLayer(boundingRectangle, glyph => {
+				if (glyph[7] == -1) {
+					glyph[6] += 90
+				} else {
+					glyph[6] -= 90
+				}
+			})
+		} else { //ALL LAYERS
+			for(let z_i = 0; z_i <= 3; z_i++) {
+				for (let i = 0; i <= w; i++) {
+					for (let j = i; j < w - i - 1; j++) {
+						const temp = this.canvas[start_y + i][start_x + j][z_i]
+						this.canvas[start_y + i][start_x + j][z_i] = this.canvas[start_y + w - j - 1][start_x + i][z_i]
+						this.canvas[start_y + w - j - 1][start_x + i][z_i] = this.canvas[start_y + w - i - 1][start_x + w - j - 1][z_i]
+						this.canvas[start_y + w - i - 1][start_x + w - j - 1][z_i] = this.canvas[start_y + j][start_x + w - i - 1][z_i]
+						this.canvas[start_y + j][start_x + w - i - 1][z_i] = temp
+					}
+				}
+			}
+			this.mapRangeAllLayers(boundingRectangle, glyph => {
+				if (glyph[7] == -1) {
+					glyph[6] += 90
+				} else {
+					glyph[6] -= 90
+				}
+			})
+		} 
+	}
 	@action
 	flipSelection = () => {
-		// shift + F
+		// shift + F or ctrl + shift + f
 		if (!this.selectionArea.start) {
 			return
 		}
 		const boundingRectangle = this.getSelectedArea()
 		const [[start_y, start_x], [end_y, end_x]] = boundingRectangle
 		const y_width = end_y - start_y
-		for (let x_i = start_x; x_i <= end_x; x_i++) {
-			for (let y_delta = 0; y_delta <= y_width / 2; y_delta++) {
-				const temp = this.canvas[start_y + y_delta][x_i]
-				this.canvas[start_y + y_delta][x_i] = this.canvas[end_y - y_delta][x_i]
-				this.canvas[end_y - y_delta][x_i] = temp
+		if(!this.ctrlDown) { //SELECTED LAYER ONLY
+			for (let x_i = start_x; x_i <= end_x; x_i++) {
+				for (let y_delta = 0; y_delta <= y_width / 2; y_delta++) {
+					const temp = this.canvas[start_y + y_delta][x_i][this.selectedLayer]
+					this.canvas[start_y + y_delta][x_i][this.selectedLayer] = this.canvas[end_y - y_delta][x_i][this.selectedLayer]
+					this.canvas[end_y - y_delta][x_i][this.selectedLayer] = temp
+				}
 			}
+			this.mapRangeSelectedLayer(boundingRectangle, glyph => {
+				glyph[6] += 180
+				glyph[7] *= -1
+			})
+		} else { //ALL LAYERS
+			for (let x_i = start_x; x_i <= end_x; x_i++) {
+				for (let y_delta = 0; y_delta <= y_width / 2; y_delta++) {
+					for(let z_i = 0; z_i <= 3; z_i++) {
+						const temp = this.canvas[start_y + y_delta][x_i][z_i]
+						this.canvas[start_y + y_delta][x_i][z_i] = this.canvas[end_y - y_delta][x_i][z_i]
+						this.canvas[end_y - y_delta][x_i][z_i] = temp
+					}
+				}
+			}
+			this.mapRangeAllLayers(boundingRectangle, glyph => {
+				glyph[6] += 180
+				glyph[7] *= -1
+			})
 		}
-		this.mapRange(boundingRectangle, glyph => {
-			glyph[6] += 180
-			glyph[7] *= -1
-		})
 	}
-
 	@action
 	mirrorSelection = () => {
 		//Shift + M
@@ -917,17 +1107,28 @@ class CanvasStore {
 		const [[start_y, start_x], [end_y, end_x]] = boundingRectangle
 
 		const x_width = end_x - start_x
-		for (let y_i = start_y; y_i <= end_y; y_i++) {
-			for (let x_delta = 0; x_delta <= x_width / 2; x_delta++) {
-				const temp = this.canvas[y_i][start_x + x_delta]
-				this.canvas[y_i][start_x + x_delta] = this.canvas[y_i][end_x - x_delta]
-				this.canvas[y_i][end_x - x_delta] = temp
+		if(!this.ctrlDown) { //SELECTED LAYER ONLY
+			for (let y_i = start_y; y_i <= end_y; y_i++) {
+				for (let x_delta = 0; x_delta <= x_width / 2; x_delta++) {
+					const temp = this.canvas[y_i][start_x + x_delta][this.selectedLayer]
+					this.canvas[y_i][start_x + x_delta][this.selectedLayer] = this.canvas[y_i][end_x - x_delta][this.selectedLayer]
+					this.canvas[y_i][end_x - x_delta][this.selectedLayer] = temp
+				}
 			}
+			this.mapRangeSelectedLayer(boundingRectangle, glyph => (glyph[7] *= -1))
+		} else { //ALL LAYERS
+			for (let y_i = start_y; y_i <= end_y; y_i++) {
+				for (let x_delta = 0; x_delta <= x_width / 2; x_delta++) {
+					for(let z_i = 0; z_i <= 3; z_i++) {
+						const temp = this.canvas[y_i][start_x + x_delta][z_i]
+						this.canvas[y_i][start_x + x_delta][z_i] = this.canvas[y_i][end_x - x_delta][z_i]
+						this.canvas[y_i][end_x - x_delta][z_i] = temp
+					}
+				}
+			}
+			this.mapRangeAllLayers(boundingRectangle, glyph => (glyph[7] *= -1))
 		}
-
-		this.mapRange(boundingRectangle, glyph => (glyph[7] *= -1))
 	}
-
 	@action
 	transposeSelection = () => {
 		//Shift + T
@@ -946,53 +1147,11 @@ class CanvasStore {
 		for (let i = 0; i <= y_width; i++) {
 			for (let j = 0; j <= i; j++) {
 				const temp = this.canvas[start_y + i][start_x + j]
-				this.canvas[start_y + i][start_x + j] = this.canvas[start_y + j][
-					start_x + i
-				]
+				this.canvas[start_y + i][start_x + j] = this.canvas[start_y + j][start_x + i]
 				this.canvas[start_y + j][start_x + i] = temp
 			}
 		}
 	}
-
-	@action
-	rotateSelection = () => {
-		// Shift + R
-		if (!this.selectionArea.start) {
-			return
-		}
-		const boundingRectangle = this.getSelectedArea()
-		const [[start_y, start_x], [end_y, end_x]] = boundingRectangle
-		//if selection is not square, do nothing
-		if (end_x - start_x !== end_y - start_y) {
-			return
-		}
-
-		const w = end_y - start_y + 1
-		for (let i = 0; i <= w; i++) {
-			for (let j = i; j < w - i - 1; j++) {
-				const temp = this.canvas[start_y + i][start_x + j]
-				this.canvas[start_y + i][start_x + j] = this.canvas[
-					start_y + w - j - 1
-				][start_x + i]
-				this.canvas[start_y + w - j - 1][start_x + i] = this.canvas[
-					start_y + w - i - 1
-				][start_x + w - j - 1]
-				this.canvas[start_y + w - i - 1][start_x + w - j - 1] = this.canvas[
-					start_y + j
-				][start_x + w - i - 1]
-				this.canvas[start_y + j][start_x + w - i - 1] = temp
-			}
-		}
-
-		this.mapRange(boundingRectangle, glyph => {
-			if (glyph[7] == -1) {
-				glyph[6] += 90
-			} else {
-				glyph[6] -= 90
-			}
-		})
-	}
-
 	@action
 	invertColorSelection = () => {
 		//Shift + I
@@ -1001,10 +1160,12 @@ class CanvasStore {
 		}
 		const boundingRectangle = this.getSelectedArea()
 		const [[start_y, start_x], [end_y, end_x]] = boundingRectangle
-
-		this.mapRange(boundingRectangle, glyph => (glyph[8] = !glyph[8]))
+		if(!this.ctrlDown) { //SELECTED LAYER ONLY
+			this.mapRangeSelectedLayer(boundingRectangle, glyph => (glyph[8] = !glyph[8]))
+		} else { //ALL LAYERS
+			this.mapRangeAllLayers(boundingRectangle, glyph => (glyph[8] = !glyph[8]))
+		}
 	}
-
 	@action
 	rotateIndividuallySelection = () => {
 		//Shift + O
@@ -1014,7 +1175,7 @@ class CanvasStore {
 		const boundingRectangle = this.getSelectedArea()
 		const [[start_y, start_x], [end_y, end_x]] = boundingRectangle
 
-		this.mapRange(boundingRectangle, glyph => {
+		this.mapRangeSelectedLayer(boundingRectangle, glyph => {
 			glyph[6] += 90
 		})
 	}
@@ -1027,11 +1188,10 @@ class CanvasStore {
 		const boundingRectangle = this.getSelectedArea()
 		const [[start_y, start_x], [end_y, end_x]] = boundingRectangle
 
-		this.mapRange(boundingRectangle, glyph => {
+		this.mapRangeSelectedLayer(boundingRectangle, glyph => {
 			glyph[7] *= -1
 		})
 	}
-
 	@action
 	selectAll = () => {
 		//Shift + A
@@ -1051,14 +1211,26 @@ class CanvasStore {
 		if(end_y == this.canvasHeight - 1) {
 			return 
 		}
-		for (let y_i = end_y; y_i >= start_y; y_i--) {
-			for (let x_i = start_x; x_i <= end_x; x_i++) {
-				const temp = this.canvas[y_i][x_i]
-				this.canvas[y_i + 1][x_i].replace(temp)
+		if(!this.ctrlDown) { //SELECTED LAYER ONLY
+			for (let y_i = end_y; y_i >= start_y; y_i--) {
+				for (let x_i = start_x; x_i <= end_x; x_i++) {
+					const temp = this.canvas[y_i][x_i][this.selectedLayer]
+					this.canvas[y_i + 1][x_i][this.selectedLayer].replace(temp)
+				}
 			}
-		}
-		for (let x_i = start_x; x_i <= end_x; x_i++) {
-			this.canvas[start_y].splice(x_i, 1, getEmptyCell());
+			for (let x_i = start_x; x_i <= end_x; x_i++) {
+				this.canvas[start_y][x_i][this.selectedLayer].replace(getEmptyLayer())
+			}
+		} else { //ALL LAYERS
+			for (let y_i = end_y; y_i >= start_y; y_i--) {
+				for (let x_i = start_x; x_i <= end_x; x_i++) {
+					const temp = this.canvas[y_i][x_i]
+					this.canvas[y_i + 1][x_i].replace(temp)
+				}
+			}
+			for (let x_i = start_x; x_i <= end_x; x_i++) {
+				this.canvas[start_y][x_i].replace(getEmptyCell())
+			}			
 		}
 		this.selected_y = this.selected_y + 1
 		this.selectionArea.start = [start_y + 1, start_x]
@@ -1077,14 +1249,24 @@ class CanvasStore {
 		if(start_y == 0) {
 			return 
 		}
-		for (let y_i = start_y; y_i <= end_y; y_i++) {
-			for (let x_i = start_x; x_i <= end_x; x_i++) {
-				const temp = this.canvas[y_i][x_i]
-				this.canvas[y_i - 1][x_i].replace(temp)
+		if(!this.ctrlDown) { //SELECTED LAYER ONLY
+			for (let y_i = start_y; y_i <= end_y; y_i++) {
+				for (let x_i = start_x; x_i <= end_x; x_i++) {
+					this.canvas[y_i - 1][x_i][this.selectedLayer].replace(this.canvas[y_i][x_i][this.selectedLayer])
+				}
 			}
-		}
-		for (let x_i = start_x; x_i <= end_x; x_i++) {
-			this.canvas[end_y].splice(x_i, 1, getEmptyCell());
+			for (let x_i = start_x; x_i <= end_x; x_i++) {
+				this.canvas[end_y][x_i][this.selectedLayer].replace(getEmptyLayer())
+			}
+		} else {
+			for (let y_i = start_y; y_i <= end_y; y_i++) {
+				for (let x_i = start_x; x_i <= end_x; x_i++) {
+					this.canvas[y_i - 1][x_i].replace(this.canvas[y_i][x_i])
+				}
+			}
+			for (let x_i = start_x; x_i <= end_x; x_i++) {
+				this.canvas[end_y][x_i].replace(getEmptyCell())
+			}	
 		}
 		this.selected_y = this.selected_y - 1
 		this.selectionArea.start = [start_y - 1, start_x]
@@ -1103,10 +1285,24 @@ class CanvasStore {
 		if(end_x == this.canvasWidth - 1) {
 			return 
 		}
-		
-		for (let y_i = start_y; y_i <= end_y; y_i++) {
-			this.canvas[y_i].splice(end_x + 1, 1);
-			this.canvas[y_i].splice(start_x, 0, getEmptyCell());
+		if(!this.ctrlDown) { //SELECTED LAYER ONLY
+			for (let y_i = start_y; y_i <= end_y; y_i++) {
+				for (let x_i = end_x; x_i >= start_x; x_i--) {
+					this.canvas[y_i][x_i + 1][this.selectedLayer].replace(this.canvas[y_i][x_i][this.selectedLayer])
+				}
+			}
+			for (let y_i = start_y; y_i <= end_y; y_i++) {
+				this.canvas[y_i][start_x][this.selectedLayer].replace(getEmptyLayer())
+			}
+		} else {
+			for (let y_i = start_y; y_i <= end_y; y_i++) {
+				for (let x_i = end_x; x_i >= start_x; x_i--) {
+					this.canvas[y_i][x_i + 1].replace(this.canvas[y_i][x_i])
+				}
+			}
+			for (let y_i = start_y; y_i <= end_y; y_i++) {
+				this.canvas[y_i][start_x].replace(getEmptyCell())
+			}		
 		}
 		this.selected_x = this.selected_x + 1
 		this.selectionArea.start = [start_y, start_x + 1]
@@ -1124,10 +1320,24 @@ class CanvasStore {
 		if(start_x == 0) {
 			return 
 		}
-
-		for (let y_i = start_y; y_i <= end_y; y_i++) {
-			this.canvas[y_i].splice(start_x - 1, 1);
-			this.canvas[y_i].splice(end_x, 0, getEmptyCell());
+		if(!this.ctrlDown) { //SELECTED LAYER ONLY
+			for (let y_i = start_y; y_i <= end_y; y_i++) {
+				for (let x_i = start_x; x_i <= end_x; x_i++) {
+					this.canvas[y_i][x_i - 1][this.selectedLayer].replace(this.canvas[y_i][x_i][this.selectedLayer])
+				}
+			}
+			for (let y_i = start_y; y_i <= end_y; y_i++) {
+				this.canvas[y_i][end_x][this.selectedLayer].replace(getEmptyLayer())
+			}
+		} else {
+			for (let y_i = start_y; y_i <= end_y; y_i++) {
+				for (let x_i = start_x; x_i <= end_x; x_i++) {
+					this.canvas[y_i][x_i - 1].replace(this.canvas[y_i][x_i])
+				}
+			}
+			for (let y_i = start_y; y_i <= end_y; y_i++) {
+				this.canvas[y_i][end_x].replace(getEmptyCell())
+			}			
 		}
 		this.selected_x = this.selected_x - 1
 		this.selectionArea.start = [start_y, start_x - 1]

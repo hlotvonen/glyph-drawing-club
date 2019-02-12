@@ -31,7 +31,7 @@ class Coordinates extends React.Component {
 	render() {
 		return (
 			<div className="coordinates" style={{textAlign: "right"}}>
-				x:{store.selected_x + 1} y:{store.selected_y + 1}
+				x:{+store.selected_x + 1} y:{+store.selected_y + 1}
 				<br />
 				{this.selectionSize()}
 			</div>

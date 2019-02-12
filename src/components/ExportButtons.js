@@ -6,22 +6,6 @@ class ExportButtons extends React.Component {
 	render() {
 		return (
 			<div>
-			{/*<div className="exportPng">
-				<button onClick={() => exportPng()}> {"Export PNG"} </button>
-				Size:
-				<input
-					type="number"
-					min="1"
-					max="25"
-					value={this.props.exportSizeMultiplier}
-					onChange={this.props.updateExportSizeMultiplier}
-					onFocus={() => store.toggleWriting()}
-					onBlur={() => store.toggleWriting()}
-				/>{" "}
-				({store.widthPixels * store.exportSizeMultiplier}
-				px &times; {store.heightPixels * store.exportSizeMultiplier}
-				px)
-			</div>*/}
 			<div className="exportPng">
 				<button onClick={() => exportAs("png")}> {"Export Png"} </button>	Size:
 				<input
@@ -33,8 +17,8 @@ class ExportButtons extends React.Component {
 					onFocus={() => store.toggleWriting()}
 					onBlur={() => store.toggleWriting()}
 				/>{" "}
-				({store.widthPixels * store.exportSizeMultiplier}
-				px &times; {store.heightPixels * store.exportSizeMultiplier}
+				({(store.cellWidth * store.canvasWidth) * store.exportSizeMultiplier}
+				px &times; {store.cellHeight * store.canvasHeight * store.exportSizeMultiplier}
 				px) 
 			</div>
 			<div className="exportSvg">

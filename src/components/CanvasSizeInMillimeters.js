@@ -26,9 +26,9 @@ class CanvasSizeInMillimeters extends React.Component {
 					onBlur={() => store.toggleWriting()}
 				/>
 				<br />
-				{"Canvas width: "}{pxToMm(store.widthPixels, this.state.dpi)} {"mm"}
+				{"Canvas width: "}{pxToMm(store.cellWidth * store.canvasWidth, this.state.dpi)} {"mm"}
 				<br />
-				{"Canvas height: "}{pxToMm(store.heightPixels, this.state.dpi)} {"mm"}
+				{"Canvas height: "}{pxToMm(store.cellHeight * store.canvasHeight, this.state.dpi)} {"mm"}
 			</div>
 		)
 	}

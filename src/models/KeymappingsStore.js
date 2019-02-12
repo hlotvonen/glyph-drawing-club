@@ -1,5 +1,6 @@
 import { action, observable, computed, autorun, mobx, toJS } from "mobx"
 import store from "./CanvasStore"
+import colorstore from "./ColorStore"
 
 const EMPTY_GLYPH = ["M0 0", "1", "1", "0"]
 const KEYS = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"]
@@ -86,14 +87,15 @@ class KeymappingsStore {
 	@action
 	getMapping = keyName => {
 		const selectedSet = this.sets[this.selectedSetIndex]
-		store.canvas[store.selected_y][store.selected_x] = [
+		store.canvas[store.selected_y][store.selected_x][store.selectedLayer] = [
 			...this.sets[this.selectedSetIndex][keyName],
 			store.glyphOffsetX,
 			store.glyphFontSizeModifier,
 			store.rotationAmount,
 			store.flipGlyph,
-			store.glyphInvertedColor,
-			store.glyphOffsetY
+			store.glyphInvertedShape,
+			store.glyphOffsetY,
+			colorstore.colorIndex
 		]
 	}
 }

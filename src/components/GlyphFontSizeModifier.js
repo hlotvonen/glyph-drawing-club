@@ -7,21 +7,17 @@ class GlyphFontSize extends React.Component {
 		return (
 			<div>
 				{"Glyph size modifier:"}
-				<button onClick={this.props.decreaseGlyphFontSizeModifier}>
-					{" "}
-					{"-1"}{" "}
+				<button onClick={store.decreaseGlyphFontSizeModifier}>
+					{"-1"}
 				</button>
-				<button onClick={this.props.increaseGlyphFontSizeModifier}>
-					{" "}
-					{"+1"}{" "}
+				<button onClick={store.increaseGlyphFontSizeModifier}>
+					{"+1"}
 				</button>
-				<button onClick={this.props.decreaseByOneCellGlyphFontSizeModifier}>
-					{" "}
-					{"-" + store.defaultFontSize}{" "}
+				<button onClick={store.decreaseByOneCellGlyphFontSizeModifier}>
+					{"-" + store.defaultFontSize}
 				</button>
-				<button onClick={this.props.increaseByOneCellGlyphFontSizeModifier}>
-					{" "}
-					{"+" + store.defaultFontSize}{" "}
+				<button onClick={store.increaseByOneCellGlyphFontSizeModifier}>
+					{"+" + store.defaultFontSize}
 				</button>
 				<span>{store.glyphFontSizeModifier} px</span>
 			</div>

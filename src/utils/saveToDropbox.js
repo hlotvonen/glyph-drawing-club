@@ -55,7 +55,7 @@ export function saveToDropbox() {
 								glyphFontSizeModifier: cell[5],
 								rotationAmount: cell[6],
 								flipGlyph: cell[7],
-								glyphInvertedColor: cell[8],
+								glyphInvertedShape: cell[8],
 								glyphOffsetY: cell[9],
 							})}
 						</g>

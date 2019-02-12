@@ -16,20 +16,19 @@ class LoadAndPlace extends React.Component {
 				reject(new DOMException("Problem parsing input file."))
 			}
 
-			temporaryFileReader.onload = () => {
+			temporaryFileReader.onload = action(() => {
 				resolve(temporaryFileReader.result)
 				const jsonObj = JSON.parse(temporaryFileReader.result)
 
-				//check if we are dealing with an old file that didn't have glyphOffsetY variable
-				//if we are, then reset all offsets
-				if(jsonObj["canvas"][0][0][9] == null) {
-					jsonObj["canvas"].map( function( row ) {
-					    return row.map( function( cell ) { 
-					        cell[9] = 0 //reset offsety
-					        cell[4] = 0 //reset offsetx
-					    } );
-					} )
+				//check if we are dealing with an old file, display warning and don't open file
+				if(jsonObj["canvas"][0][0].length !== 5) {
+					if (window.confirm("Can't open old file, sorry! You can still use the old version though. Click OK to continue to old site, cancel to stay here.")) 
+					{
+						window.location.href="https://www.glyphdrawing.club/old/";
+					};
+					throw new Error("Can't open old file, sorry! You can still use the old version at https://www.glyphdrawing.club/old/");
 				}
+				
 				let canvasHeight = jsonObj["canvasHeight"]
 				let canvasWidth = jsonObj["canvasWidth"]
 
@@ -45,7 +44,7 @@ class LoadAndPlace extends React.Component {
 					}
 				}
 				
-			}
+			})
 			temporaryFileReader.readAsText(inputFile)
 		})
 	}

@@ -1,8 +1,8 @@
 import React, { Component } from "react"
 import { observer } from "mobx-react"
+import { action } from "mobx"
 import store from "../models/CanvasStore.js"
 import setstore from "../models/KeymappingsStore"
-import typingmodestore from "../models/TypingModeStore"
 import Grid from "./Grid"
 import GridControls from "./GridControls"
 import Coordinates from "./Coordinates"
@@ -18,6 +18,7 @@ class Canvas extends Component {
 		document.removeEventListener("keyup", this.handleKeyPressUp, false)
 	}
 
+	@action
 	handleKeyPress = event => {
 		//disable shortcuts if focus is on input element
 		if (!store.disableShortcuts && !store.typingMode) {
@@ -43,9 +44,12 @@ class Canvas extends Component {
 					h: store.handleChangeHideGrid,
 					i: store.handleChangeInvertColor,
 					t: store.handleChangeTypingMode,
-					b: store.handleChangePaintMode,
+					p: store.handleChangePaintMode,
 					z: store.handleUndoRedo,
 					p: store.showPreview,
+					e: store.insertEmptyCell,
+					w: store.insertBackground,
+					b: store.colorFg,
 
 					//Modifier keys:
 					Alt: store.handleAltDown,
@@ -54,25 +58,27 @@ class Canvas extends Component {
 					Shift: store.handleShiftDown,
 
 					//Unused keys:
-					//WYUDGVBN
+					//YUGVBN
 					A: store.selectAll,
+					B: store.colorFgSelectionArea,
 					S: store.makeSelection,
 					C: store.copySelection,
 					M: store.mirrorSelection,
 					T: store.transposeSelection,
 					R: store.rotateSelection,
-					O: store.rotateIndividuallySelection,
-					P: store.flipIndividuallySelection,
+					Y: store.rotateIndividuallySelection,
+					U: store.flipIndividuallySelection,
 					F: store.flipSelection,
 					E: store.clearArea,
 					Q: store.fillArea,
+					W: store.fillBackgroundArea,
 					I: store.invertColorSelection,
 					H: store.shiftAreaLeft,
 					J: store.shiftAreaDown,
 					K: store.shiftAreaUp,
 					L: store.shiftAreaRight,
-					x: store.emptySelection,
-					X: store.emptySelection,
+					D: store.emptySelection,
+
 
 					m: setstore.handleChangeMapping,
 					//draw glyph from keymap on to canvas

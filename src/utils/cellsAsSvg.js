@@ -12,7 +12,7 @@ export const cellsAsSvg = () => (
 				{row.map((cell, x) => (
 					<g key={"bg"+x} transform={`translate(${(x * store.cellWidth)})`}>
 						{rawSvgCellBg({
-							glyphInvertedColor: cell[8],
+							bgColor: cell[4],
 						})}
 					</g>
 				))}
@@ -22,18 +22,12 @@ export const cellsAsSvg = () => (
 		{store.canvas.map((row, y) => (
 			<g key={y} transform={`translate(0 ${y * store.cellHeight})`}>
 				{row.map((cell, x) => (
-					<g key={x} transform={`translate(${(x * store.cellWidth + cell[5] / 2)})`}>
+					<g key={x} transform={`translate(${(x * store.cellWidth)})`}>
 						{rawSvgCell({
-							glyphPath: cell[0],
-							svgWidth: cell[1],
-							svgHeight: cell[2],
-							svgBaseline: cell[3],
-							glyphOffsetX: cell[4],
-							glyphFontSizeModifier: cell[5],
-							rotationAmount: cell[6],
-							flipGlyph: cell[7],
-							glyphInvertedColor: cell[8],
-							glyphOffsetY: cell[9],
+							layer1: cell[0],
+							layer2: cell[1],
+							layer3: cell[2],
+							layer4: cell[3]
 						})}
 					</g>
 				))}

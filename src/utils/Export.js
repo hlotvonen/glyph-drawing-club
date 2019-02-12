@@ -9,8 +9,8 @@ import { cellsAsSvg } from "./cellsAsSvg"
 export function exportAs(type) {
 	//Create SVG element
 	const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg")
-	svg.setAttribute("width", Number(store.widthPixels))
-	svg.setAttribute("height", Number(store.heightPixels))
+	svg.setAttribute("width", (store.cellWidth * store.canvasWidth))
+	svg.setAttribute("height", (store.cellHeight * store.canvasHeight))
 	svg.setAttributeNS(
 		"http://www.w3.org/2000/xmlns/",
 		"xmlns:xlink",

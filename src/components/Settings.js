@@ -15,9 +15,6 @@ import LoadButton from "./LoadButton"
 import LoadAndPlace from "./LoadAndPlace"
 import EmptyCanvas from "./EmptyCanvas"
 import SaveToDropboxButton from "./SaveToDropboxButton"
-import GlyphRotate from "./GlyphRotate"
-import GlyphFlip from "./GlyphFlip"
-import GlyphInvertColor from "./GlyphInvertColor"
 import TypingMode from "./TypingMode"
 import PaintMode from "./PaintMode"
 import HistoryControls from "./HistoryControls"
@@ -25,6 +22,8 @@ import GlyphOffset from "./GlyphOffset"
 import GlyphFontSizeModifier from "./GlyphFontSizeModifier"
 import GlyphClear from "./GlyphClear"
 import CanvasSizeInMillimeters from "./CanvasSizeInMillimeters"
+import LayerSelect from "./LayerSelect"
+import ColorSelect from "./ColorSelect"
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs'
 
 
@@ -33,10 +32,10 @@ class Settings extends React.Component {
 	render() {
 		return (
 			<div className="controls_container">
-			<Tabs>				
+			<Tabs forceRenderTabPanel={true} defaultIndex={0} >				
 				<TabList>
 					<Tab>Draw</Tab>
-					<Tab disabled>Color</Tab>
+					<Tab>Color</Tab>
 					<Tab>Settings</Tab>
 					<Tab>Save</Tab>
 					<Tab>Help</Tab>
@@ -44,6 +43,8 @@ class Settings extends React.Component {
 				</TabList>
 
 					<TabPanel>
+						<h3>Select Layer</h3>
+						<LayerSelect />
 
 						<h3>Glyph sets</h3>
 						<KeyMappings />
@@ -66,34 +67,14 @@ class Settings extends React.Component {
 						/>
 
 						<h3>Glyph fine tuning</h3>
-						Font size at current selection: {store.selectionGlyphFontSize} px
-						<GlyphFontSizeModifier
-							glyphFontSize={store.glyphFontSize}
-							increaseGlyphFontSizeModifier={store.increaseGlyphFontSizeModifier}
-							decreaseGlyphFontSizeModifier={store.decreaseGlyphFontSizeModifier}
-							increaseByOneCellGlyphFontSizeModifier={
-								store.increaseByOneCellGlyphFontSizeModifier
-							}
-							decreaseByOneCellGlyphFontSizeModifier={
-								store.decreaseByOneCellGlyphFontSizeModifier
-							}
-						/>
+						<GlyphFontSizeModifier />
 						<GlyphOffset />
-						
-						<GlyphRotate
-							rotationAmount={store.rotationAmount}
-							rotateGlyphRight={store.rotateGlyphRight}
-							rotateGlyphLeft={store.rotateGlyphLeft}
-						/>
-						<GlyphFlip handleChangeFlip={store.handleChangeFlip} />
-						<GlyphInvertColor
-							handleChangeInvertColor={store.handleChangeInvertColor}
-						/>
 						<GlyphClear glyphClear={store.glyphClear} />
 
 					</TabPanel>
 
 					<TabPanel>
+						<ColorSelect />
 					</TabPanel>
 
 					<TabPanel>
@@ -165,7 +146,7 @@ class Settings extends React.Component {
 						<h3>Basic tutorial</h3>
 						<ol className="instructions">
 							<li>
-								Click the <span className="hotkey">Draw</span> tab from the sidebar
+								Select the <span className="hotkey">Draw</span> tab from the sidebar
 							</li>
 							<li>
 								<span className="hotkey">Click</span> on any glyph under Glyph selection.
@@ -179,24 +160,35 @@ class Settings extends React.Component {
 							<li>
 								Press <span className="hotkey">f</span> to flip, <span className="hotkey">r</span> to rotate or <span className="hotkey">i</span> to invert a glyph.
 							</li>
-							<li>
-								Check the rest of the keyboard shortcuts below:
-							</li>
 						</ol>
+						<em>
+							Glyph Drawing Club is meant to be used with the keyboard, so check out all the shortcuts below!
+						</em>
 
 						<h3>Keyboard Shortcuts</h3>
-						<h4>Basics</h4>
+						<h4>Move</h4>
 						<table><tbody>
 							<tr>
 								<td>Arrow keys</td>
 								<td>Move</td>
 							</tr>
 							<tr>
+								<td>Alt+Arrow keys</td>
+								<td>Quickly move around the canvas</td>
+							</tr>
+						</tbody></table>
+
+						<h4>Draw</h4>
+						<em>
+							Hold down CTRL if you want to affect all layers
+						</em>
+						<table><tbody>
+							<tr>
 								<td>q</td>
 								<td>Draw (Place selected glyph)</td>
 							</tr>
 							<tr>
-								<td>Spacebar</td>
+								<td>e</td>
 								<td>Delete</td>
 							</tr>
 							<tr>
@@ -211,6 +203,26 @@ class Settings extends React.Component {
 								<td>i</td>
 								<td>Invert</td>
 							</tr>
+						</tbody></table>
+
+						<h4>Make glyph sets</h4>
+						<table><tbody>
+							<tr>
+								<td>m</td>
+								<td>Start mapping glyph sets. Press again to end mapping.</td>
+							</tr>
+							<tr>
+								<td>Number keys 1–10</td>
+								<td>Add selected glyph to set (when mapping is on)</td>
+							</tr>
+							<tr>
+								<td>Number keys 1–10</td>
+								<td>Insert glyph from set (when mapping is off)</td>
+							</tr>
+						</tbody></table>
+
+						<h4>Extra</h4>
+						<table><tbody>
 							<tr>
 								<td>Cmd/Ctrl+z</td>
 								<td>Undo</td>
@@ -218,26 +230,6 @@ class Settings extends React.Component {
 							<tr>
 								<td>Cmd/Ctrl+Shift+z</td>
 								<td>Redo</td>
-							</tr>
-						</tbody></table>
-						
-						<h4>Extra</h4>
-						<table><tbody>
-							<tr>
-								<td>Alt+Arrow keys</td>
-								<td>Quickly move around the canvas</td>
-							</tr>
-							<tr>
-								<td>Enter</td>
-								<td>Line break</td>
-							</tr>
-							<tr>
-								<td>Backspace</td>
-								<td>Delete</td>
-							</tr>
-							<tr>
-								<td>Number keys 1–10</td>
-								<td>Insert glyph from set</td>
 							</tr>
 							<tr>
 								<td>h</td>
@@ -278,13 +270,16 @@ class Settings extends React.Component {
 						</tbody></table>
 
 						<h4>Area selection</h4>
+						<em>
+							Hold down CTRL if you want to affect all layers
+						</em>
 						<table><tbody>
 							<tr>
 								<td>Shift + s</td>
 								<td>Start selection area. Use arrows keys to change the selection area. Press Shift + s again to release selection area</td>
 							</tr>
 							<tr>
-								<td>x or Shift + x</td>
+								<td>Shift + d</td>
 								<td>Deselect area</td>
 							</tr>
 							<tr>
@@ -316,11 +311,11 @@ class Settings extends React.Component {
 								<td>Invert the colors of selected area</td>
 							</tr>
 							<tr>
-								<td>Shift + o</td>
+								<td>Shift + y</td>
 								<td>Rotate glyphs individually in selected area</td>
 							</tr>
 							<tr>
-								<td>Shift + p</td>
+								<td>Shift + u</td>
 								<td>Flip glyphs individually in selected area</td>
 							</tr>
 							<tr>
@@ -348,16 +343,24 @@ class Settings extends React.Component {
 								<td>Move selected area right</td>
 							</tr>
 						</tbody></table>
-
-						<h4>Make glyph sets</h4>
+						
+						<h4>Coloring tools</h4>
 						<table><tbody>
 							<tr>
-								<td>m</td>
-								<td>Start mapping glyph sets. This disables all other shortcuts. Press again to end mapping.</td>
+								<td>b</td>
+								<td>Color foreground</td>
 							</tr>
 							<tr>
-								<td>Number keys 1–10</td>
-								<td>Add selected glyph to set</td>
+								<td>w</td>
+								<td>Color background</td>
+							</tr>
+							<tr>
+								<td>Shift + b</td>
+								<td>Color selected area foreground</td>
+							</tr>
+							<tr>
+								<td>Shift + w</td>
+								<td>Color selected area background</td>
 							</tr>
 						</tbody></table>
 

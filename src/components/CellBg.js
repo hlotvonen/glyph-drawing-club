@@ -1,24 +1,15 @@
 import React from "react"
 import store from "../models/CanvasStore"
 import { observer } from "mobx-react"
+import { colorBlend } from "../utils/colorConversion"
+import colorStore from "../models/ColorStore"
 
 const CellBg = observer(props => {
-	const [
-		glyphPath,
-		svgWidth,
-		svgHeight,
-		svgBaseline,
-		glyphOffsetX,
-		glyphFontSizeModifier,
-		rotationAmount,
-		flipGlyph,
-		glyphInvertedColor,
-		glyphOffsetY,
-	] = props.cell
+	const bgColor = props.cell
 
-	if (glyphInvertedColor == false) {
+	if (bgColor == "255") {
 		return (null)
-	} if (glyphInvertedColor == true) {
+	} else{
 		return(
 			<div 
 				style={{
@@ -27,18 +18,19 @@ const CellBg = observer(props => {
 					left: (props.x * store.cellWidth),
 				}}
 			>
-				{rawSvgCellBg({glyphInvertedColor})}
+				{rawSvgCellBg({bgColor})}
 			</div>
 		)
 	}
 })
 
-export const rawSvgCellBg = ({glyphInvertedColor}) => (
+export const rawSvgCellBg = ({bgColor}) => (
 	<svg
 		height={store.defaultFontSize}
 		viewBox={0 + " " + 0 + " " + 800 / (store.cellHeight / store.cellWidth) + " " + 800}
+		fill={`rgb(${colorBlend(colorStore.palettes[colorStore.selectedPaletteIndex][bgColor], colorStore.cohesionOverlayColor, colorStore.cohesionIntensity)})`} 
 	>	
-		<rect width={800} height={800} fill={glyphInvertedColor ? "black" : "white"} />
+		<rect width={100 + "%"} height={100 + "%"} />
 	</svg>
 
 )

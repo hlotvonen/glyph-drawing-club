@@ -12,14 +12,14 @@ class CanvasHeight extends React.Component {
 					<button onClick={store.deleteRow}> {"-1"} </button>
 					<button onClick={store.addRow}> {"+1"} </button>
 					<span>
-						{store.canvasHeight} {"cells"} ({store.heightPixels} px)
+						{store.canvasHeight} {"cells"} ({store.cellHeight * store.canvasHeight} px)
 					</span>
 					<br />
 					{"Canvas width:"}
 					<button onClick={store.deleteCol}> {"-1"} </button>
 					<button onClick={store.addCol}> {"+1"} </button>
 					<span>
-						{store.canvasWidth} {"cells"} ({store.widthPixels} px)
+						{store.canvasWidth} {"cells"} ({store.cellWidth * store.canvasWidth} px)
 					</span>
 					<br />
 				</div>

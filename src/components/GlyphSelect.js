@@ -1,12 +1,12 @@
 import React, { Component } from "react"
 import { observer } from "mobx-react"
-import { observable } from "mobx"
+import { observable, action } from "mobx"
 import store from "../models/CanvasStore.js"
-import typingmodestore from "../models/TypingModeStore"
+import { KEY_INTO_UNICODE } from "../utils/keyIntoUnicode"
 
 class GlyphSelect extends Component {
 	pageNumber = observable.box(0)
-	selectedFont = observable("Tesserae-Regular")
+	selectedFont = observable("Tesserae 4x4 Basic")
 
 	constructor(props) {
 		super(props)
@@ -24,6 +24,7 @@ class GlyphSelect extends Component {
 	}
 	componentDidMount() {
 		this.go()
+		store.selectedLayer = 0
 		document.addEventListener("keydown", this.handleKeyPress, false)
 	}
 	componentWillUnmount() {
@@ -31,8 +32,8 @@ class GlyphSelect extends Component {
 	}
 
 	go = () => {
-		if (this.selectedFont == "Tesserae-Regular") {
-			this.load("fonts/Tesserae-Regular.otf", this.fontLoaded)
+		if (this.selectedFont == "Tesserae 4x4 Basic") {
+			this.load("fonts/Tesserae4x4Basic.otf", this.fontLoaded)
 		} else if (this.selectedFont == "Unscii") {
 			this.load("fonts/unscii-16.ttf", this.fontLoaded)
 		} else if (this.selectedFont == "MingLiU") {
@@ -62,6 +63,7 @@ class GlyphSelect extends Component {
 		e.stopPropagation()
 		e.preventDefault()
 	}
+	@action
 	fontLoaded = resp => {
 		this.setState({
 			font: Typr.parse(resp),
@@ -95,6 +97,7 @@ class GlyphSelect extends Component {
 
 		store.fontName = this.state.font.name.fullName
 	}
+	@action
 	handleKeyPress = event => {
 		if (store.typingMode && !store.disableShortcuts) {
 			const handlers = {
@@ -112,12 +115,12 @@ class GlyphSelect extends Component {
 			if (event.key in handlers) {
 				handler()
 			}
-			if (typingmodestore.KEY_INTO_UNICODE[event.key] !== undefined) {
+			if (KEY_INTO_UNICODE[event.key] !== undefined) {
 				let path = Typr.U.glyphToPath(
 					this.state.font,
 					Typr.U.codeToGlyph(
 						this.state.font,
-						typingmodestore.KEY_INTO_UNICODE[event.key]
+						KEY_INTO_UNICODE[event.key]
 					)
 				)
 				let svgstring = Typr.U.pathToSVG(path)
@@ -128,21 +131,22 @@ class GlyphSelect extends Component {
 					Math.abs(this.state.font.hhea.descender)
 				store.svgBaseline = this.state.font.hhea.descender
 
-				store.canvas[store.selected_y][store.selected_x].replace(store.getSelectedGlyph())
-				store.selected_x = store.selected_x + 1
+				store.canvas[store.selected_y][store.selected_x][store.selectedLayer].replace(store.getSelectedGlyph())
+				store.selected_x += 1
 
 				if (store.selected_x == store.canvasWidth) {
 					store.selected_x = 0
 					if (store.selected_y < store.canvasHeight - 1) {
-						store.selected_y = store.selected_y + 1
+						store.selected_y += 1
 					} else if (store.selected_y == store.canvasHeight) {
-						store.selected_y = store.selected_y - 1
+						store.selected_y -= 1
 					}
 				}
 			}
 			event.preventDefault()
 		}
 	}
+	@action
 	glyphToSVG = () => {
 		let path = Typr.U.glyphToPath(this.state.font, this.state.gid)
 		let svgstring = Typr.U.pathToSVG(path)
@@ -152,7 +156,6 @@ class GlyphSelect extends Component {
 			this.state.font.hhea.ascender + Math.abs(this.state.font.hhea.descender)
 		store.svgBaseline = this.state.font.hhea.descender
 	}
-
 	drawGlyphs = () => {
 		let cont = document.getElementById("glyphcont")
 		cont.innerHTML = ""
@@ -171,7 +174,7 @@ class GlyphSelect extends Component {
 			cnv.width = cnv.width
 			ctx.translate(5 * this.getDPR(), Math.round(30 * this.getDPR()))
 
-			if ( this.selectedFont == "Tesserae-Regular") {
+			if ( this.selectedFont == "TTesserae 4x4 Basic") {
 				ctx.fillStyle = "#f5f5f5"
 				ctx.fillRect(
 					0,
@@ -249,16 +252,19 @@ class GlyphSelect extends Component {
 	glyphCnt = () => {
 		return this.state.font.maxp.numGlyphs
 	}
+	@action
 	drawNext = () => {
 		if (this.pageNumber.get() < this.state.pages_total) {
 			this.updatePageNum(this.pageNumber.get() + 1)
 		}
 	}
+	@action
 	drawPrev = () => {
 		if (this.pageNumber.get() > 0) {
 			this.updatePageNum(this.pageNumber.get() - 1)
 		}
 	}
+	@action
 	updatePageNum = value => {
 		this.pageNumber.set(value)
 
@@ -293,7 +299,7 @@ class GlyphSelect extends Component {
 					value={this.selectedFont}
 					onChange={evt => this.handleFontSelectChange(evt.target.value)}
 				>
-					<option value="Tesserae-Regular">Tesserae-Regular</option>
+					<option value="Tesserae 4x4 Basic">Tesserae 4x4 Basic</option>
 					<option value="RayMantaC64">RayMantaC64 (Custom PETSCII)</option>
 					<option value="Unscii">Unscii</option>
 					<option value="MingLiU">MingLiU (Taiwanese ANSI)</option>
