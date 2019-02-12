@@ -33,11 +33,16 @@ const MAX_HISTORY_SIZE = 16
 
 class CanvasStore {
 	constructor() {
-		if (localStorage.firstRun) {
-			//get canvas from localstorage
-			this.setCurrentState(JSON.parse(localStorage.storage))
+
+		if (JSON.parse(localStorage.storage)['canvas'] !== undefined) {
+			//check if old version
+			if(JSON.parse(localStorage.storage)['timestamp'] <= 1549995564) {
+				localStorage.clear()
+				this.createEmptyCanvas()
+			} else {
+				this.setCurrentState(JSON.parse(localStorage.storage))
+			}
 		} else {
-			//else start with a new empty canvas
 			this.createEmptyCanvas()
 		}
 		autorunAsync(() => {
