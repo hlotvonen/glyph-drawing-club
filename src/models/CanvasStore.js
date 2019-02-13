@@ -33,14 +33,15 @@ const MAX_HISTORY_SIZE = 16
 
 class CanvasStore {
 	constructor() {
-
-		if (JSON.parse(localStorage.storage)['canvas'] !== undefined) {
-			//check if old version
-			if(JSON.parse(localStorage.storage)['timestamp'] <= 1549995564) {
-				localStorage.clear()
-				this.createEmptyCanvas()
-			} else {
-				this.setCurrentState(JSON.parse(localStorage.storage))
+		if (localStorage.firstRun) {
+			if (JSON.parse(localStorage.storage)['canvas'] !== undefined) {
+				//check if old version
+				if(JSON.parse(localStorage.storage)['timestamp'] <= 1549995564) {
+					localStorage.clear()
+					this.createEmptyCanvas()
+				} else {
+					this.setCurrentState(JSON.parse(localStorage.storage))
+				}
 			}
 		} else {
 			this.createEmptyCanvas()
@@ -491,7 +492,7 @@ class CanvasStore {
    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 	@action
 	increaseGlyphOffsetX = () => {
-		this.canvas[this.selected_y][this.selected_x][this.selectedLayer][4] = this.glyphOffsetX += this.svgWidth / 8 //Update canvas
+		this.canvas[this.selected_y][this.selected_x][this.selectedLayer][4] = this.glyphOffsetX += this.svgWidth / 8
 	}
 	@action
 	decreaseGlyphOffsetX = () => {
@@ -515,10 +516,12 @@ class CanvasStore {
 		this.rotationAmount = this.canvas[this.selected_y][this.selected_x][this.selectedLayer][6]
 		if(this.ctrlDown) {
 			//Rotate Cell if ctrl down
-			if(this.rotationAmount <= -270) {
-				this.rotationAmount = this.canvas[this.selected_y][this.selected_x][6] = 0
-			} else {
-				this.rotationAmount = this.canvas[this.selected_y][this.selected_x][6] -= 90
+			for(let z_i = 0; z_i <= 3; z_i++) {
+				if(this.rotationAmount <= -270) {
+					this.rotationAmount = this.canvas[this.selected_y][this.selected_x][z_i][6] = 0
+				} else {
+					this.rotationAmount = this.canvas[this.selected_y][this.selected_x][z_i][6] -= 90
+				}
 			}
 		} else {
 			//Rotate Layer if just "r" is pressed
@@ -532,37 +535,45 @@ class CanvasStore {
 	@action
 	handleChangeFlip = () => {
 		if(this.ctrlDown) {
-			this.canvas[this.selected_y][this.selected_x][4][1] = this.flipGlyph *= -1
+			for(let z_i = 0; z_i <= 3; z_i++) {
+				this.canvas[this.selected_y][this.selected_x][z_i][7] *= -1
+			}
 		} else {
 			this.canvas[this.selected_y][this.selected_x][this.selectedLayer][7] = this.flipGlyph *= -1
 		}
 	}
 	@action
 	handleChangeInvertColor = () => {
-		this.canvas[this.selected_y][this.selected_x][this.selectedLayer][8] = this.glyphInvertedShape = !this.canvas[this.selected_y][this.selected_x][this.selectedLayer][8]
-	}
-	@computed
-	get glyphFontSize() {
-		return this.defaultFontSize + this.glyphFontSizeModifier
+		if(this.ctrlDown) {
+			for(let z_i = 0; z_i <= 3; z_i++) {
+				this.canvas[this.selected_y][this.selected_x][z_i][8] = !this.canvas[this.selected_y][this.selected_x][z_i][8]
+			}
+		} else {
+			this.canvas[this.selected_y][this.selected_x][this.selectedLayer][8] = this.glyphInvertedShape = !this.canvas[this.selected_y][this.selected_x][this.selectedLayer][8]
+		}
 	}
 	@action
 	increaseGlyphFontSizeModifier = () => {
-		this.canvas[this.selected_y][this.selected_x][this.selectedLayer][5]++
+		this.canvas[this.selected_y][this.selected_x][this.selectedLayer][5] += 1
+		this.glyphFontSizeModifier = this.canvas[this.selected_y][this.selected_x][this.selectedLayer][5]
 	}
 	@action
 	decreaseGlyphFontSizeModifier = () => {
-		if (this.glyphFontSize > 1) {
-			this.canvas[this.selected_y][this.selected_x][this.selectedLayer][5]-- 
+		if (this.glyphFontSizeModifier > 0) {
+			this.canvas[this.selected_y][this.selected_x][this.selectedLayer][5] -= 1
+			this.glyphFontSizeModifier = this.canvas[this.selected_y][this.selected_x][this.selectedLayer][5]
 		}
 	}
 	@action
 	increaseByOneCellGlyphFontSizeModifier = () => {
 		this.canvas[this.selected_y][this.selected_x][this.selectedLayer][5] += this.defaultFontSize
+		this.glyphFontSizeModifier = this.canvas[this.selected_y][this.selected_x][this.selectedLayer][5]
 	}
 	@action
 	decreaseByOneCellGlyphFontSizeModifier = () => {
-		if (this.glyphFontSize - this.defaultFontSize >= 1) {
+		if (this.glyphFontSizeModifier - this.defaultFontSize >= 0) {
 			this.canvas[this.selected_y][this.selected_x][this.selectedLayer][5] -= this.defaultFontSize
+			this.glyphFontSizeModifier = this.canvas[this.selected_y][this.selected_x][this.selectedLayer][5]
 		}
 	}
 

@@ -56,7 +56,10 @@ export const rawSvgCell = ({
 	          	layer1[0] === "M0 0" || store.hiddenLayers[0] == 0 
 	          	? null
 	          	: (
-					<g transform={`translate(${layer1[4]} ${layer1[9]})`}>
+					<g transform={`
+						translate(${layer1[4]} ${layer1[9]})
+						scale(${(Number(store.defaultFontSize) + layer1[5]) / Number(store.defaultFontSize)})
+						`}>
 						<g transform={`
 							scale(
 								${layer1[7] * 800 / (layer1[2] == 1 ? 800 : layer1[2])} 
