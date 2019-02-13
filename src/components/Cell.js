@@ -84,7 +84,10 @@ export const rawSvgCell = ({
 	          	layer2[0] === "M0 0" || store.hiddenLayers[1] == 1
 	          	? null
 	          	: (
-					<g transform={`translate(${layer2[4]} ${layer2[9]})`}>
+					<g transform={`
+						translate(${layer2[4]} ${layer2[9]})
+						scale(${(Number(store.defaultFontSize) + layer2[5]) / Number(store.defaultFontSize)})
+						`}>
 						<g transform={`
 							scale(
 								${layer2[7] * 800 / (layer2[2] == 1 ? 800 : layer2[2])} 
@@ -109,7 +112,10 @@ export const rawSvgCell = ({
 	          	layer3[0] === "M0 0" || store.hiddenLayers[2] == 2
 	          	? null
 	          	: (
-					<g transform={`translate(${layer3[4]} ${layer3[9]})`}>
+					<g transform={`
+						translate(${layer3[4]} ${layer3[9]})
+						scale(${(Number(store.defaultFontSize) + layer3[5]) / Number(store.defaultFontSize)})
+						`}>
 						<g transform={`
 							scale(
 								${layer3[7] * 800 / (layer3[2] == 1 ? 800 : layer3[2])} 
@@ -134,7 +140,10 @@ export const rawSvgCell = ({
 	          	layer4[0] === "M0 0" || store.hiddenLayers[3] == 3
 	          	? null
 	          	: (
-					<g transform={`translate(${layer4[4]} ${layer4[9]})`}>
+					<g transform={`
+						translate(${layer4[4]} ${layer4[9]})
+						scale(${(Number(store.defaultFontSize) + layer4[5]) / Number(store.defaultFontSize)})
+						`}>
 						<g transform={`
 							scale(
 								${layer4[7] * 800 / (layer4[2] == 1 ? 800 : layer4[2])} 
