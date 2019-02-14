@@ -517,7 +517,7 @@ class CanvasStore {
 		if(this.ctrlDown) {
 			//Rotate Cell if ctrl down
 			for(let z_i = 0; z_i <= 3; z_i++) {
-				if(this.rotationAmount <= -270) {
+				if(this.canvas[this.selected_y][this.selected_x][z_i][6] <= -270) {
 					this.rotationAmount = this.canvas[this.selected_y][this.selected_x][z_i][6] = 0
 				} else {
 					this.rotationAmount = this.canvas[this.selected_y][this.selected_x][z_i][6] -= 90
