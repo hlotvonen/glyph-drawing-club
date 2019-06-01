@@ -8,8 +8,8 @@ class CellHeight extends React.Component {
 			<div>
 				{"Cell height:"}
 				<button onClick={store.decreaseCellHeight}> {"-1"} </button>
-				<button onClick={store.increaseCellHeight}> {"+1"} </button>
-				<span>{store.cellHeight} px</span>
+				<button onClick={store.increaseCellHeight}> {"+2"} </button>
+				<span>{store.cellHeight} pxx</span>
 			</div>
 		)
 	}

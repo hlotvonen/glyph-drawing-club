@@ -44,12 +44,11 @@ class Canvas extends Component {
 					h: store.handleChangeHideGrid,
 					i: store.handleChangeInvertColor,
 					t: store.handleChangeTypingMode,
-					p: store.handleChangePaintMode,
+					b: store.handleChangePaintMode,
 					z: store.handleUndoRedo,
 					p: store.showPreview,
 					e: store.insertEmptyCell,
 					w: store.insertBackground,
-					b: store.colorFg,
 
 					//Modifier keys:
 					Alt: store.handleAltDown,

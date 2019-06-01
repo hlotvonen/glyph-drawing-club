@@ -51,15 +51,13 @@ module.exports = {
   module: {
     rules: [{
       test: /\.jsx?$/,
-      use: ['babel-loader'],
+      use: {
+        loader: 'babel-loader',
+        options: {
+            presets: ['@babel/react', '@babel/env']
+        }
+      },
       include: path.join(__dirname, 'src')
     }]
-  },
-  devServer: {
-    publicPath: '/dist/',
-    contentBase: path.resolve(__dirname, ""),
-    watchContentBase: true,
-    compress: true,
-    port: 9001
-  },
+  }
 };

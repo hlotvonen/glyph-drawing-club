@@ -4,26 +4,35 @@ import store from "../models/CanvasStore"
 import { cellsAsSvg } from "../utils/cellsAsSvg"
 import ReactDOM from "react-dom"
 
-//This file is for debugging and testing SVG generation
-//import this in Canvas.js
-
 @observer
 class Preview extends Component {
 	render() {
-		const transformOrigin = window.innerHeight > (store.canvasHeight * store.cellHeight) ? "center" : "top"
-		return (
-			<div className={"preview" + (store.togglePreview ? " showPreview" : "")}>
-				<div>
-						<svg style={{
-							background: "white",
-							transformOrigin: transformOrigin,
-							transform: `scale( ${window.innerHeight / (store.canvasHeight * store.cellHeight)} )`
-						}} width={store.canvasWidth * store.cellWidth} height={store.canvasHeight * store.cellHeight}>	
-							{store.togglePreview ? cellsAsSvg() : null}
-						</svg>
+		if(store.togglePreview) {
+			const transformOrigin = window.innerHeight > (store.canvasHeight * store.cellHeight) ? "center" : "top"
+			const canvasWidth = store.canvasWidth * store.cellWidth
+			const canvasHeight = store.canvasHeight * store.cellHeight
+			return (
+				<div className={"preview"}>
+					<div>
+							<svg style={{
+								background: "white",
+								transformOrigin: transformOrigin,
+								transform: `scale( ${
+									window.innerWidth / canvasWidth < window.innerHeight / canvasHeight 
+										? window.innerWidth / canvasWidth //if wide
+										: window.innerHeight / canvasHeight //if tall
+								} )`
+							}} width={store.canvasWidth * store.cellWidth} height={store.canvasHeight * store.cellHeight}>	
+								{store.togglePreview ? cellsAsSvg() : null}
+							</svg>
+					</div>
 				</div>
-			</div>
-		)
+			)
+		} else {
+			return (
+				<></>
+			)
+		}
 	}
 }
 export default Preview

@@ -6,7 +6,7 @@ import { KEY_INTO_UNICODE } from "../utils/keyIntoUnicode"
 
 class GlyphSelect extends Component {
 	pageNumber = observable.box(0)
-	selectedFont = observable("Tesserae 4x4 Basic")
+	selectedFont = observable.box("Tesserae 4x4")
 
 	constructor(props) {
 		super(props)
@@ -32,8 +32,8 @@ class GlyphSelect extends Component {
 	}
 
 	go = () => {
-		if (this.selectedFont == "Tesserae 4x4 Basic") {
-			this.load("fonts/Tesserae4x4Basic.otf", this.fontLoaded)
+		if (this.selectedFont == "Tesserae 4x4") {
+			this.load("fonts/Tesserae-4x4Extended.otf", this.fontLoaded)
 		} else if (this.selectedFont == "Unscii") {
 			this.load("fonts/unscii-16.ttf", this.fontLoaded)
 		} else if (this.selectedFont == "MingLiU") {
@@ -174,7 +174,7 @@ class GlyphSelect extends Component {
 			cnv.width = cnv.width
 			ctx.translate(5 * this.getDPR(), Math.round(30 * this.getDPR()))
 
-			if ( this.selectedFont == "TTesserae 4x4 Basic") {
+			if ( this.selectedFont == "Tesserae 4x4") {
 				ctx.fillStyle = "#f5f5f5"
 				ctx.fillRect(
 					0,
@@ -299,7 +299,7 @@ class GlyphSelect extends Component {
 					value={this.selectedFont}
 					onChange={evt => this.handleFontSelectChange(evt.target.value)}
 				>
-					<option value="Tesserae 4x4 Basic">Tesserae 4x4 Basic</option>
+					<option value="Tesserae 4x4">Tesserae 4x4</option>
 					<option value="RayMantaC64">RayMantaC64 (Custom PETSCII)</option>
 					<option value="Unscii">Unscii</option>
 					<option value="MingLiU">MingLiU (Taiwanese ANSI)</option>

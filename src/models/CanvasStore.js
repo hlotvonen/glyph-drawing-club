@@ -1,10 +1,10 @@
-import { action, observable, computed, autorunAsync, toJS, useStrict } from "mobx"
+import { action, observable, computed, autorun, toJS, configure } from "mobx"
 import setstore from "./KeymappingsStore"
 import colorstore from "./ColorStore"
 import { getBoundingRectangle } from "../utils/geometry"
 import { getOS } from "../utils/detectOs"
 
-useStrict(true)
+configure({ enforceActions: "observed" })
 
 /*
 0: glyphPath, 
@@ -29,7 +29,7 @@ EMPTY_CELL[4] = new Array ("255") //BG LAYER
 const getEmptyCell = () => observable([...EMPTY_CELL])
 const getEmptyLayer = () => observable(EMPTY_CELL[0])
 
-const MAX_HISTORY_SIZE = 16
+const MAX_HISTORY_SIZE = 32
 
 class CanvasStore {
 	constructor() {
@@ -46,7 +46,7 @@ class CanvasStore {
 		} else {
 			this.createEmptyCanvas()
 		}
-		autorunAsync(() => {
+		autorun(() => {
 			//save canvas (and history) to localstorage every 300ms
 			const currentState = JSON.stringify(this.getCurrentState())
 			localStorage.setItem("storage", currentState)

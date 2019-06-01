@@ -27,6 +27,7 @@ const CellBg = observer(props => {
 export const rawSvgCellBg = ({bgColor}) => (
 	<svg
 		height={store.defaultFontSize}
+		width={store.cellWidth}
 		viewBox={0 + " " + 0 + " " + 800 / (store.cellHeight / store.cellWidth) + " " + 800}
 		fill={`rgb(${colorBlend(colorStore.palettes[colorStore.selectedPaletteIndex][bgColor], colorStore.cohesionOverlayColor, colorStore.cohesionIntensity)})`} 
 	>	
