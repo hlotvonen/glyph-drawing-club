@@ -52,6 +52,7 @@
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
     "react-tabs": "^3.0.0",
+    "react-window": "^1.8.5",
     "save-svg-as-png": "^1.4.14"
   },
   "prettier": {

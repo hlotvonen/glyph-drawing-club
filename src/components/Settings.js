@@ -43,11 +43,12 @@ class Settings extends React.Component {
 				</TabList>
 
 					<TabPanel>
-						<h3>Select Layer</h3>
-						<LayerSelect />
 
 						<h3>Glyph sets</h3>
 						<KeyMappings />
+
+						<h3>Select Layer</h3>
+						<LayerSelect />
 
 						<GlyphSelect />
 
@@ -111,7 +112,7 @@ class Settings extends React.Component {
 							updateExportSizeMultiplier={store.updateExportSizeMultiplier}
 						/>
 						<hr />
-
+		{/*
 						<h3>Contribute to the new issue of GDC User Guide!</h3>
 						<p>
 							If you would like to contribute your artwork to the upcoming
@@ -136,7 +137,7 @@ class Settings extends React.Component {
 						By clicking the button above, you give permission to use your artwork in the zine and social media. 
 						Only your name and country will be published.
 						</p>
-
+		*/}
 						<h3>Licence:</h3>
 						<p>You are free to use anything you make with GlyphDrawingClub anywhere (private or commercial), without credits or licencing info.</p>
 

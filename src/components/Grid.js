@@ -4,22 +4,17 @@ import store from "../models/CanvasStore"
 import Cell from "./Cell"
 import CellBg from "./CellBg"
 import UiLayer from "./UiLayer"
+import { CanvasMouseEvents } from "./CanvasMouseEvents"
 import gridStore from "../models/GridStore"
 
 @observer
 class Grid extends Component {
+
 	render() {
 		const canvas = store.canvas
 		
 		const gridBg = canvas.map((row, y) => (
-			<div
-				className="row"
-				key={y}
-				style={{
-					width: Number(store.canvasWidth) * Number(store.cellWidth) + "px",
-					height: Number(store.cellHeight) + "px",
-				}}
-			>
+			<React.Fragment key={`row_${y}`}>
 				{row.map((col, x) => (
 					<CellBg
 						y={y}
@@ -28,40 +23,20 @@ class Grid extends Component {
 						cell={store.canvas[y][x][4]}
 					/>
 				))}
-			</div>
+			</React.Fragment>
 		))
 
-		const grid = canvas.map((row, y) => (
-			<div
-				className="row"
-				key={y}
-				style={{
-					width: Number(store.canvasWidth) * Number(store.cellWidth) + "px",
-					height: Number(store.cellHeight) + "px",
-				}}
-			>
+		const gridFg = canvas.map((row, y) => (
+			<React.Fragment key={`row_${y}`}>
 				{row.map((col, x) => (
-					<div
-						style={{ 
-							width: store.cellWidth, 
-							height: store.cellHeight,
-						}}
-						onClick={store.clickSelection}
-						onMouseUp={store.handleMouseUp}
-						onMouseDown={store.handleMouseDown}
-						onMouseOver={store.handleMouseOver}
-						data-y={y}
-						data-x={x}
+					<Cell
+						y={y}
+						x={x}
+						cell={store.canvas[y][x]}
 						key={`${y}_${x}`}
-					>
-						<Cell
-							y={y}
-							x={x}
-							cell={store.canvas[y][x]}
-						/>
-					</div>
+					/>
 				))}
-			</div>
+			</React.Fragment>
 		))
 
 		return (
@@ -80,10 +55,13 @@ class Grid extends Component {
 					{gridBg}
 				</div>
 				<div className="gridFg">
-					{grid}
+					{gridFg}
 				</div>
 
 				<UiLayer />
+
+				<CanvasMouseEvents />
+
 			</div>
 		)
 	}
