@@ -43,7 +43,6 @@ class Canvas extends Component {
 					f: store.handleChangeFlip,
 					h: store.handleChangeHideGrid,
 					i: store.handleChangeInvertColor,
-					t: store.handleChangeTypingMode,
 					b: store.handleChangePaintMode,
 					z: store.handleUndoRedo,
 					p: store.showPreview,

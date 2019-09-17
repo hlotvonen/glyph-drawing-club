@@ -470,13 +470,9 @@ class CanvasStore {
 				],
 			]
 		} else {
-			const selectionWidth =
-				this.selectionArea.end[1] - this.selectionArea.start[1]
-			const selectionHeight =
-				this.selectionArea.end[0] - this.selectionArea.start[0]
-
-			for (let y_i = 0; y_i <= selectionHeight; y_i++) {
-				for (let x_i = 0; x_i <= selectionWidth; x_i++) {
+			const [[start_y, start_x], [end_y, end_x]] = this.getSelectedArea()
+			for (let y_i = start_y; y_i <= end_y; y_i++) {
+				for (let x_i = start_x; x_i <= end_x; x_i++) {
 					;[
 						this.canvas[y_i][x_i][
 							Number(event.target.value)
@@ -511,13 +507,10 @@ class CanvasStore {
 				this.canvas[this.selected_y][this.selected_x][Number(event.target.value)],
 			]
 		} else {
-			const selectionWidth =
-				this.selectionArea.end[1] - this.selectionArea.start[1]
-			const selectionHeight =
-				this.selectionArea.end[0] - this.selectionArea.start[0]
 
-			for (let y_i = 0; y_i <= selectionHeight; y_i++) {
-				for (let x_i = 0; x_i <= selectionWidth; x_i++) {
+			const [[start_y, start_x], [end_y, end_x]] = this.getSelectedArea()
+			for (let y_i = start_y; y_i <= end_y; y_i++) {
+				for (let x_i = start_x; x_i <= end_x; x_i++) {
 					;[
 						this.canvas[y_i][x_i][Number(event.target.value)],
 						this.canvas[y_i][x_i][
