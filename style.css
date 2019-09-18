@@ -107,7 +107,7 @@ canvas & grid
 }
 .grid {
 	background: white;
-	position: relative;
+	position: absolute;
 }
 .gridBg {
 	background: white;
