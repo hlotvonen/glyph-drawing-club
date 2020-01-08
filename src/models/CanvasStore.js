@@ -706,12 +706,18 @@ class CanvasStore {
 	//Tools
 	@action
 	clickSelection = (posX, posY) => {
+		if(this.shiftDown === true) {
+			this.emptySelection()
+		}
 		this.selected_x = posX
 		this.selected_y = posY
 		this.handlePaintEvents(posX, posY)
 	}
 	@action
 	handlePaintEvents = (posX, posY) => {
+		if (this.shiftDown && this.mouseDown) {
+			return
+		}
 		if (
 			this.paintMode ||
 			colorstore.coloringModeFg ||
@@ -721,7 +727,9 @@ class CanvasStore {
 			this.selected_y = posY
 
 			if (this.paintMode) {
-				this.paintLayer()
+				if (this.mouseDown) {
+					this.paintLayer()
+				}
 			}
 			if (colorstore.coloringModeFg) {
 				this.colorLayer()
@@ -733,21 +741,22 @@ class CanvasStore {
 	}
 	@action
 	paintLayer = () => {
-		if (this.mouseDown) {
-			const currentGlyph = this.canvas[this.selected_y][this.selected_x][
-				this.selectedLayer
-			]
-			//Compare selected glyph and the placed glyph on the canvas. Paint only if the two arrays are different.
-			if (
-				JSON.stringify(this.getSelectedGlyph().sort()) !==
-				JSON.stringify(Object.values(currentGlyph).sort())
-			) {
-				if (!this.altDown) {
-					currentGlyph.replace(this.getSelectedGlyph())
-				}
-				if (this.altDown) {
-					currentGlyph.replace(getEmptyLayer())
-				}
+		if (this.shiftDown && this.mouseDown) {
+			return
+		}
+		const currentGlyph = this.canvas[this.selected_y][this.selected_x][
+			this.selectedLayer
+		]
+		//Compare selected glyph and the placed glyph on the canvas. Paint only if the two arrays are different.
+		if (
+			JSON.stringify(this.getSelectedGlyph().sort()) !==
+			JSON.stringify(Object.values(currentGlyph).sort())
+		) {
+			if (!this.altDown) {
+				currentGlyph.replace(this.getSelectedGlyph())
+			}
+			if (this.altDown) {
+				currentGlyph.replace(getEmptyLayer())
 			}
 		}
 	}
@@ -1489,7 +1498,7 @@ class CanvasStore {
 				this.canvas[start_y][x_i].replace(getEmptyCell())
 			}
 		}
-		this.selected_y = this.selected_y + 1
+		this.goDown()
 		this.selectionArea.start = [start_y + 1, start_x]
 		this.selectionArea.end = [end_y + 1, end_x]
 	}
@@ -1527,7 +1536,7 @@ class CanvasStore {
 				this.canvas[end_y][x_i].replace(getEmptyCell())
 			}
 		}
-		this.selected_y = this.selected_y - 1
+		this.goUp()
 		this.selectionArea.start = [start_y - 1, start_x]
 		this.selectionArea.end = [end_y - 1, end_x]
 	}
@@ -1565,7 +1574,7 @@ class CanvasStore {
 				this.canvas[y_i][start_x].replace(getEmptyCell())
 			}
 		}
-		this.selected_x = this.selected_x + 1
+		this.goRight()
 		this.selectionArea.start = [start_y, start_x + 1]
 		this.selectionArea.end = [end_y, end_x + 1]
 	}
@@ -1603,7 +1612,7 @@ class CanvasStore {
 				this.canvas[y_i][end_x].replace(getEmptyCell())
 			}
 		}
-		this.selected_x = this.selected_x - 1
+		this.goLeft()
 		this.selectionArea.start = [start_y, start_x - 1]
 		this.selectionArea.end = [end_y, end_x - 1]
 	}
