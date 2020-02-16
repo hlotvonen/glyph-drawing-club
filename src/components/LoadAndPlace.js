@@ -21,14 +21,13 @@ class LoadAndPlace extends React.Component {
 				const jsonObj = JSON.parse(temporaryFileReader.result)
 
 				//check if we are dealing with an old file, display warning and don't open file
-				if(jsonObj["canvas"][0][0].length !== 5) {
-					if (window.confirm("Can't open old file, sorry! You can still use the old version though. Click OK to continue to old site, cancel to stay here.")) 
-					{
-						window.location.href="https://www.glyphdrawing.club/old/";
-					};
-					throw new Error("Can't open old file, sorry! You can still use the old version at https://www.glyphdrawing.club/old/");
+				if (jsonObj["canvas"][0][0].length !== 5) {
+					if (window.confirm("Can't open old file, sorry!")) {
+						window.location.href = "https://www.glyphdrawing.club/"
+					}
+					throw new Error("Can't open old file, sorry!")
 				}
-				
+
 				let canvasHeight = jsonObj["canvasHeight"]
 				let canvasWidth = jsonObj["canvasWidth"]
 
@@ -40,10 +39,11 @@ class LoadAndPlace extends React.Component {
 						) {
 							continue
 						}
-						store.canvas[store.selected_y + y_i][store.selected_x + x_i].replace(jsonObj["canvas"][y_i][x_i])
+						store.canvas[store.selected_y + y_i][
+							store.selected_x + x_i
+						].replace(jsonObj["canvas"][y_i][x_i])
 					}
 				}
-				
 			})
 			temporaryFileReader.readAsText(inputFile)
 		})
@@ -59,13 +59,20 @@ class LoadAndPlace extends React.Component {
 
 		this.setState({ waitingForFileUpload: true })
 
+		//reset selected_x and y and empty selection to prevent crashes
+		store.selected_x = 0
+		store.selected_y = 0
+		store.emptySelection()
+
 		const fileList = event.target.files
 
 		// Uploads will push to the file input's `.files` array. Get the last uploaded file.
 		const latestUploadedFile = event.target.files.item(fileList.length - 1)
 
 		try {
-			const fileContents = LoadAndPlace.readUploadedFileAsText(latestUploadedFile)
+			const fileContents = LoadAndPlace.readUploadedFileAsText(
+				latestUploadedFile
+			)
 			this.setState({
 				waitingForFileUpload: false,
 			})

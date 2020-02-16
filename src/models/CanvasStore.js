@@ -474,19 +474,11 @@ class CanvasStore {
 			for (let y_i = start_y; y_i <= end_y; y_i++) {
 				for (let x_i = start_x; x_i <= end_x; x_i++) {
 					;[
-						this.canvas[y_i][x_i][
-							Number(event.target.value)
-						],
-						this.canvas[y_i][x_i][
-							Number(event.target.value) + 1
-						],
+						this.canvas[y_i][x_i][Number(event.target.value)],
+						this.canvas[y_i][x_i][Number(event.target.value) + 1],
 					] = [
-						this.canvas[y_i][x_i][
-							Number(event.target.value) + 1
-						],
-						this.canvas[y_i][x_i][
-							Number(event.target.value)
-						],
+						this.canvas[y_i][x_i][Number(event.target.value) + 1],
+						this.canvas[y_i][x_i][Number(event.target.value)],
 					]
 				}
 			}
@@ -496,7 +488,9 @@ class CanvasStore {
 	switchLayersDown = event => {
 		if (!this.selectionArea.start) {
 			;[
-				this.canvas[this.selected_y][this.selected_x][Number(event.target.value)],
+				this.canvas[this.selected_y][this.selected_x][
+					Number(event.target.value)
+				],
 				this.canvas[this.selected_y][this.selected_x][
 					Number(event.target.value) - 1
 				],
@@ -504,22 +498,19 @@ class CanvasStore {
 				this.canvas[this.selected_y][this.selected_x][
 					Number(event.target.value) - 1
 				],
-				this.canvas[this.selected_y][this.selected_x][Number(event.target.value)],
+				this.canvas[this.selected_y][this.selected_x][
+					Number(event.target.value)
+				],
 			]
 		} else {
-
 			const [[start_y, start_x], [end_y, end_x]] = this.getSelectedArea()
 			for (let y_i = start_y; y_i <= end_y; y_i++) {
 				for (let x_i = start_x; x_i <= end_x; x_i++) {
 					;[
 						this.canvas[y_i][x_i][Number(event.target.value)],
-						this.canvas[y_i][x_i][
-							Number(event.target.value) - 1
-						],
+						this.canvas[y_i][x_i][Number(event.target.value) - 1],
 					] = [
-						this.canvas[y_i][x_i][
-							Number(event.target.value) - 1
-						],
+						this.canvas[y_i][x_i][Number(event.target.value) - 1],
 						this.canvas[y_i][x_i][Number(event.target.value)],
 					]
 				}
@@ -706,7 +697,7 @@ class CanvasStore {
 	//Tools
 	@action
 	clickSelection = (posX, posY) => {
-		if(this.shiftDown === true) {
+		if (this.shiftDown === true) {
 			this.emptySelection()
 		}
 		this.selected_x = posX
@@ -955,12 +946,12 @@ class CanvasStore {
 	}
 	@action
 	insertBackground = () => {
-		//w
+		//z
 		this.canvas[this.selected_y][this.selected_x][4].replace(this.getBgColor())
 	}
 	@action
 	colorFg = () => {
-		//b
+		//x
 		if (!this.ctrlDown) {
 			this.canvas[this.selected_y][this.selected_x][this.selectedLayer][10] =
 				colorstore.colorIndex
@@ -1077,7 +1068,7 @@ class CanvasStore {
 			this.selectionArea.end[1] - this.selectionArea.start[1]
 		const selectionHeight =
 			this.selectionArea.end[0] - this.selectionArea.start[0]
-		if (this.ctrlDown) {
+		if (!this.ctrlDown) {
 			//SELECTED LAYER ONLY
 			for (let y_i = 0; y_i <= selectionHeight; y_i++) {
 				for (let x_i = 0; x_i <= selectionWidth; x_i++) {

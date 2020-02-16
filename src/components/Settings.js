@@ -24,26 +24,23 @@ import GlyphClear from "./GlyphClear"
 import CanvasSizeInMillimeters from "./CanvasSizeInMillimeters"
 import LayerSelect from "./LayerSelect"
 import ColorSelect from "./ColorSelect"
-import { Tab, Tabs, TabList, TabPanel } from 'react-tabs'
-
+import { Tab, Tabs, TabList, TabPanel } from "react-tabs"
 
 @observer
 class Settings extends React.Component {
 	render() {
 		return (
 			<div className="controls_container">
-			<Tabs forceRenderTabPanel={true} defaultIndex={0} >				
-				<TabList>
-					<Tab>Draw</Tab>
-					<Tab>Color</Tab>
-					<Tab>Settings</Tab>
-					<Tab>Save</Tab>
-					<Tab>Help</Tab>
-
-				</TabList>
+				<Tabs forceRenderTabPanel={true} defaultIndex={0}>
+					<TabList>
+						<Tab>Draw</Tab>
+						<Tab>Color</Tab>
+						<Tab>Settings</Tab>
+						<Tab>Save</Tab>
+						<Tab>Help</Tab>
+					</TabList>
 
 					<TabPanel>
-
 						<h3>Glyph sets</h3>
 						<KeyMappings />
 
@@ -71,7 +68,6 @@ class Settings extends React.Component {
 						<GlyphFontSizeModifier />
 						<GlyphOffset />
 						<GlyphClear glyphClear={store.glyphClear} />
-
 					</TabPanel>
 
 					<TabPanel>
@@ -93,7 +89,7 @@ class Settings extends React.Component {
 							increaseFontSize={store.increaseFontSize}
 							decreaseFontSize={store.decreaseFontSize}
 							defaultFontSize={store.defaultFontSize}
-						/>	
+						/>
 
 						<br />
 					</TabPanel>
@@ -112,7 +108,7 @@ class Settings extends React.Component {
 							updateExportSizeMultiplier={store.updateExportSizeMultiplier}
 						/>
 						<hr />
-		{/*
+						{/*
 						<h3>Contribute to the new issue of GDC User Guide!</h3>
 						<p>
 							If you would like to contribute your artwork to the upcoming
@@ -138,246 +134,261 @@ class Settings extends React.Component {
 						Only your name and country will be published.
 						</p>
 		*/}
-						<h3>Licence:</h3>
-						<p>You are free to use anything you make with GlyphDrawingClub anywhere (private or commercial), without credits or licencing info.</p>
-
+						<h3>License:</h3>
+						<p>
+							You are free to use anything you make with GlyphDrawingClub
+							anywhere (private or commercial), without credits or licensing
+							info.
+						</p>
 					</TabPanel>
 
 					<TabPanel>
 						<h3>Basic tutorial</h3>
 						<ol className="instructions">
 							<li>
-								Select the <span className="hotkey">Draw</span> tab from the sidebar
+								Select the <span className="hotkey">Draw</span> tab from the
+								sidebar
 							</li>
 							<li>
-								<span className="hotkey">Click</span> on any glyph under Glyph selection.
+								<span className="hotkey">Click</span> on any glyph under Glyph
+								selection.
 							</li>
 							<li>
 								Press <span className="hotkey">q</span> to draw.
 							</li>
 							<li>
-								Move around the canvas with <span className="hotkey">arrow keys</span>.
+								Move around the canvas with{" "}
+								<span className="hotkey">arrow keys</span>.
 							</li>
 							<li>
-								Press <span className="hotkey">f</span> to flip, <span className="hotkey">r</span> to rotate or <span className="hotkey">i</span> to invert a glyph.
+								Press <span className="hotkey">f</span> to flip,{" "}
+								<span className="hotkey">r</span> to rotate or{" "}
+								<span className="hotkey">i</span> to invert a glyph.
 							</li>
 						</ol>
 						<em>
-							Glyph Drawing Club is meant to be used with the keyboard, so check out all the shortcuts below!
+							Glyph Drawing Club is meant to be used with the keyboard, so check
+							out all the shortcuts below!
 						</em>
+
+						<h3>Complete tutorial</h3>
+						<p>
+							You can find a complete tutorial & more at the{" "}
+							<a
+								href="https://blog.glyphdrawing.club/usage-tutorial-for-glyph-drawing-club"
+								target="_blank"
+							>
+								Glyph Drawing Club Blog
+							</a>
+						</p>
 
 						<h3>Keyboard Shortcuts</h3>
 						<h4>Move</h4>
-						<table><tbody>
-							<tr>
-								<td>Arrow keys</td>
-								<td>Move</td>
-							</tr>
-							<tr>
-								<td>Alt+Arrow keys</td>
-								<td>Quickly move around the canvas</td>
-							</tr>
-						</tbody></table>
+						<table>
+							<tbody>
+								<tr>
+									<td>Arrow keys or WASD</td>
+									<td>Move</td>
+								</tr>
+								<tr>
+									<td>Alt+Arrow keys</td>
+									<td>Quickly move around the canvas</td>
+								</tr>
+							</tbody>
+						</table>
 
 						<h4>Draw</h4>
-						<em>
-							Hold down CTRL if you want to affect all layers
-						</em>
-						<table><tbody>
-							<tr>
-								<td>q</td>
-								<td>Draw (Place selected glyph)</td>
-							</tr>
-							<tr>
-								<td>e</td>
-								<td>Delete</td>
-							</tr>
-							<tr>
-								<td>r</td>
-								<td>Rotate</td>
-							</tr>
-							<tr>
-								<td>f</td>
-								<td>Flip</td>
-							</tr>
-							<tr>
-								<td>i</td>
-								<td>Invert</td>
-							</tr>
-						</tbody></table>
+						<em>Hold down CTRL if you want to affect all layers</em>
+						<table>
+							<tbody>
+								<tr>
+									<td>q</td>
+									<td>Draw (Place selected glyph)</td>
+								</tr>
+								<tr>
+									<td>e or space</td>
+									<td>Delete</td>
+								</tr>
+								<tr>
+									<td>r</td>
+									<td>Rotate</td>
+								</tr>
+								<tr>
+									<td>f</td>
+									<td>Flip</td>
+								</tr>
+								<tr>
+									<td>i</td>
+									<td>Invert</td>
+								</tr>
+							</tbody>
+						</table>
 
 						<h4>Make glyph sets</h4>
-						<table><tbody>
-							<tr>
-								<td>m</td>
-								<td>Start mapping glyph sets. Press again to end mapping.</td>
-							</tr>
-							<tr>
-								<td>Number keys 1–10</td>
-								<td>Add selected glyph to set (when mapping is on)</td>
-							</tr>
-							<tr>
-								<td>Number keys 1–10</td>
-								<td>Insert glyph from set (when mapping is off)</td>
-							</tr>
-						</tbody></table>
+						<table>
+							<tbody>
+								<tr>
+									<td>m</td>
+									<td>Start mapping glyph sets. Press again to end mapping.</td>
+								</tr>
+								<tr>
+									<td>Number keys 1–10</td>
+									<td>Add selected glyph to set (when mapping is on)</td>
+								</tr>
+								<tr>
+									<td>Number keys 1–10</td>
+									<td>Insert glyph from set (when mapping is off)</td>
+								</tr>
+							</tbody>
+						</table>
 
 						<h4>Extra</h4>
-						<table><tbody>
-							<tr>
-								<td>Cmd/Ctrl+z</td>
-								<td>Undo</td>
-							</tr>
-							<tr>
-								<td>Cmd/Ctrl+Shift+z</td>
-								<td>Redo</td>
-							</tr>
-							<tr>
-								<td>h</td>
-								<td>Hide Grid</td>
-							</tr>
-							<tr>
-								<td>(hold) p</td>
-								<td>Preview</td>
-							</tr>
-						</tbody></table>
-
-						<h4>Typing mode</h4>
-						<table><tbody>
-							<tr>
-								<td>t</td>
-								<td>Start typing mode</td>
-							</tr>
-							<tr>
-								<td>ESC</td>
-								<td>End typing mode</td>
-							</tr>
-						</tbody></table>
-						
-						<h4>Paint mode</h4>
-						<table><tbody>
-							<tr>
-								<td>b</td>
-								<td>Start/end paint mode</td>
-							</tr>
-							<tr>
-								<td>LMB</td>
-								<td>Hold left mouse button to paint with selected glyph</td>
-							</tr>
-							<tr>
-								<td>Alt+LMB</td>
-								<td>Erase</td>
-							</tr>
-						</tbody></table>
+						<table>
+							<tbody>
+								<tr>
+									<td>Cmd/Ctrl+z</td>
+									<td>Undo</td>
+								</tr>
+								<tr>
+									<td>Cmd/Ctrl+Shift+z</td>
+									<td>Redo</td>
+								</tr>
+								<tr>
+									<td>h</td>
+									<td>Hide Grid</td>
+								</tr>
+								<tr>
+									<td>(hold) p</td>
+									<td>Preview</td>
+								</tr>
+							</tbody>
+						</table>
 
 						<h4>Area selection</h4>
-						<em>
-							Hold down CTRL if you want to affect all layers
-						</em>
-						<table><tbody>
-							<tr>
-								<td>Shift + s</td>
-								<td>Start selection area. Use arrows keys to change the selection area. Press Shift + s again to release selection area</td>
-							</tr>
-							<tr>
-								<td>Shift + d</td>
-								<td>Deselect area</td>
-							</tr>
-							<tr>
-								<td>Shift + a</td>
-								<td>Select all</td>
-							</tr>
-							<tr>
-								<td>Shift + c</td>
-								<td>Paste selected area</td>
-							</tr>
-							<tr>
-								<td>Shift + m</td>
-								<td>Mirror selected area</td>
-							</tr>
-							<tr>
-								<td>Shift + f</td>
-								<td>Flip selected area</td>
-							</tr>
-							<tr>
-								<td>Shift + q</td>
-								<td>Fill selected area with selected glyph</td>
-							</tr>
-							<tr>
-								<td>Shift + e</td>
-								<td>Empty selected area</td>
-							</tr>
-							<tr>
-								<td>Shift + i</td>
-								<td>Invert the colors of selected area</td>
-							</tr>
-							<tr>
-								<td>Shift + y</td>
-								<td>Rotate glyphs individually in selected area</td>
-							</tr>
-							<tr>
-								<td>Shift + u</td>
-								<td>Flip glyphs individually in selected area</td>
-							</tr>
-							<tr>
-								<td>Shift + r</td>
-								<td>Rotate selected area. Selection area has to be square (same amount of cells width & height)</td>
-							</tr>
-							<tr>
-								<td>Shift + t</td>
-								<td>Transpose selected area. Selection area has to be square (same amount of cells width & height)</td>
-							</tr>
-							<tr>
-								<td>Shift + h</td>
-								<td>Move selected area left</td>
-							</tr>
-							<tr>
-								<td>Shift + j</td>
-								<td>Move selected area down</td>
-							</tr>
-							<tr>
-								<td>Shift + k</td>
-								<td>Move selected area up</td>
-							</tr>
-							<tr>
-								<td>Shift + l</td>
-								<td>Move selected area right</td>
-							</tr>
-						</tbody></table>
-						
+						<em>Hold down CTRL if you want to affect all layers</em>
+						<table>
+							<tbody>
+								<tr>
+									<td>Shift + s</td>
+									<td>
+										Start selection area. Use arrows keys to change the
+										selection area. Press Shift + s again to lock selection area
+									</td>
+								</tr>
+								<tr>
+									<td>Shift + d</td>
+									<td>Deselect area</td>
+								</tr>
+								<tr>
+									<td>Shift + a</td>
+									<td>Select all</td>
+								</tr>
+								<tr>
+									<td>Shift + c</td>
+									<td>Paste selected area</td>
+								</tr>
+								<tr>
+									<td>Shift + m</td>
+									<td>Mirror selected area</td>
+								</tr>
+								<tr>
+									<td>Shift + f</td>
+									<td>Flip selected area</td>
+								</tr>
+								<tr>
+									<td>Shift + q</td>
+									<td>Fill selected area with selected glyph</td>
+								</tr>
+								<tr>
+									<td>Shift + e</td>
+									<td>Empty selected area</td>
+								</tr>
+								<tr>
+									<td>Shift + i</td>
+									<td>Invert the colors of selected area</td>
+								</tr>
+								<tr>
+									<td>Shift + y</td>
+									<td>Rotate glyphs individually in selected area</td>
+								</tr>
+								<tr>
+									<td>Shift + u</td>
+									<td>Flip glyphs individually in selected area</td>
+								</tr>
+								<tr>
+									<td>Shift + r</td>
+									<td>
+										Rotate selected area. Selection area has to be square (same
+										amount of cells width & height)
+									</td>
+								</tr>
+								<tr>
+									<td>Shift + t</td>
+									<td>
+										Transpose selected area. Selection area has to be square
+										(same amount of cells width & height)
+									</td>
+								</tr>
+								<tr>
+									<td>Shift + h</td>
+									<td>Move selected area left</td>
+								</tr>
+								<tr>
+									<td>Shift + j</td>
+									<td>Move selected area down</td>
+								</tr>
+								<tr>
+									<td>Shift + k</td>
+									<td>Move selected area up</td>
+								</tr>
+								<tr>
+									<td>Shift + l</td>
+									<td>Move selected area right</td>
+								</tr>
+							</tbody>
+						</table>
+
 						<h4>Coloring tools</h4>
-						<table><tbody>
-							<tr>
-								<td>b</td>
-								<td>Color foreground</td>
-							</tr>
-							<tr>
-								<td>w</td>
-								<td>Color background</td>
-							</tr>
-							<tr>
-								<td>Shift + b</td>
-								<td>Color selected area foreground</td>
-							</tr>
-							<tr>
-								<td>Shift + w</td>
-								<td>Color selected area background</td>
-							</tr>
-						</tbody></table>
+						<table>
+							<tbody>
+								<tr>
+									<td>v</td>
+									<td>Color foreground</td>
+								</tr>
+								<tr>
+									<td>b</td>
+									<td>Color background</td>
+								</tr>
+								<tr>
+									<td>Shift + v</td>
+									<td>Color selected area foreground</td>
+								</tr>
+								<tr>
+									<td>Shift + b</td>
+									<td>Color selected area background</td>
+								</tr>
+							</tbody>
+						</table>
 
 						<h3>Follow project:</h3>
-							<a href="https://github.com/hlotvonen/glyph-drawing-club" target="_blank">
-								Github
-							</a>
-							<br />
-							<a href="https://www.instagram.com/heikkiveikko/" target="_blank">
-								Examples & development updates
-							</a>
-					</TabPanel>
+						<a
+							href="https://github.com/hlotvonen/glyph-drawing-club"
+							target="_blank"
+						>
+							Github
+						</a>
 
+						<br />
+						<a href="https://www.instagram.com/heikkiveikko/" target="_blank">
+							Examples & development updates
+						</a>
+						<br />
+						<a href="https://blog.glyphdrawing.club/" target="_blank">
+							Glyph Drawing Club blog
+						</a>
+					</TabPanel>
 				</Tabs>
 			</div>
-
 		)
 	}
 }

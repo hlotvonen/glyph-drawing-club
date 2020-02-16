@@ -6,7 +6,7 @@ class LoadButton extends React.Component {
 	state = {
 		waitingForFileUpload: false,
 	}
-	
+
 	static readUploadedFileAsText = inputFile => {
 		const temporaryFileReader = new FileReader()
 
@@ -19,14 +19,19 @@ class LoadButton extends React.Component {
 			temporaryFileReader.onload = action(() => {
 				resolve(temporaryFileReader.result)
 				const jsonObj = JSON.parse(temporaryFileReader.result)
-				
+
 				//check if we are dealing with an old file, display warning and don't open file
-				if(jsonObj["canvas"][0][0].length !== 5) {
-					if (window.confirm("Can't open old file, sorry! You can still use the old version though. Click OK to continue to old site, cancel to stay here.")) 
-					{
-						window.location.href="https://www.glyphdrawing.club/old/";
-					};
-					throw new Error("Can't open old file, sorry! You can still use the old version at https://www.glyphdrawing.club/old/");
+				if (jsonObj["canvas"][0][0].length !== 5) {
+					if (
+						window.confirm(
+							"Can't open a file saved with an old GDC version 1.0., sorry!"
+						)
+					) {
+						window.location.href = "https://www.glyphdrawing.club/"
+					}
+					throw new Error(
+						"Can't open a file saved with an old GDC version 1.0., sorry!"
+					)
 				}
 
 				store.canvasHeight = jsonObj["canvasHeight"]
@@ -35,7 +40,6 @@ class LoadButton extends React.Component {
 				store.cellHeight = jsonObj["cellHeight"]
 				store.defaultFontSize = jsonObj["defaultFontSize"]
 				store.canvas = jsonObj["canvas"]
-				
 			})
 			temporaryFileReader.readAsText(inputFile)
 		})
@@ -50,6 +54,11 @@ class LoadButton extends React.Component {
 		}
 
 		this.setState({ waitingForFileUpload: true })
+
+		//reset selected_x and y and empty selection to prevent crashes
+		store.selected_x = 0
+		store.selected_y = 0
+		store.emptySelection()
 
 		const fileList = event.target.files
 
