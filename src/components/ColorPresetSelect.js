@@ -14,8 +14,7 @@ class ColorPaletteSelect extends React.Component {
 					onChange={e => colorstore.handlePresetSelectChange(e.target.value)}
 				>
 					<option disabled defaultValue value="">
-						{" "}
-						-- select a preset --{" "}
+						-- select a preset --
 					</option>
 					<option value="0">Deluxe Paint</option>
 					<option value="1">AtariST (Reduced To 256)</option>
@@ -35,6 +34,7 @@ class ColorPaletteSelect extends React.Component {
 						Riso FluoroPink and Teal (FluoroPink Plate)
 					</option>
 					<option value="11">Riso FluoroPink and Teal (Teal Plate)</option>
+					<option value="12">Liero Level Palette</option>
 				</select>
 			</div>
 		)

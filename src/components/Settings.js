@@ -95,7 +95,7 @@ class Settings extends React.Component {
 					</TabPanel>
 
 					<TabPanel>
-						<h3>Save / Load / Export</h3>
+						<h3>Save / Load</h3>
 						<SaveAsButton
 							fileName={store.fileName}
 							updateFileName={store.updateFileName}
@@ -103,6 +103,7 @@ class Settings extends React.Component {
 
 						<LoadButton />
 						<LoadAndPlace />
+						<h3>Export</h3>
 						<ExportButtons
 							exportSizeMultiplier={store.exportSizeMultiplier}
 							updateExportSizeMultiplier={store.updateExportSizeMultiplier}
@@ -133,13 +134,35 @@ class Settings extends React.Component {
 						By clicking the button above, you give permission to use your artwork in the zine and social media. 
 						Only your name and country will be published.
 						</p>
-		*/}
+						*/}
 						<h3>License:</h3>
 						<p>
 							You are free to use anything you make with GlyphDrawingClub
 							anywhere (private or commercial), without credits or licensing
 							info.
 						</p>
+						<h3>Community links & project development:</h3>
+						<a
+							href="https://github.com/hlotvonen/glyph-drawing-club"
+							target="_blank"
+						>
+							Github
+						</a>
+						<br />
+						<br />
+						<a href="https://www.instagram.com/heikkiveikko/" target="_blank">
+							Instagram for examples & development updates
+						</a>
+						<br />
+						<br />
+						<a href="https://blog.glyphdrawing.club/" target="_blank">
+							Glyph Drawing Club blog
+						</a>
+						<br />
+						<br />
+						<a href="https://discord.gg/gJNDZ2M" target="_blank">
+							Glyph Drawing Club discord channel for sharing, help, inspiration, community etc! Join now :)
+						</a>
 					</TabPanel>
 
 					<TabPanel>
@@ -352,6 +375,10 @@ class Settings extends React.Component {
 						<table>
 							<tbody>
 								<tr>
+									<td>x</td>
+									<td>Color palette quick access</td>
+								</tr>
+								<tr>
 									<td>v</td>
 									<td>Color foreground</td>
 								</tr>
@@ -369,23 +396,6 @@ class Settings extends React.Component {
 								</tr>
 							</tbody>
 						</table>
-
-						<h3>Follow project:</h3>
-						<a
-							href="https://github.com/hlotvonen/glyph-drawing-club"
-							target="_blank"
-						>
-							Github
-						</a>
-
-						<br />
-						<a href="https://www.instagram.com/heikkiveikko/" target="_blank">
-							Examples & development updates
-						</a>
-						<br />
-						<a href="https://blog.glyphdrawing.club/" target="_blank">
-							Glyph Drawing Club blog
-						</a>
 					</TabPanel>
 				</Tabs>
 			</div>

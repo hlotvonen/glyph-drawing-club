@@ -59,11 +59,6 @@ class LoadAndPlace extends React.Component {
 
 		this.setState({ waitingForFileUpload: true })
 
-		//reset selected_x and y and empty selection to prevent crashes
-		store.selected_x = 0
-		store.selected_y = 0
-		store.emptySelection()
-
 		const fileList = event.target.files
 
 		// Uploads will push to the file input's `.files` array. Get the last uploaded file.

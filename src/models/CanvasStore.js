@@ -79,6 +79,10 @@ class CanvasStore {
 	@observable
 	togglePreview = false
 
+
+	@observable
+	toggleQuickChooseColor = false
+
 	//HISTORY
 	@observable
 	history = []
@@ -286,6 +290,7 @@ class CanvasStore {
 		this.canvas = this.getEmptyCanvas()
 		this.flipGlyph = 1
 		this.rotationAmount = 0
+		this.emptySelection()
 	}
 	/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 		
@@ -428,6 +433,7 @@ class CanvasStore {
 	}
 	@action
 	showPreview = () => {
+		//P
 		if (!this.togglePreview) {
 			this.togglePreview = true
 		} else {
@@ -437,6 +443,18 @@ class CanvasStore {
 	@action
 	hidePreview = () => {
 		this.togglePreview = false
+	}
+	@action
+	showQuickChooseColor = () => {
+		if (!this.toggleQuickChooseColor) {
+			this.toggleQuickChooseColor = true
+		} else {
+			return
+		}
+	}
+	@action
+	hideQuickChooseColor = () => {
+		this.toggleQuickChooseColor = false
 	}
 	@action
 	layerSelect = event => {

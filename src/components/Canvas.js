@@ -7,6 +7,7 @@ import Grid from "./Grid"
 import GridControls from "./GridControls"
 import Coordinates from "./Coordinates"
 import SelectedGlyph from "./SelectedGlyph"
+import QuickChooseColor from "./QuickChooseColor"
 
 class Canvas extends Component {
 	componentDidMount() {
@@ -37,7 +38,7 @@ class Canvas extends Component {
 						ArrowUp: store.goUp,
 						" ": store.insertEmpty,
 						Backspace: store.backSpace,
-						Enter: store.enter,
+						Enter: store.insert,
 						q: store.insert,
 						e: store.insertEmptyCell,
 						r: store.rotateGlyphRight,
@@ -53,6 +54,7 @@ class Canvas extends Component {
 						a: store.goLeft,
 						s: store.goDown,
 						d: store.goRight,
+						x: store.showQuickChooseColor,
 
 						//Modifier keys:
 						Alt: store.handleAltDown,
@@ -128,6 +130,7 @@ class Canvas extends Component {
 			Meta: store.handleMetaUp,
 			Shift: store.handleShiftUp,
 			p: store.hidePreview,
+			x: store.hideQuickChooseColor,
 		}
 		const handler = handlers[event.key]
 
@@ -154,6 +157,7 @@ class Canvas extends Component {
 							svgBaseline={store.svgBaseline}
 						/>
 					</div>
+					<QuickChooseColor />
 				</div>
 			</div>
 		)
