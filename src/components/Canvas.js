@@ -55,6 +55,7 @@ class Canvas extends Component {
 						s: store.goDown,
 						d: store.goRight,
 						x: store.showQuickChooseColor,
+						c: store.copy,
 
 						//Modifier keys:
 						Alt: store.handleAltDown,
@@ -83,6 +84,11 @@ class Canvas extends Component {
 						K: store.shiftAreaUp,
 						L: store.shiftAreaRight,
 						D: store.emptySelection,
+						
+						"!": () => store.selectLayer("0"),
+						'"': () => store.selectLayer("1"),
+						"#": () => store.selectLayer("2"),
+						"€": () => store.selectLayer("3"),
 
 						m: setstore.handleChangeMapping,
 						//draw glyph from keymap on to canvas

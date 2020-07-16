@@ -367,7 +367,7 @@ controls
 ~~~~~~~~~~~~~~~~~~~~~ */
 .controls_container {
 	background: white;
-	width: 425px;
+	width: 430px;
 	padding: 5px;
 	overflow-y: scroll;
 	flex: none;

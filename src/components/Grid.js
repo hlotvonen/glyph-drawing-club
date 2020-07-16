@@ -60,8 +60,11 @@ class Grid extends Component {
 
 				<UiLayer />
 
-				<CanvasMouseEvents />
-
+				{
+					!store.altDown
+					? <CanvasMouseEvents />
+					: ""
+				}
 			</div>
 		)
 	}

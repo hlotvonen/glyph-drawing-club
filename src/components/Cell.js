@@ -55,12 +55,14 @@ export const rawSvgCell = ({
 			top: store.cellHeight * y + 'px',
 			position: 'absolute'
 		}}
-		>				
+			onClick={() => store.handleClickSVG(x, y)}
+		>
 			{
 	          	layer1[0] === "M0 0" || store.hiddenLayers[0] == 0 
 	          	? null
 	          	: (
-					<g transform={`
+					<g
+						transform={`
 						${/*offset X and Y: */''} 
 						translate(${800 + layer1[4]} ${800 +layer1[9]}) 
 						${/*scaling: */''} 
@@ -85,7 +87,8 @@ export const rawSvgCell = ({
 							0 
 							${-layer1[3]}
 						)
-					`}>
+					`
+					}>
 						<path 
 							//Path & Path inverting
 							d={layer1[8] ? `M0 0 v${layer1[2]} h${layer1[1]} V0 H0 z ${layer1[0]}` : layer1[0]} 

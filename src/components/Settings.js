@@ -284,6 +284,10 @@ class Settings extends React.Component {
 									<td>(hold) p</td>
 									<td>Preview</td>
 								</tr>
+								<tr>
+									<td>c</td>
+									<td>Copy current glyph</td>
+								</tr>
 							</tbody>
 						</table>
 

@@ -458,7 +458,11 @@ class CanvasStore {
 	}
 	@action
 	layerSelect = event => {
-		this.selectedLayer = event.target.value
+		this.selectedLayer = Number(event.target.value)
+	}
+	@action
+	selectLayer = layer => {
+		this.selectedLayer = Number(layer)
 	}
 	@action
 	hideLayer = event => {
@@ -795,6 +799,11 @@ class CanvasStore {
 			}
 		}
 	}
+	@action
+	handleClickSVG = (x, y) => {
+		this.selected_x = x
+		this.selected_y = y
+	}
 	/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 		
 	KEY MODIFIER EVENTS
@@ -1008,6 +1017,12 @@ class CanvasStore {
 		this.goDown()
 		this.selected_x = 0
 	}
+	
+	@action
+	copy = () => {
+		this.glyphPath = this.canvas[this.selected_y][this.selected_x][this.selectedLayer][0]
+	}
+	
 
 	/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 		

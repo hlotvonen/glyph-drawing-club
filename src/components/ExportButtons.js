@@ -1,6 +1,7 @@
 import React from "react"
 import { exportAs } from "../utils/Export"
 import store from "../models/CanvasStore"
+import { observer } from "mobx-react"
 
 class ExportButtons extends React.Component {
 	render() {
@@ -36,4 +37,4 @@ class ExportButtons extends React.Component {
 		)
 	}
 }
-export default ExportButtons
+export default observer(ExportButtons)

@@ -20,11 +20,11 @@ class GlyphSelect extends Component {
 			fontfile: "",
 			pages_total: 0,
 			inverted: false,
+			credits: null
 		}
 	}
 	componentDidMount() {
 		this.go()
-		store.selectedLayer = 0
 		document.addEventListener("keydown", this.handleKeyPress, false)
 	}
 	componentWillUnmount() {
@@ -34,14 +34,25 @@ class GlyphSelect extends Component {
 	go = () => {
 		if (this.selectedFont == "Tesserae 4x4") {
 			this.load("fonts/Tesserae-4x4Extended.otf", this.fontLoaded)
+			this.credits = null
 		} else if (this.selectedFont == "Unscii") {
 			this.load("fonts/unscii-16.ttf", this.fontLoaded)
+			this.credits = "http://pelulamu.net/unscii/"
 		} else if (this.selectedFont == "MingLiU") {
 			this.load("fonts/mingliu.TTF", this.fontLoaded)
+			this.credits = null
 		} else if (this.selectedFont == "Submona") {
 			this.load("fonts/submona.ttf", this.fontLoaded)
+			this.credits = "https://github.com/pera/submona-web-font"
 		} else if (this.selectedFont == "RayMantaC64") {
 			this.load("fonts/RayMantaC64-Regular.otf", this.fontLoaded)
+			this.credits = "http://datadoor.net/"
+		} else if (this.selectedFont == "ImagoMundiMei") {
+			this.load("fonts/ImagoMundiMei-Regular.otf", this.fontLoaded)
+			this.credits = "http://velvetyne.fr/imagomundimei/"
+		} else if (this.selectedFont == "ScrollBorder") {
+			this.load("fonts/ScrollBorder-Regular.otf", this.fontLoaded)
+			this.credits = null
 		}
 
 		this.node = document.body
@@ -49,6 +60,17 @@ class GlyphSelect extends Component {
 		this.node.addEventListener("dragenter", this.cancel, false)
 		this.node.addEventListener("dragleave", this.cancel, false)
 		this.node.addEventListener("dragover", this.cancel, false)
+	}
+
+	ShowCredits() {
+		if (!this.credits) {
+			return null;
+		}
+		return (
+			<>
+				{this.selectedFont} made by: <a href={this.credits} target="_blank">{this.credits}</a>
+			</>
+		);
 	}
 	load(path, resp) {
 		let request = new XMLHttpRequest()
@@ -304,6 +326,8 @@ class GlyphSelect extends Component {
 					<option value="Unscii">Unscii</option>
 					<option value="MingLiU">MingLiU (Taiwanese ANSI)</option>
 					<option value="Submona">Submona (Swift_JIS)</option>
+					<option value="ImagoMundiMei">ImagoMundiMei</option>
+					<option value="ScrollBorder">ScrollBorder</option>
 				</select>
 				<br />
 				<br />
@@ -356,6 +380,9 @@ class GlyphSelect extends Component {
 				<button type="button" onClick={() => this.drawNext()}>
 					Next
 				</button>
+				<br />
+				<br/>
+				{this.ShowCredits()}
 			</div>
 		)
 	}

@@ -1,5 +1,5 @@
 import React from "react"
-import { observer } from "mobx-react"
+import { observer, action } from "mobx-react"
 import store from "../models/CanvasStore.js"
 
 const layerGlyph = (layer) => (
@@ -17,7 +17,7 @@ const layerGlyph = (layer) => (
 const LayerSelect = () => ( 
   <div className="layerSelect">
     <div>
-    	<input type="radio" onClick={event => store.layerSelect(event)} value="0" name="layerSelect" defaultChecked />
+      <input type="radio" onChange={event => store.layerSelect(event)} value="0" name="layerSelect" checked={store.selectedLayer === 0}/>
     	1
      {layerGlyph(0)}
      {'Hide'}
@@ -27,7 +27,7 @@ const LayerSelect = () => (
     </div>
 
     <div>
-	    <input type="radio" onClick={event => store.layerSelect(event)} value="1" name="layerSelect"/>
+	    <input type="radio" onChange={event => store.layerSelect(event)} value="1" name="layerSelect" checked={store.selectedLayer === 1}/>
 	    2
      {layerGlyph(1)}
      {'Hide'}
@@ -38,7 +38,7 @@ const LayerSelect = () => (
     </div>
 
     <div>
-   		<input type="radio" onClick={event => store.layerSelect(event)} value="2" name="layerSelect"/>
+   		<input type="radio" onChange={event => store.layerSelect(event)} value="2" name="layerSelect" checked={store.selectedLayer === 2}/>
    		3
      {layerGlyph(2)}
      {'Hide'}
@@ -49,7 +49,7 @@ const LayerSelect = () => (
     </div>
 
     <div>
-    	<input type="radio" onClick={event => store.layerSelect(event)} value="3" name="layerSelect"/>
+    	<input type="radio" onChange={event => store.layerSelect(event)} value="3" name="layerSelect" checked={store.selectedLayer === 3}/>
     	4
      {layerGlyph(3)}
      {'Hide'}
