@@ -461,10 +461,6 @@ class CanvasStore {
 		this.selectedLayer = Number(event.target.value)
 	}
 	@action
-	selectLayer = layer => {
-		this.selectedLayer = Number(layer)
-	}
-	@action
 	hideLayer = event => {
 		if (this.hiddenLayers[event.target.value] == event.target.value) {
 			this.hiddenLayers[event.target.value] = null
@@ -849,14 +845,14 @@ class CanvasStore {
 	@action
 	goRight = () => {
 		//ArrowRight
-		if (!this.altDown) {
+		if (!this.altDown && !this.shiftDown) {
 			if (this.selected_x < this.canvasWidth - 1) {
 				this.selected_x++
 			} else {
 				return
 			}
 		}
-		if (this.altDown) {
+		if (this.altDown && !this.shiftDown) {
 			if (
 				this.selected_x < this.canvasWidth - 1 &&
 				this.selected_x <= this.canvasWidth - 6
@@ -866,21 +862,35 @@ class CanvasStore {
 				this.selected_x = this.canvasWidth - 1
 			}
 		}
+		if (this.shiftDown) {
+			if (this.selectedLayer < 3) {
+				this.selectedLayer = this.selectedLayer + 1
+			} else (
+				this.selectedLayer = 0
+			)
+		}
 	}
 	@action
 	goLeft = () => {
 		//ArrowLeft
-		if (!this.altDown) {
+		if (!this.altDown && !this.shiftDown) {
 			if (this.selected_x > 0) {
 				this.selected_x -= 1
 			}
 		}
-		if (this.altDown) {
+		if (this.altDown && !this.shiftDown) {
 			if (this.selected_x > 4) {
 				this.selected_x -= 5
 			} else {
 				this.selected_x = 0
 			}
+		}
+		if (this.shiftDown) {
+			if (this.selectedLayer > 0) {
+				this.selectedLayer = this.selectedLayer - 1
+			} else (
+				this.selectedLayer = 3
+			)
 		}
 	}
 	@action
