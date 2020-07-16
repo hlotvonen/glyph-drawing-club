@@ -3,6 +3,7 @@ import { observer } from "mobx-react"
 import { action } from "mobx"
 import store from "../models/CanvasStore.js"
 import setstore from "../models/KeymappingsStore"
+import gridstore from "../models/GridStore.js"
 import Grid from "./Grid"
 import GridControls from "./GridControls"
 import Coordinates from "./Coordinates"
@@ -56,7 +57,11 @@ class Canvas extends Component {
 						d: store.goRight,
 						x: store.showQuickChooseColor,
 						c: store.copy,
-
+						",": () => store.selectLayer("left"),
+						".": () => store.selectLayer("right"),
+						"+": gridstore.zoomIn,
+						"-": gridstore.zoomOut,
+							
 						//Modifier keys:
 						Alt: store.handleAltDown,
 						Meta: store.handleMetaDown,
@@ -64,7 +69,7 @@ class Canvas extends Component {
 						Shift: store.handleShiftDown,
 
 						//Unused keys:
-						//YUGVBN
+						//GNOPWX
 						A: store.selectAll,
 						S: store.makeSelection,
 						C: store.copySelection,
