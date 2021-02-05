@@ -29,6 +29,7 @@ class ExportButtons extends React.Component {
 					<a
 						href="https://blog.glyphdrawing.club/how-to-clean-up-your-drawing-in-adobe-illustrator"
 						target="_blank"
+						rel="noreferrer noopener"
 					>
 						Read how to clean up SVG files
 					</a>

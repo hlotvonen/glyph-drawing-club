@@ -67,7 +67,7 @@ class Settings extends React.Component {
 						<h3>Glyph fine tuning</h3>
 						<GlyphFontSizeModifier />
 						<GlyphOffset />
-						<GlyphClear glyphClear={store.glyphClear} />
+						<GlyphClear glyphClear={store.glyphClear} resetOffset={store.resetOffset}/>
 					</TabPanel>
 
 					<TabPanel>

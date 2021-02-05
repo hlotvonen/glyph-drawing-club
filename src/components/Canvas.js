@@ -57,6 +57,7 @@ class Canvas extends Component {
 						d: store.goRight,
 						x: store.showQuickChooseColor,
 						c: store.copy,
+						o: store.handleOffsetOn,
 						",": () => store.selectLayer("left"),
 						".": () => store.selectLayer("right"),
 						"+": gridstore.zoomIn,
@@ -137,6 +138,7 @@ class Canvas extends Component {
 			Shift: store.handleShiftUp,
 			p: store.hidePreview,
 			x: store.hideQuickChooseColor,
+			o: store.handleOffsetOff, 
 		}
 		const handler = handlers[event.key]
 

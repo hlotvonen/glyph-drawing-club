@@ -15,6 +15,16 @@ class GlyphOffsetX extends React.Component {
 				<button onClick={store.decreaseGlyphOffsetY}> {"↑"} </button>
 				<button onClick={store.increaseGlyphOffsetY}> {"↓"} </button>
 				<span>{store.glyphOffsetY}</span>
+				<br />
+				{"Offset amount:"}
+				<input
+						type="number"
+						min="1"
+						value={store.offsetAmount}
+						onChange={evt => store.handleChangeOffsetAmount(evt)}
+						onFocus={() => store.toggleWriting()}
+						onBlur={() => store.toggleWriting()}
+				/>
 			</div>
 		)
 	}

@@ -6,7 +6,7 @@ import { KEY_INTO_UNICODE } from "../utils/keyIntoUnicode"
 
 class GlyphSelect extends Component {
 	pageNumber = observable.box(0)
-	selectedFont = observable.box("Tesserae 4x4")
+	selectedFont = observable.box("Tesserae Core")
 
 	constructor(props) {
 		super(props)
@@ -32,15 +32,15 @@ class GlyphSelect extends Component {
 	}
 
 	go = () => {
-		if (this.selectedFont == "Tesserae 4x4") {
+		if (this.selectedFont == "Tesserae Core") {
+			this.load("fonts/Tesserae-TypeDesign.otf", this.fontLoaded)
+			this.credits = null
+		} else if (this.selectedFont == "Tesserae Extended") {
 			this.load("fonts/Tesserae-4x4Extended.otf", this.fontLoaded)
 			this.credits = null
 		} else if (this.selectedFont == "Unscii") {
 			this.load("fonts/unscii-16.ttf", this.fontLoaded)
 			this.credits = "http://pelulamu.net/unscii/"
-		} else if (this.selectedFont == "MingLiU") {
-			this.load("fonts/mingliu.TTF", this.fontLoaded)
-			this.credits = null
 		} else if (this.selectedFont == "Submona") {
 			this.load("fonts/submona.ttf", this.fontLoaded)
 			this.credits = "https://github.com/pera/submona-web-font"
@@ -321,10 +321,10 @@ class GlyphSelect extends Component {
 					value={this.selectedFont}
 					onChange={evt => this.handleFontSelectChange(evt.target.value)}
 				>
-					<option value="Tesserae 4x4">Tesserae 4x4</option>
+					<option value="Tesserae Core">Tesserae Core</option>
+					<option value="Tesserae Extended">Tesserae Extended</option>
 					<option value="RayMantaC64">RayMantaC64 (Custom PETSCII)</option>
 					<option value="Unscii">Unscii</option>
-					<option value="MingLiU">MingLiU (Taiwanese ANSI)</option>
 					<option value="Submona">Submona (Swift_JIS)</option>
 					<option value="ImagoMundiMei">ImagoMundiMei</option>
 					<option value="ScrollBorder">ScrollBorder</option>
