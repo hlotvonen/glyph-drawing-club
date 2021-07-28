@@ -4,6 +4,17 @@ import setstore from "../models/KeymappingsStore"
 
 class SetSelect extends React.Component {
 	render() {
+		
+		if (!setstore.sets) {
+			return (
+				<div className={"canvas_container"}>
+					<div className="aligner">
+						Loading sets...
+					</div>
+				</div>
+			)
+		}
+
 		const sets = setstore.sets
 		const selectSetButtons = sets.map((setNumber, x) => (
 			<button

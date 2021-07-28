@@ -28,6 +28,15 @@ import { Tab, Tabs, TabList, TabPanel } from "react-tabs"
 @observer
 class Settings extends React.Component {
 	render() {
+
+		if (!store.canvas) {
+			return (
+				<div className={"controls_container"}>
+					Loading settings...
+				</div>
+			)
+		}
+
 		return (
 			<div className="controls_container">
 				<Tabs forceRenderTabPanel={true} defaultIndex={0}>

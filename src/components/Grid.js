@@ -11,6 +11,7 @@ import gridStore from "../models/GridStore"
 class Grid extends Component {
 
 	render() {
+
 		const canvas = store.canvas
 		
 		const gridBg = canvas.map((row, y) => (

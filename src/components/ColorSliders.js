@@ -19,9 +19,13 @@ const rgb = (r, g, b) => {
 	return "rgb(" + r + "," + g + "," + b +")";
 }
 
-@observer
 class ColorSliders extends Component {
 	render() {
+
+		if (!colorStore.palettes.length) {
+			return <span>Loading...</span>;
+		}
+
 		const rgbSlider = (name, index, gradient) => {
 			return (
 				<div className="rgbSlider">

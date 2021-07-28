@@ -1,30 +1,35 @@
-import { action, observable, computed, autorun, mobx, toJS } from "mobx"
-import store from "./CanvasStore"
-import { colorBlend } from "../utils/colorConversion"
+import { action, observable, autorun, makeObservable} from "mobx"
+import localforage from "localforage"
 import colorPresets from '../utils/colorPresets.json'; 
 
 let colorStorage
 
 class ColorStore {
 	constructor() {
-		//load from localstorage if it's not the first time
-		if (localStorage.colorFirstRun) {
-			colorStorage = JSON.parse(localStorage.colorStorage)
-			this.palettes = colorStorage.palettes
-			//else create empty canvas
-		} else {
-			this.addPalette()
-			localStorage.setItem("colorFirstRun", false)
-		}
-		//set localstorage, autorun will update it every time something changes
+
+		makeObservable(this)
+
+		localforage.getItem("colorStorage")
+			.then((value) => {
+				//load from localforage if it's not the first time
+				colorStorage = JSON.parse(value)
+				this.palettes = colorStorage.palettes
+			})
+			.catch((err) => {
+				// This code runs if there were any errors
+				this.addPalette()
+				console.log(err);
+			});
+
+		//set localforage, autorun will update it every time something changes
 		autorun(() => {
-			const colorLocalstorage = {
+			let colorLocalstorage = {
 				name: "Color Palettes",
 				timestamp: Math.floor(Date.now() / 1000),
 				palettes: this.palettes
 			}
-			localStorage.setItem("colorStorage", JSON.stringify(colorLocalstorage))
-		})
+			localforage.setItem("colorStorage", JSON.stringify(colorLocalstorage))
+		})	
 	}
 
 	@observable
@@ -105,6 +110,7 @@ class ColorStore {
 	addPalette = () => {
 		this.palettes.push(colorPresets[0].palette)
 		this.selectedPaletteIndex = this.palettes.length - 1
+		this.fetchLospecPalette()
 	}
 	
 	@action
@@ -128,8 +134,6 @@ class ColorStore {
 			this.selectedPaletteIndex += 1
 		}
 	}
-
-
 
 }
 

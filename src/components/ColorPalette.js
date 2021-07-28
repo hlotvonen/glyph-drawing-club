@@ -9,6 +9,10 @@ import store from "../models/CanvasStore"
 class ColorPalette extends Component {
 	render() {
 
+		if (!colorStore.palettes.length) {
+			return <span>Loading...</span>;
+		}
+
 		const canvas = store.canvas
 		let uniqueColors = new Set()
 		const list = canvas.map((row, x) => row.map((col, y) => {

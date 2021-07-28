@@ -1,9 +1,10 @@
-import { action, observable, computed, autorun, toJS, configure } from "mobx"
+import { action, observable, computed, autorun, toJS, configure, makeObservable } from "mobx"
 import colorstore from "./ColorStore"
 import { getBoundingRectangle } from "../utils/geometry"
 import { getOS } from "../utils/detectOs"
+import localforage from "localforage"
 
-configure({ enforceActions: "observed" })
+configure({ enforceActions: "never" })
 
 /*
 0: glyphPath, 
@@ -30,11 +31,26 @@ const getEmptyLayer = () => observable(EMPTY_CELL[0])
 
 const MAX_HISTORY_SIZE = 64
 
+let canvasStorage
+
 class CanvasStore {
 	constructor() {
 
+		makeObservable(this)
 
-		if (localStorage.firstRun) {
+		localforage.getItem("canvasStorage")
+			.then((value) => {
+				//load from localforage if it's not the first time
+				canvasStorage = JSON.parse(value)
+				this.setCurrentState(canvasStorage)
+			})
+			.catch((err) => {
+				// This code runs if there were any errors
+				this.createEmptyCanvas()
+				console.log(err);
+			});
+
+		/*if (localStorage.firstRun) {
 			if (JSON.parse(localStorage.storage)["canvas"] !== undefined) {
 				//check if old version
 				if (JSON.parse(localStorage.storage)["timestamp"] <= 1549995564) {
@@ -46,12 +62,13 @@ class CanvasStore {
 			}
 		} else {
 			this.createEmptyCanvas()
-		}
+		}*/
+
 		autorun(() => {
 			//save canvas (and history) to localstorage every 300ms
-			this.checkLocalStorageSize()
+			//this.checkLocalStorageSize()
 			const currentState = JSON.stringify(this.getCurrentState())
-			localStorage.setItem("storage", currentState)
+			localforage.setItem("canvasStorage", currentState)
 			this.addToUndoHistory(currentState)
 			this.initHistory()
 		}, 300)
@@ -1073,7 +1090,7 @@ class CanvasStore {
 	@action
 	insert = () => {
 		//q
-		const currentLayer = this.canvas[this.selected_y][this.selected_x][
+		let currentLayer = this.canvas[this.selected_y][this.selected_x][
 			this.selectedLayer
 		]
 		currentLayer.replace(this.getSelectedGlyph())

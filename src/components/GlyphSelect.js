@@ -72,6 +72,7 @@ class GlyphSelect extends Component {
 			</>
 		);
 	}
+	@action
 	load(path, resp) {
 		let request = new XMLHttpRequest()
 		request.open("GET", path, true)
