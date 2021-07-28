@@ -14,7 +14,6 @@ import SaveAsButton from "./SaveAsButton"
 import LoadButton from "./LoadButton"
 import LoadAndPlace from "./LoadAndPlace"
 import EmptyCanvas from "./EmptyCanvas"
-import SaveToDropboxButton from "./SaveToDropboxButton"
 import TypingMode from "./TypingMode"
 import PaintMode from "./PaintMode"
 import HistoryControls from "./HistoryControls"
@@ -109,32 +108,6 @@ class Settings extends React.Component {
 							updateExportSizeMultiplier={store.updateExportSizeMultiplier}
 						/>
 						<hr />
-						{/*
-						<h3>Contribute to the new issue of GDC User Guide!</h3>
-						<p>
-							If you would like to contribute your artwork to the upcoming
-							GD.C User Guide v.2.0.0. zine, use the form below to submit your work. All contributions will be included to the zine. No limits!
-							<br /><br />
-							Last day to submit: 30.2.2019. The zine will be published during the late spring (date TBA) at Kosminen gallery in Helsinki.
-							<br /><br />
-							Contributors will receive a scanned pdf of the zine sent to email and can get the physical copy for the price of postage. 
-							The zines will be sold but only to cover printing costs and/or to fund future issues.
-						</p>
-						<br />
-						<SaveToDropboxButton
-							userFullName={store.userFullName}
-							updateFullName={store.updateFullName}
-							userEmail={store.userEmail}
-							updateEmail={store.updateEmail}
-							userCountry={store.userCountry}
-							updateCountry={store.updateCountry}
-						/>
-						<p>
-						<br />
-						By clicking the button above, you give permission to use your artwork in the zine and social media. 
-						Only your name and country will be published.
-						</p>
-						*/}
 						<h3>License:</h3>
 						<p>
 							You are free to use anything you make with GlyphDrawingClub

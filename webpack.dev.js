@@ -4,11 +4,7 @@ var webpack = require('webpack');
 module.exports = {
   devtool: 'eval',
   mode: 'development',
-  entry: [
-    './src/index'
-  ],
   output: {
-    path: path.join(__dirname, 'dist'),
     filename: 'bundle.js',
     publicPath: '/static/'
   },
@@ -24,7 +20,7 @@ module.exports = {
       use: {
         loader: 'babel-loader',
         options: {
-            presets: ['@babel/react', '@babel/env']
+            presets: ['@babel/react', '@babel/env'],
         }
       },
       include: path.join(__dirname, 'src')
@@ -35,6 +31,6 @@ module.exports = {
     contentBase: path.resolve(__dirname, ""),
     watchContentBase: true,
     compress: true,
-    port: 9000
+    port: 3000
   },
 };

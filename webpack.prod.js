@@ -18,21 +18,7 @@ module.exports = {
             chunks: 'all'
           }
         }
-      },
-      minimizer: [
-        new UglifyJSPlugin({
-            uglifyOptions: {
-              beautify: false,
-              compress: true,
-              ecma: 6,
-              output: {
-                comments: false
-              },
-              compress: {
-                dead_code: true
-              }
-            }
-        })]
+      }
   },
   output: {
     path: path.join(__dirname, 'dist'),

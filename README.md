@@ -18,7 +18,7 @@ npm start
 ```
 
 ### About
-GlyphDrawing.club has been designed and developed by [@hlotvonen](http://heikkilotvonen.fi) and [@i-tu](https://github.com/i-tu) using React and MobX. For help, ideas, contributions, etc. open an issue or send an email to [hlotvonen@gmail.com](mailto:hlotvonen@gmail.com).
+GlyphDrawing.club has been designed and developed by [@hlotvonen](https://heikkilotvonen.com) and [@i-tu](https://github.com/i-tu) using React and MobX. For help, ideas, contributions, etc. open an issue or send an email to [hlotvonen@gmail.com](mailto:hlotvonen@gmail.com).
 
 #### Notes
 * This project uses Typr.js, a javascript font processor: https://github.com/photopea/Typr.js

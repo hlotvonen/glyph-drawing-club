@@ -106,14 +106,6 @@ class CanvasStore {
 	@observable
 	fileName = "Untitled"
 
-	//Save to Dropbox info
-	@observable
-	userFullName = ""
-	@observable
-	userEmail = ""
-	@observable
-	userCountry = ""
-
 	//CURSOR
 	@observable
 	selected_x = 0
@@ -577,19 +569,6 @@ class CanvasStore {
 	@action
 	updateFileName = evt => {
 		this.fileName = evt.target.value
-	}
-	//Save to Dropbox info
-	@action
-	updateFullName = evt => {
-		this.userFullName = evt.target.value
-	}
-	@action
-	updateEmail = evt => {
-		this.userEmail = evt.target.value
-	}
-	@action
-	updateCountry = evt => {
-		this.userCountry = evt.target.value
 	}
 	/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 		
