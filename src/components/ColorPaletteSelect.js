@@ -18,12 +18,16 @@ class ColorPaletteSelect extends React.Component {
 
 		return (
 			<div className="select_set">
-				<button type="button" onClick={colorstore.addPalette}>
-					Add
-				</button>
-				<button type="button" onClick={colorstore.deletePalette}>
+				<button
+					onClick={e =>
+						window.confirm("Are you sure you wish to delete this palette?") &&
+						colorstore.deletePalette(e)
+					}
+				>
 					Delete
 				</button>
+
+
 				{"Select: "}
 				{selectPaletteButtons}
 			</div>

@@ -7,9 +7,13 @@ import colorStore from "../models/ColorStore"
 const CellBg = observer(props => {
 	const bgColor = props.cell
 
-	if (bgColor == "255") {
-		return (null)
-	} else{
+	if (
+		colorStore.palettes[colorStore.selectedPaletteIndex].colors[bgColor][0] == 255 &&
+		colorStore.palettes[colorStore.selectedPaletteIndex].colors[bgColor][1] == 255 &&
+		colorStore.palettes[colorStore.selectedPaletteIndex].colors[bgColor][2] == 255
+	) {
+		return null
+	} else {
 		return(
 			<div 
 				style={{
@@ -29,7 +33,7 @@ export const rawSvgCellBg = ({bgColor}) => (
 		height={store.defaultFontSize}
 		width={store.cellWidth}
 		viewBox={0 + " " + 0 + " " + 800 / (store.cellHeight / store.cellWidth) + " " + 800}
-		fill={`rgb(${colorBlend(colorStore.palettes[colorStore.selectedPaletteIndex][bgColor], colorStore.cohesionOverlayColor, colorStore.cohesionIntensity)})`} 
+		fill={`rgb(${colorBlend(colorStore.palettes[colorStore.selectedPaletteIndex].colors[bgColor], colorStore.cohesionOverlayColor, colorStore.cohesionIntensity)})`} 
 	>	
 		<rect width={100 + "%"} height={100 + "%"} />
 	</svg>

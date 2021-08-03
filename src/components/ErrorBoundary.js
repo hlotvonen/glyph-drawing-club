@@ -1,4 +1,4 @@
-import React, {Component} from "react"
+import React from "react"
 import localforage from "localforage";
 
 class ErrorBoundary extends React.Component {

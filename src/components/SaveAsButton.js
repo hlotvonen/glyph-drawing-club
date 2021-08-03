@@ -16,7 +16,7 @@ class SaveAsButton extends React.Component {
 					onFocus={() => store.toggleWriting()}
 					onBlur={() => store.toggleWriting()}
 				/>
-				<button onClick={() => saveAs()}> {"Save"} </button>
+				<button onClick={() => saveAs(store.fileName, "canvasStorage", "gdc")}> {"Save"} </button>
 				<button onClick={() => saveSelectionAs()} disabled={store.selectionArea.start !== null ? false : true}> {"Save selection"} </button>
 			</div>
 		)

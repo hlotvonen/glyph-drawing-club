@@ -93,7 +93,7 @@ export const rawSvgCell = ({
 							//Path & Path inverting
 							d={layer1[8] ? `M0 0 v${layer1[2]} h${layer1[1]} V0 H0 z ${layer1[0]}` : layer1[0]} 
 							//color
-							fill={`rgb(${colorBlend(colorStore.palettes[colorStore.selectedPaletteIndex][layer1[10]], colorStore.cohesionOverlayColor, colorStore.cohesionIntensity)})`}
+							fill={`rgb(${colorBlend(colorStore.palettes[colorStore.selectedPaletteIndex].colors[layer1[10]], colorStore.cohesionOverlayColor, colorStore.cohesionIntensity)})`}
 						/>
 					</g>
 				)
@@ -132,7 +132,7 @@ export const rawSvgCell = ({
 							//Path & Path inverting
 							d={layer2[8] ? `M0 0 v${layer2[2]} h${layer2[1]} V0 H0 z ${layer2[0]}` : layer2[0]} 
 							//color
-							fill={`rgb(${colorBlend(colorStore.palettes[colorStore.selectedPaletteIndex][layer2[10]], colorStore.cohesionOverlayColor, colorStore.cohesionIntensity)})`}
+							fill={`rgb(${colorBlend(colorStore.palettes[colorStore.selectedPaletteIndex].colors[layer2[10]], colorStore.cohesionOverlayColor, colorStore.cohesionIntensity)})`}
 						/>
 					</g>
 				)
@@ -171,7 +171,7 @@ export const rawSvgCell = ({
 							//Path & Path inverting
 							d={layer3[8] ? `M0 0 v${layer3[2]} h${layer3[1]} V0 H0 z ${layer3[0]}` : layer3[0]} 
 							//color
-							fill={`rgb(${colorBlend(colorStore.palettes[colorStore.selectedPaletteIndex][layer3[10]], colorStore.cohesionOverlayColor, colorStore.cohesionIntensity)})`}
+							fill={`rgb(${colorBlend(colorStore.palettes[colorStore.selectedPaletteIndex].colors[layer3[10]], colorStore.cohesionOverlayColor, colorStore.cohesionIntensity)})`}
 						/>
 					</g>
 				)
@@ -210,7 +210,7 @@ export const rawSvgCell = ({
 							//Path & Path inverting
 							d={layer4[8] ? `M0 0 v${layer4[2]} h${layer4[1]} V0 H0 z ${layer4[0]}` : layer4[0]} 
 							//color
-							fill={`rgb(${colorBlend(colorStore.palettes[colorStore.selectedPaletteIndex][layer4[10]], colorStore.cohesionOverlayColor, colorStore.cohesionIntensity)})`}
+							fill={`rgb(${colorBlend(colorStore.palettes[colorStore.selectedPaletteIndex].colors[layer4[10]], colorStore.cohesionOverlayColor, colorStore.cohesionIntensity)})`}
 						/>
 					</g>
 				)

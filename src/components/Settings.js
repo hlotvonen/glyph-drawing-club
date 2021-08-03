@@ -39,7 +39,7 @@ class Settings extends React.Component {
 
 		return (
 			<div className="controls_container">
-				<Tabs forceRenderTabPanel={true} defaultIndex={0}>
+				<Tabs forceRenderTabPanel={true} defaultIndex={1}>
 					<TabList>
 						<Tab>Draw</Tab>
 						<Tab>Color</Tab>

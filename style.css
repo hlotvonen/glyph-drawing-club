@@ -123,6 +123,7 @@ canvas & grid
 	left:0;
 	pointer-events: none;
 	opacity: 0.5;
+	z-index: 100;
 }
 .UiLayer {
 	position: absolute;
@@ -232,6 +233,8 @@ colors
 	display: flex;
 	flex-wrap: wrap;
 	background: #eee;
+	position: relative;
+	width: 400px;
 }
 .color {
 	float:left;
@@ -256,7 +259,8 @@ colors
   border-radius:10px;
 }
 .colorPreview {
-	flex: 1;
+	width:70px;
+	height:70px;
 }
 .intensitySlider {
 	float: left;
@@ -382,9 +386,15 @@ controls
 	width: 30%;
 	display:inline-block;
 }
-button {
+button, input, select {
 	margin-right: 0.5em;
 	font-family:monospace;
+}
+select, input[type=text] {
+	width: 300px;
+}
+select.shortinput, input[type=text].shortinput {
+	width: 140px;
 }
 .page_selection,
 .control_inputs {
@@ -489,9 +499,10 @@ keymappings bar
 	overflow: visible;
 }
 .ToggleMapping, 
-.select_set {
-	display: inline-block;
-	margin-right: 4px;
+.select_set,
+.flex {
+	display: flex;
+	flex-wrap: wrap;
 }
 
 /* ~~~~~~~~~~~~~~~~~~~~~
@@ -599,4 +610,33 @@ react-tabs
 
 .react-tabs__tab-panel--selected {
   display: block;
+}
+
+/* ~~~~~~~~~~~~~~~~~~~~~
+tooltips
+~~~~~~~~~~~~~~~~~~~~~ */
+/* Tooltip container */
+.tooltip {
+	position: relative;
+	display: flex;
+}
+  
+/* Tooltip text */
+.tooltip .tooltiptext {
+	visibility: hidden;
+	background-color: black;
+	color: #fff;
+	text-align: center;
+	width: 100%;
+	padding: 1px 0;
+	border-radius: 1px;
+	pointer-events: none;
+	position: absolute;
+	z-index: 1;
+	transform: translateY(-100%);
+}
+
+/* Show the tooltip text when you mouse over the tooltip container */
+.tooltip:hover .tooltiptext {
+	visibility: visible;
 }

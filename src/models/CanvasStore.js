@@ -50,23 +50,9 @@ class CanvasStore {
 				console.log(err);
 			});
 
-		/*if (localStorage.firstRun) {
-			if (JSON.parse(localStorage.storage)["canvas"] !== undefined) {
-				//check if old version
-				if (JSON.parse(localStorage.storage)["timestamp"] <= 1549995564) {
-					localStorage.clear()
-					this.createEmptyCanvas()
-				} else {
-					this.setCurrentState(JSON.parse(localStorage.storage))
-				}
-			}
-		} else {
-			this.createEmptyCanvas()
-		}*/
 
 		autorun(() => {
 			//save canvas (and history) to localstorage every 300ms
-			//this.checkLocalStorageSize()
 			const currentState = JSON.stringify(this.getCurrentState())
 			localforage.setItem("canvasStorage", currentState)
 			this.addToUndoHistory(currentState)
@@ -184,7 +170,7 @@ class CanvasStore {
 	INITIALIZATION
 
    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
-	//create object that will be saved to localstorage
+	//create object that will be saved to localforage
 	getCurrentState = () => ({
 		name: "gdc-file",
 		timestamp: Math.floor(Date.now() / 1000),
@@ -214,15 +200,14 @@ class CanvasStore {
 	@action
 	createEmptyCanvas = () => {
 		this.canvas = this.getEmptyCanvas()
-		localStorage.setItem("firstRun", false)
 	}
-	@action
-	checkLocalStorageSize = () => {
-		const localStorageSize = new Blob(Object.values(localStorage)).size;
-		if (localStorageSize > 4.8e+6) {
-			alert('Warning! You are approaching the maximum size of the drawing (5MB). Save & export your file and dont draw anything on the canvas anymore, otherwise the program will probably crash.')
-		}
+	get currentLayer() {
+		return this.canvas[this.selected_y][this.selected_x][this.selectedLayer]
 	}
+	get currentGlyph() {
+		return this.canvas[this.selected_y][this.selected_x]
+	}
+
 	/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 		
 	CANVAS SIZE SETTINGS
@@ -330,7 +315,7 @@ class CanvasStore {
 	}
 	@computed
 	get isUndoAvailable() {
-		return this.history.length >= 2
+		return this.history.length > 2
 	}
 	@action
 	undo = () => {
@@ -512,19 +497,11 @@ class CanvasStore {
 		// Shift + R
 		if (!this.selectionArea.start) {
 			;[
-				this.canvas[this.selected_y][this.selected_x][
-					Number(event.target.value)
-				],
-				this.canvas[this.selected_y][this.selected_x][
-					Number(event.target.value) + 1
-				],
+				this.currentGlyph[Number(event.target.value)],
+				this.currentGlyph[Number(event.target.value) + 1],
 			] = [
-				this.canvas[this.selected_y][this.selected_x][
-					Number(event.target.value) + 1
-				],
-				this.canvas[this.selected_y][this.selected_x][
-					Number(event.target.value)
-				],
+				this.currentGlyph[Number(event.target.value) + 1],
+				this.currentGlyph[Number(event.target.value)],
 			]
 		} else {
 			const [[start_y, start_x], [end_y, end_x]] = this.getSelectedArea()
@@ -545,19 +522,11 @@ class CanvasStore {
 	switchLayersDown = event => {
 		if (!this.selectionArea.start) {
 			;[
-				this.canvas[this.selected_y][this.selected_x][
-					Number(event.target.value)
-				],
-				this.canvas[this.selected_y][this.selected_x][
-					Number(event.target.value) - 1
-				],
+				this.currentGlyph[Number(event.target.value)],
+				this.currentGlyph[Number(event.target.value) - 1],
 			] = [
-				this.canvas[this.selected_y][this.selected_x][
-					Number(event.target.value) - 1
-				],
-				this.canvas[this.selected_y][this.selected_x][
-					Number(event.target.value)
-				],
+				this.currentGlyph[Number(event.target.value) - 1],
+				this.currentGlyph[Number(event.target.value)],
 			]
 		} else {
 			const [[start_y, start_x], [end_y, end_x]] = this.getSelectedArea()
@@ -597,8 +566,8 @@ class CanvasStore {
 
 		//o + arrow keys
 		if (!this.selectionArea.start) {
-			this.canvas[this.selected_y][this.selected_x][this.selectedLayer][4] += this.offsetAmount
-			this.glyphOffsetX = Number(this.canvas[this.selected_y][this.selected_x][this.selectedLayer][4])
+			this.currentLayer[4] += this.offsetAmount
+			this.glyphOffsetX = Number(this.currentLayer[4])
 		} else {
 			const boundingRectangle = this.getSelectedArea()
 			const [[start_y, start_x], [end_y, end_x]] = boundingRectangle
@@ -611,8 +580,8 @@ class CanvasStore {
 	@action
 	decreaseGlyphOffsetX = () => {
 		if (!this.selectionArea.start) {
-			this.canvas[this.selected_y][this.selected_x][this.selectedLayer][4] -= this.offsetAmount
-			this.glyphOffsetX = Number(this.canvas[this.selected_y][this.selected_x][this.selectedLayer][4])
+			this.currentLayer[4] -= this.offsetAmount
+			this.glyphOffsetX = Number(this.currentLayer[4])
 		} else {
 			const boundingRectangle = this.getSelectedArea()
 			const [[start_y, start_x], [end_y, end_x]] = boundingRectangle
@@ -625,8 +594,8 @@ class CanvasStore {
 	@action
 	increaseGlyphOffsetY = () => {
 		if (!this.selectionArea.start) {
-			this.canvas[this.selected_y][this.selected_x][this.selectedLayer][9] += this.offsetAmount
-			this.glyphOffsetY = Number(this.canvas[this.selected_y][this.selected_x][this.selectedLayer][9])
+			this.currentLayer[9] += this.offsetAmount
+			this.glyphOffsetY = Number(this.currentLayer[9])
 		} else {
 			const boundingRectangle = this.getSelectedArea()
 			const [[start_y, start_x], [end_y, end_x]] = boundingRectangle
@@ -639,8 +608,8 @@ class CanvasStore {
 	@action
 	decreaseGlyphOffsetY = () => {
 		if (!this.selectionArea.start) {
-			this.canvas[this.selected_y][this.selected_x][this.selectedLayer][9] -= this.offsetAmount
-			this.glyphOffsetY = Number(this.canvas[this.selected_y][this.selected_x][this.selectedLayer][9])
+			this.currentLayer[9] -= this.offsetAmount
+			this.glyphOffsetY = Number(this.currentLayer[9])
 		} else {
 			const boundingRectangle = this.getSelectedArea()
 			const [[start_y, start_x], [end_y, end_x]] = boundingRectangle
@@ -673,98 +642,66 @@ class CanvasStore {
    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 	@action
 	rotateGlyphRight = () => {
-		this.rotationAmount = this.canvas[this.selected_y][this.selected_x][
-			this.selectedLayer
-		][6]
 		if (this.ctrlDown) {
 			//Rotate Cell if ctrl down
 			for (let z_i = 0; z_i <= 3; z_i++) {
-				if (this.canvas[this.selected_y][this.selected_x][z_i][6] <= -270) {
-					this.rotationAmount = this.canvas[this.selected_y][this.selected_x][
-						z_i
-					][6] = 0
+				if (this.currentGlyph[z_i][6] <= -270) {
+					this.currentGlyph[z_i][6] = 0
 				} else {
-					this.rotationAmount = this.canvas[this.selected_y][this.selected_x][
-						z_i
-					][6] -= 90
+					this.currentGlyph[z_i][6] -= 90
 				}
 			}
 		} else {
 			//Rotate Layer if just "r" is pressed
 			if (this.rotationAmount <= -270) {
-				this.rotationAmount = this.canvas[this.selected_y][this.selected_x][
-					this.selectedLayer
-				][6] = 0
+				this.currentLayer[6] = 0
 			} else {
-				this.rotationAmount = this.canvas[this.selected_y][this.selected_x][
-					this.selectedLayer
-				][6] -= 90
+				this.currentLayer[6] -= 90
 			}
 		}
+		this.rotationAmount = this.currentLayer[6]
 	}
 	@action
 	handleChangeFlip = () => {
 		if (this.ctrlDown) {
 			for (let z_i = 0; z_i <= 3; z_i++) {
-				this.canvas[this.selected_y][this.selected_x][z_i][7] *= -1
+				this.currentGlyph[z_i][7] *= -1
 			}
 		} else {
-			this.canvas[this.selected_y][this.selected_x][
-				this.selectedLayer
-			][7] = this.flipGlyph *= -1
+			this.currentLayer[7] *= -1
 		}
+		this.flipGlyph = this.currentLayer[7]
 	}
 	@action
 	handleChangeInvertColor = () => {
 		if (this.ctrlDown) {
 			for (let z_i = 0; z_i <= 3; z_i++) {
-				this.canvas[this.selected_y][this.selected_x][z_i][8] = !this.canvas[
-					this.selected_y
-				][this.selected_x][z_i][8]
+				this.currentGlyph[z_i][8] = !this.currentGlyph[z_i][8]
 			}
 		} else {
-			this.canvas[this.selected_y][this.selected_x][
-				this.selectedLayer
-			][8] = this.glyphInvertedShape = !this.canvas[this.selected_y][
-				this.selected_x
-			][this.selectedLayer][8]
+			this.currentLayer[8] = !this.currentLayer[8]
 		}
+		this.glyphInvertedShape = this.currentLayer[8]
 	}
 	@action
 	increaseGlyphFontSizeModifier = () => {
-		this.canvas[this.selected_y][this.selected_x][this.selectedLayer][5] += 1
-		this.glyphFontSizeModifier = this.canvas[this.selected_y][this.selected_x][
-			this.selectedLayer
-		][5]
+		this.currentLayer[5] += 1
+		this.glyphFontSizeModifier = this.currentLayer[5]
 	}
 	@action
 	decreaseGlyphFontSizeModifier = () => {
-		if (this.glyphFontSizeModifier > 0) {
-			this.canvas[this.selected_y][this.selected_x][this.selectedLayer][5] -= 1
-			this.glyphFontSizeModifier = this.canvas[this.selected_y][
-				this.selected_x
-			][this.selectedLayer][5]
-		}
+		this.currentLayer[5] -= 1
+		this.glyphFontSizeModifier = this.currentLayer[5]
 	}
 	@action
 	increaseByOneCellGlyphFontSizeModifier = () => {
-		this.canvas[this.selected_y][this.selected_x][
-			this.selectedLayer
-		][5] += this.defaultFontSize
-		this.glyphFontSizeModifier = this.canvas[this.selected_y][this.selected_x][
-			this.selectedLayer
-		][5]
+		this.currentLayer[5] += this.defaultFontSize
+		this.glyphFontSizeModifier = this.currentLayer[5]
 	}
 	@action
 	decreaseByOneCellGlyphFontSizeModifier = () => {
-		if (this.glyphFontSizeModifier - this.defaultFontSize >= 0) {
-			this.canvas[this.selected_y][this.selected_x][
-				this.selectedLayer
-			][5] -= this.defaultFontSize
-			this.glyphFontSizeModifier = this.canvas[this.selected_y][
-				this.selected_x
-			][this.selectedLayer][5]
-		}
+		this.currentLayer[5] -= this.defaultFontSize
+		this.glyphFontSizeModifier = this.currentLayer[5]
 	}
 
 	//GlyphClear - reset selection to default
@@ -778,12 +715,12 @@ class CanvasStore {
 		this.flipGlyph = 1
 
 		if (!this.selectionArea.start) {
-			this.canvas[this.selected_y][this.selected_x][this.selectedLayer][4] = 0 //offset x
-			this.canvas[this.selected_y][this.selected_x][this.selectedLayer][5] = 0 //font size modifier
-			this.canvas[this.selected_y][this.selected_x][this.selectedLayer][6] = 0 //rotation
-			this.canvas[this.selected_y][this.selected_x][this.selectedLayer][7] = 1 //flip
-			this.canvas[this.selected_y][this.selected_x][this.selectedLayer][8] = false //invert color
-			this.canvas[this.selected_y][this.selected_x][this.selectedLayer][9] = 0 //offset y
+			this.currentLayer[4] = 0 //offset x
+			this.currentLayer[5] = 0 //font size modifier
+			this.currentLayer[6] = 0 //rotation
+			this.currentLayer[7] = 1 //flip
+			this.currentLayer[8] = false //invert color
+			this.currentLayer[9] = 0 //offset y
 		} else {
 			const boundingRectangle = this.getSelectedArea()
 			const [[start_y, start_x], [end_y, end_x]] = boundingRectangle
@@ -802,8 +739,8 @@ class CanvasStore {
 		this.glyphOffsetY = 0
 
 		if (!this.selectionArea.start) {
-			this.canvas[this.selected_y][this.selected_x][this.selectedLayer][4] = 0 //offset x
-			this.canvas[this.selected_y][this.selected_x][this.selectedLayer][9] = 0 //offset y
+			this.currentLayer[4] = 0 //offset x
+			this.currentLayer[9] = 0 //offset y
 		} else {
 			const boundingRectangle = this.getSelectedArea()
 			const [[start_y, start_x], [end_y, end_x]] = boundingRectangle
@@ -858,9 +795,7 @@ class CanvasStore {
 		if (this.shiftDown && this.mouseDown) {
 			return
 		}
-		const currentGlyph = this.canvas[this.selected_y][this.selected_x][
-			this.selectedLayer
-		]
+		const currentGlyph = this.currentLayer
 		//Compare selected glyph and the placed glyph on the canvas. Paint only if the two arrays are different.
 		if (
 			JSON.stringify(this.getSelectedGlyph().sort()) !==
@@ -878,13 +813,10 @@ class CanvasStore {
 	colorLayer = () => {
 		if (this.mouseDown) {
 			if (!this.altDown) {
-				this.canvas[this.selected_y][this.selected_x][this.selectedLayer][10] =
-					colorstore.colorIndex
+				this.currentLayer[10] = colorstore.colorIndex
 			}
 			if (this.altDown) {
-				this.canvas[this.selected_y][this.selected_x][
-					this.selectedLayer
-				][10] = 0
+				this.currentLayer[10] = 0
 			}
 		}
 	}
@@ -892,11 +824,10 @@ class CanvasStore {
 	colorBgLayer = () => {
 		if (this.mouseDown) {
 			if (!this.altDown) {
-				this.canvas[this.selected_y][this.selected_x][4][0] =
-					colorstore.bgColorIndex
+				this.currentGlyph[4][0] = colorstore.bgColorIndex
 			}
 			if (this.altDown) {
-				this.canvas[this.selected_y][this.selected_x][4][0] = 255
+				this.currentGlyph[4][0] = 255
 			}
 		}
 	}
@@ -957,7 +888,7 @@ class CanvasStore {
 			//else move cursor
 			if (!this.altDown) {
 				if (this.selected_x < this.canvasWidth - 1) {
-					this.selected_x++
+					this.selected_x += 1
 				} else {
 					return
 				}
@@ -1006,7 +937,7 @@ class CanvasStore {
 			//else move cursor
 			if (!this.altDown) {
 				if (this.selected_y < this.canvasHeight - 1) {
-					this.selected_y++
+					this.selected_y += 1
 				} else {
 					return
 				}
@@ -1071,11 +1002,8 @@ class CanvasStore {
 	@action
 	insertEmpty = () => {
 		//space
-		const currentLayer = this.canvas[this.selected_y][this.selected_x][
-			this.selectedLayer
-		]
-		currentLayer.replace(getEmptyLayer())
-		//this.canvas[this.selected_y][this.selected_x][4][0] = 255
+		this.currentLayer.replace(getEmptyLayer())
+		this.insertBackground()
 	}
 	@action
 	insertEmptyCell = () => {
@@ -1083,45 +1011,55 @@ class CanvasStore {
 		if (!this.ctrlDown) {
 			this.insertEmpty()
 		} else {
-			const currentGlyph = this.canvas[this.selected_y][this.selected_x]
-			currentGlyph.replace(getEmptyCell())
+			this.currentGlyph.replace(getEmptyCell())
 		}
+		this.currentGlyph[4][0] = 255
 	}
 	@action
 	insert = () => {
 		//q
-		let currentLayer = this.canvas[this.selected_y][this.selected_x][
-			this.selectedLayer
-		]
-		currentLayer.replace(this.getSelectedGlyph())
-		this.canvas[this.selected_y][this.selected_x][4].replace(this.getBgColor())
+		this.currentLayer.replace(this.getSelectedGlyph())
+		this.currentGlyph[4].replace(this.getBgColor())
 	}
 	@action
 	insertBackground = () => {
 		//z
-		this.canvas[this.selected_y][this.selected_x][4].replace(this.getBgColor())
+		this.currentGlyph[4].replace(this.getBgColor())
 	}
 	@action
 	colorFg = () => {
 		//x
 		if (!this.ctrlDown) {
-			this.canvas[this.selected_y][this.selected_x][this.selectedLayer][10] =
-				colorstore.colorIndex
+			this.currentLayer[10] = colorstore.colorIndex
 		} else {
 			for (let z_i = 0; z_i <= 3; z_i++) {
-				this.canvas[this.selected_y][this.selected_x][z_i][10] =
-					colorstore.colorIndex
+				this.currentGlyph[z_i][10] = colorstore.colorIndex
 			}
 		}
+	}
+	@action
+	swapColorIndexes = (from, to) => {
+		const boundingRectangle = [[0, 0], [this.canvasHeight - 1, this.canvasWidth - 1]]
+		this.mapRangeAllLayers(boundingRectangle, glyph => {
+			if (glyph[10] == from) {
+				glyph[10] = to
+			} else {
+				return
+			}
+		})
+		this.mapRangeBackgroundLayer(boundingRectangle, bgindex => {
+			if (bgindex[0] == from) {
+				bgindex[0] = to
+			} else {
+				return
+			}
+		})
 	}
 
 	@action
 	backSpace = () => {
 		//backspace
-		const currentGlyph = this.canvas[this.selected_y][this.selected_x][
-			this.selectedLayer
-		]
-		currentGlyph.replace(getEmptyLayer())
+		this.insertEmpty()
 		if (this.selected_y > 0) {
 			if (this.selected_x > 0) {
 				this.goLeft()
@@ -1145,7 +1083,7 @@ class CanvasStore {
 	
 	@action
 	copy = () => {
-		this.glyphPath = this.canvas[this.selected_y][this.selected_x][this.selectedLayer][0]
+		this.glyphPath = this.currentLayer[0]
 	}
 	
 
@@ -1182,6 +1120,14 @@ class CanvasStore {
 		for (let y_i = start_y; y_i <= end_y; y_i++) {
 			for (let x_i = start_x; x_i <= end_x; x_i++) {
 				f(this.canvas[y_i][x_i][this.selectedLayer])
+			}
+		}
+	}
+	mapRangeBackgroundLayer = (range, f) => {
+		const [[start_y, start_x], [end_y, end_x]] = range
+		for (let y_i = start_y; y_i <= end_y; y_i++) {
+			for (let x_i = start_x; x_i <= end_x; x_i++) {
+				f(this.canvas[y_i][x_i][4])
 			}
 		}
 	}
@@ -1236,14 +1182,8 @@ class CanvasStore {
 					) {
 						continue
 					}
-					const copiedGlyph = toJS(
-						this.canvas[this.selectionArea.start[0] + y_i][
-							this.selectionArea.start[1] + x_i
-						][this.selectedLayer]
-					)
-					this.canvas[this.selected_y + y_i][this.selected_x + x_i][
-						this.selectedLayer
-					].replace(copiedGlyph)
+					const copiedGlyph = toJS(this.canvas[this.selectionArea.start[0] + y_i][this.selectionArea.start[1] + x_i][this.selectedLayer])
+					this.canvas[this.selected_y + y_i][this.selected_x + x_i][this.selectedLayer].replace(copiedGlyph)
 				}
 			}
 		} else {
@@ -1257,14 +1197,8 @@ class CanvasStore {
 						) {
 							continue
 						}
-						const copiedGlyph = toJS(
-							this.canvas[this.selectionArea.start[0] + y_i][
-								this.selectionArea.start[1] + x_i
-							][z_i]
-						)
-						this.canvas[this.selected_y + y_i][this.selected_x + x_i][
-							z_i
-						].replace(copiedGlyph)
+						const copiedGlyph = toJS(this.canvas[this.selectionArea.start[0] + y_i][this.selectionArea.start[1] + x_i][z_i])
+						this.canvas[this.selected_y + y_i][this.selected_x + x_i][z_i].replace(copiedGlyph)
 					}
 				}
 			}
@@ -1300,12 +1234,10 @@ class CanvasStore {
 		//shift + b
 		if (!this.selectionArea.start) {
 			if (!this.ctrlDown) {
-				this.canvas[this.selected_y][this.selected_x][this.selectedLayer][10] =
-					colorstore.colorIndex
+				this.currentLayer[10] = colorstore.colorIndex
 			} else {
 				for (let z_i = 0; z_i <= 3; z_i++) {
-					this.canvas[this.selected_y][this.selected_x][z_i][10] =
-						colorstore.colorIndex
+					this.currentGlyph[z_i][10] = colorstore.colorIndex
 				}
 			}
 		}
@@ -1374,20 +1306,10 @@ class CanvasStore {
 			for (let i = 0; i <= w; i++) {
 				for (let j = i; j < w - i - 1; j++) {
 					const temp = this.canvas[start_y + i][start_x + j][this.selectedLayer]
-					this.canvas[start_y + i][start_x + j][
-						this.selectedLayer
-					] = this.canvas[start_y + w - j - 1][start_x + i][this.selectedLayer]
-					this.canvas[start_y + w - j - 1][start_x + i][
-						this.selectedLayer
-					] = this.canvas[start_y + w - i - 1][start_x + w - j - 1][
-						this.selectedLayer
-					]
-					this.canvas[start_y + w - i - 1][start_x + w - j - 1][
-						this.selectedLayer
-					] = this.canvas[start_y + j][start_x + w - i - 1][this.selectedLayer]
-					this.canvas[start_y + j][start_x + w - i - 1][
-						this.selectedLayer
-					] = temp
+					this.canvas[start_y + i][start_x + j][this.selectedLayer] = this.canvas[start_y + w - j - 1][start_x + i][this.selectedLayer]
+					this.canvas[start_y + w - j - 1][start_x + i][this.selectedLayer] = this.canvas[start_y + w - i - 1][start_x + w - j - 1][this.selectedLayer]
+					this.canvas[start_y + w - i - 1][start_x + w - j - 1][this.selectedLayer] = this.canvas[start_y + j][start_x + w - i - 1][this.selectedLayer]
+					this.canvas[start_y + j][start_x + w - i - 1][this.selectedLayer] = temp
 				}
 			}
 			this.mapRangeSelectedLayer(boundingRectangle, glyph => {
@@ -1464,7 +1386,7 @@ class CanvasStore {
 				glyph[7] *= -1
 				//offset fixes
 				if (glyph[9] !== 0) {
-					glyph[9] = glyph[9] * -1
+					glyph[9] *= -1
 				}
 			})
 		} else {
@@ -1485,7 +1407,7 @@ class CanvasStore {
 				glyph[7] *= -1
 				//offset fixes
 				if (glyph[9] !== 0) {
-					glyph[9] = glyph[9] * -1
+					glyph[9] *= -1
 				}
 			})
 		}
@@ -1516,7 +1438,7 @@ class CanvasStore {
 				glyph[7] *= -1
 				//offset fixes
 				if (glyph[4] !== 0) {
-					glyph[4] = glyph[4] * -1
+					glyph[4] *= -1
 				}
 			})
 		} else {
@@ -1525,9 +1447,7 @@ class CanvasStore {
 				for (let x_delta = 0; x_delta <= x_width / 2; x_delta++) {
 					for (let z_i = 0; z_i <= 3; z_i++) {
 						const temp = this.canvas[y_i][start_x + x_delta][z_i]
-						this.canvas[y_i][start_x + x_delta][z_i] = this.canvas[y_i][
-							end_x - x_delta
-						][z_i]
+						this.canvas[y_i][start_x + x_delta][z_i] = this.canvas[y_i][end_x - x_delta][z_i]
 						this.canvas[y_i][end_x - x_delta][z_i] = temp
 					}
 				}
@@ -1536,7 +1456,7 @@ class CanvasStore {
 				glyph[7] *= -1
 				//offset fixes
 				if (glyph[4] !== 0) {
-					glyph[4] = glyph[4] * -1
+					glyph[4] *= -1
 				}
 			})
 		}

@@ -11,6 +11,28 @@ import ColorPresetSelect from "./ColorPresetSelect"
 
 @observer
 class ColorSelect extends Component {
+
+	constructor(props) {
+		super(props);
+		this.state = {
+			fromIndex: 0,
+			toIndex: 1,
+		};
+		this.handleRecolorChange = this.handleRecolorChange.bind(this);
+		this.handleRecolorSubmit = this.handleRecolorSubmit.bind(this);
+	}
+
+	handleRecolorChange(e) {
+		const name = e.target.name;
+		e.target.value = e.target.value > 255 ? 255 : e.target.value < 0 ? 0 : e.target.value;
+		this.setState({ [name]: e.target.value })
+	}
+
+	handleRecolorSubmit(e) {
+		store.swapColorIndexes(this.state.fromIndex, this.state.toIndex)
+		e.preventDefault();
+	}
+
 	render() {
 
 		return (
@@ -29,25 +51,61 @@ class ColorSelect extends Component {
 					onChange={action(() => colorStore.coloringModeBg = !colorStore.coloringModeBg)}
 				/>
 				<br />
-
-				{"Show only used colors:"}
-				<input
-					type="checkbox"
-					value={colorStore.showUsedColors}
-					onChange={action(() => colorStore.showUsedColors = !colorStore.showUsedColors)}
-				/>
-				<br />
-
+				
 				<ColorPresetSelect />
 				<br />
+				<h3>Palette(s)</h3>
 				<ColorPaletteSelect />
 
 				<div className="paletteContainer">
+					{"Show only used colors:"}
+					<input
+						type="checkbox"
+						value={colorStore.showUsedColors}
+						onChange={action(() => colorStore.showUsedColors = !colorStore.showUsedColors)}
+					/>
 					<ColorPalette />
 				</div>
 
 				<ColorSliders />
 
+				{"Swap foreground and background colors:"}
+				<button onClick={() => colorStore.swapColors()}>Swap colors</button>
+				<br />
+
+				<div className="cohesiveColors flex">
+					<h3>Recolor (assign new color index)</h3>
+					<form onSubmit={this.handleRecolorSubmit}>
+						<label>
+						From:
+							<input
+								name="fromIndex"
+								value={this.state.fromIndex + 1}
+								onChange={this.handleRecolorChange}
+								onFocus={() => store.toggleWriting()}
+								onBlur={() => store.toggleWriting()}
+								type="number"
+								min="0"
+								max="255"
+								/>
+						</label>
+						<label>
+						To:
+							<input
+								type="number"
+								min="0"
+								max="255"
+								name="toIndex"
+								value={this.state.toIndex + 1}
+								onChange={this.handleRecolorChange}
+								onFocus={() => store.toggleWriting()}
+								onBlur={() => store.toggleWriting()}
+								/>
+						</label>
+						<input type="submit" value="Recolor" />
+					</form>
+				</div>
+				
 				<div className="cohesiveColors">
 					<h3>Create cohesive color palette</h3>
 					<div className="intensitySlider">
@@ -71,6 +129,12 @@ class ColorSelect extends Component {
 						onClick={() => colorStore.handleChangeCohesionColor()}
 					/>
 				</div>
+				<br />
+				<br />
+				<br />
+
+				<br />
+
 
 
 			</div>

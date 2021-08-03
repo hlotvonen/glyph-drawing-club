@@ -1,9 +1,8 @@
 import React, { Component } from "react"
 import { observer } from "mobx-react"
-import { action } from "mobx"
 import colorStore from "../models/ColorStore"
 import store from "../models/CanvasStore"
-import ColorPalette from "./ColorPalette"
+import invert from 'invert-color'
 
 const setGradient = (steps) => {
 	let gradientString = "linear-gradient(to right,"
@@ -35,7 +34,7 @@ class ColorSliders extends Component {
 						min="0" 
 						max="255"
 						step="1"
-						value={colorStore.changingCohesionColor ? colorStore.cohesionOverlayColor[index] : colorStore.palettes[colorStore.selectedPaletteIndex][colorStore.colorIndex][index]}
+						value={colorStore.changingCohesionColor ? colorStore.cohesionOverlayColor[index] : colorStore.palettes[colorStore.selectedPaletteIndex].colors[colorStore.colorIndex][index]}
 						onChange={e => colorStore.colorSelect(index, e.target.value)}
 						style={{
 							background: setGradient(gradient)
@@ -45,7 +44,7 @@ class ColorSliders extends Component {
 						type="number" 
 						min="0" 
 						max="255"
-						value={colorStore.changingCohesionColor ? colorStore.cohesionOverlayColor[index] : colorStore.palettes[colorStore.selectedPaletteIndex][colorStore.colorIndex][index]} 
+						value={colorStore.changingCohesionColor ? colorStore.cohesionOverlayColor[index] : colorStore.palettes[colorStore.selectedPaletteIndex].colors[colorStore.colorIndex][index]} 
 						onChange={e => colorStore.colorSelect(index, e.target.value)}
 						onFocus={() => store.toggleWriting()}
 						onBlur={() => store.toggleWriting()}
@@ -62,21 +61,21 @@ class ColorSliders extends Component {
 						0, 
 						colorStore.changingCohesionColor 
 						? [rgb(0, colorStore.cohesionOverlayColor[1], colorStore.cohesionOverlayColor[2]),rgb(255, colorStore.cohesionOverlayColor[1], colorStore.cohesionOverlayColor[2])]
-						: [rgb(0, colorStore.palettes[colorStore.selectedPaletteIndex][colorStore.colorIndex][1], colorStore.palettes[colorStore.selectedPaletteIndex][colorStore.colorIndex][2]),rgb(255, colorStore.palettes[colorStore.selectedPaletteIndex][colorStore.colorIndex][1], colorStore.palettes[colorStore.selectedPaletteIndex][colorStore.colorIndex][2])]
+						: [rgb(0, colorStore.palettes[colorStore.selectedPaletteIndex].colors[colorStore.colorIndex][1], colorStore.palettes[colorStore.selectedPaletteIndex].colors[colorStore.colorIndex][2]),rgb(255, colorStore.palettes[colorStore.selectedPaletteIndex].colors[colorStore.colorIndex][1], colorStore.palettes[colorStore.selectedPaletteIndex].colors[colorStore.colorIndex][2])]
 					)}
 					{rgbSlider(
 						"G", 
 						1, 
 						colorStore.changingCohesionColor 
 						? [rgb(colorStore.cohesionOverlayColor[0], 0, colorStore.cohesionOverlayColor[2]),rgb(colorStore.cohesionOverlayColor[0], 255, colorStore.cohesionOverlayColor[2])]
-						: [rgb(colorStore.palettes[colorStore.selectedPaletteIndex][colorStore.colorIndex][0], 0, colorStore.palettes[colorStore.selectedPaletteIndex][colorStore.colorIndex][2]),rgb(colorStore.palettes[colorStore.selectedPaletteIndex][colorStore.colorIndex][0], 255, colorStore.palettes[colorStore.selectedPaletteIndex][colorStore.colorIndex][2])]
+						: [rgb(colorStore.palettes[colorStore.selectedPaletteIndex].colors[colorStore.colorIndex][0], 0, colorStore.palettes[colorStore.selectedPaletteIndex].colors[colorStore.colorIndex][2]),rgb(colorStore.palettes[colorStore.selectedPaletteIndex].colors[colorStore.colorIndex][0], 255, colorStore.palettes[colorStore.selectedPaletteIndex].colors[colorStore.colorIndex][2])]
 					)}
 					{rgbSlider(
 						"B", 
 						2,
 						colorStore.changingCohesionColor 
 						? [rgb(colorStore.cohesionOverlayColor[0], colorStore.cohesionOverlayColor[1], 0), rgb(colorStore.cohesionOverlayColor[0], colorStore.cohesionOverlayColor[1], 255)]
-						: [rgb(colorStore.palettes[colorStore.selectedPaletteIndex][colorStore.colorIndex][0], colorStore.palettes[colorStore.selectedPaletteIndex][colorStore.colorIndex][1], 0), rgb(colorStore.palettes[colorStore.selectedPaletteIndex][colorStore.colorIndex][0], colorStore.palettes[colorStore.selectedPaletteIndex][colorStore.colorIndex][1], 255)]
+						: [rgb(colorStore.palettes[colorStore.selectedPaletteIndex].colors[colorStore.colorIndex][0], colorStore.palettes[colorStore.selectedPaletteIndex].colors[colorStore.colorIndex][1], 0), rgb(colorStore.palettes[colorStore.selectedPaletteIndex].colors[colorStore.colorIndex][0], colorStore.palettes[colorStore.selectedPaletteIndex].colors[colorStore.colorIndex][1], 255)]
 					)}
 				</div>
 				<div className="colorPreview" 
@@ -84,10 +83,21 @@ class ColorSliders extends Component {
 					 	background: "rgb(" + 
 					 		(colorStore.changingCohesionColor 
 					 		? colorStore.cohesionOverlayColor
-					 		: colorStore.palettes[colorStore.selectedPaletteIndex][colorStore.colorIndex])
-					 	+ ")"
+					 		: colorStore.palettes[colorStore.selectedPaletteIndex].colors[colorStore.colorIndex])
+							 + ")",
+						color: invert({ r: colorStore.palettes[colorStore.selectedPaletteIndex].colors[colorStore.colorIndex][0], g: colorStore.palettes[colorStore.selectedPaletteIndex].colors[colorStore.colorIndex][1], b: colorStore.palettes[colorStore.selectedPaletteIndex].colors[colorStore.colorIndex][2] }, true)
 					 }}
-				></div>
+				>FG #{colorStore.colorIndex + 1}</div>
+				<div className="colorPreview" 
+					 style={{
+					 	background: "rgb(" + 
+					 		(colorStore.changingCohesionColor 
+					 		? colorStore.cohesionOverlayColor
+					 		: colorStore.palettes[colorStore.selectedPaletteIndex].colors[colorStore.bgColorIndex])
+						+ ")",
+						color: invert({ r: colorStore.palettes[colorStore.selectedPaletteIndex].colors[colorStore.bgColorIndex][0], g: colorStore.palettes[colorStore.selectedPaletteIndex].colors[colorStore.bgColorIndex][1], b: colorStore.palettes[colorStore.selectedPaletteIndex].colors[colorStore.bgColorIndex][2] }, true)
+					 }}
+				>BG #{colorStore.bgColorIndex + 1}</div>
 			</div>
 		)
 	}

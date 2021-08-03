@@ -20,6 +20,17 @@ class Canvas extends Component {
 		document.removeEventListener("keyup", this.handleKeyPressUp, false)
 	}
 
+	resetPageAndClearLocalStorage() {
+		localforage.clear().then(function() {
+			// Run this code once the database has been entirely deleted.
+			console.log('Database is now empty.');
+			location.reload()
+		}).catch(function(err) {
+			// This code runs if there were any errors
+			console.log(err);
+		});
+	}
+
 	@action
 	handleKeyPress = event => {
 		//disable shortcuts if focus is on input element
@@ -157,6 +168,9 @@ class Canvas extends Component {
 				<div className={"canvas_container"}>
 					<div className="aligner">
 						Loading canvas...
+					</div>
+					<div>
+						if you get stuck in the loading screen: refresh the page. If that doesn't work: <button onClick={() => this.resetPageAndClearLocalStorage()}>Reset everything</button>
 					</div>
 				</div>
 			)
