@@ -1,101 +1,19 @@
-/* http://meyerweb.com/eric/tools/css/reset/ 
-   v2.0 | 20110126
-   License: none (public domain)
-*/
-
-html, body, div, span, applet, object, iframe,
-h1, h2, h3, h4, h5, h6, p, blockquote, pre,
-a, abbr, acronym, address, big, cite, code,
-del, dfn, em, img, ins, kbd, q, s, samp,
-small, strike, strong, sub, sup, tt, var,
-b, u, i, center,
-dl, dt, dd, ol, ul, li,
-fieldset, form, label, legend,
-table, caption, tbody, tfoot, thead, tr, th, td,
-article, aside, canvas, details, embed, 
-figure, figcaption, footer, header, hgroup, 
-menu, nav, output, ruby, section, summary,
-time, mark, audio, video {
-	margin: 0;
-	padding: 0;
-	border: 0;
-	font-size: 100%;
-	font: inherit;
-	vertical-align: baseline;
-}
-/* HTML5 display-role reset for older browsers */
-article, aside, details, figcaption, figure, 
-footer, header, hgroup, menu, nav, section {
-	display: block;
-}
-body {
-	line-height: 1;
-}
-ol, ul {
-	list-style: none;
-}
-blockquote, q {
-	quotes: none;
-}
-blockquote:before, blockquote:after,
-q:before, q:after {
-	content: '';
-	content: none;
-}
-table {
-	border-collapse: collapse;
-	border-spacing: 0;
-}
 
 /* ~~~~~~~~~~~~~~~~~~~~~
 document lvl
 ~~~~~~~~~~~~~~~~~~~~~ */
-html,
-body {
-	height: 100vh;
-	padding: 0;
-	margin: 0;
-	font-family: monospace;
-	background: #ddd;
-}
-html {
-  box-sizing: border-box;
-}
-*, *:before, *:after {
-  box-sizing: inherit;
-}
-b {
-	font-weight: bold;
-}
-em {
-	font-style:italic;
-	margin:10px 0;
-	display: block;
-}
 
 /* ~~~~~~~~~~~~~~~~~~~~~
 top wrapper
 ~~~~~~~~~~~~~~~~~~~~~ */
-#root {
+.fullscreen {
 	height: 100%;
-}
-.flex_wrapper {
-    height: 100%;
     width: 100%;
     display: flex;
-    flex-direction: row;
 }
-
 /* ~~~~~~~~~~~~~~~~~~~~~
 canvas & grid
 ~~~~~~~~~~~~~~~~~~~~~ */
-.canvas_container {
-	background: #ddd;
-	display: flex;
-	flex-direction: column;
-	overflow: hidden;
-	flex: 1;
-}
 .aligner {
 	display: flex;
 	flex: 1;
@@ -153,42 +71,7 @@ cells
 /* ~~~~~~~~~~~~~~~~~~~~~
 grid numbers / cursor
 ~~~~~~~~~~~~~~~~~~~~~ */
-.rowNums div.rowNum {
-	position: absolute;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	width: 30px;
-	left: -30px;
-	box-shadow: none;
-	text-align: right;
-	font-size: 0.6em;
-	background: none;
-	color: #888;
-}
-.rowNums div.rowNum.highlighted {
-	color: red;
-}
-.colNums {
-	width: 100%;
-	position: relative;
-	height: 0;
-}
-.colNum {
-	width: auto;
-	display: inline-flex;
-	justify-content: center;
-	align-items: center;
-	font-size: 0.6em;
-	background: none;
-	color:#888;
-	position: relative;
-	height: 25px;
-	top: -25px;
-}
-.colNum.highlighted {
-	color: red;
-}
+
 /* ~~~~~~~~~~~~~~~~~~~~~
 selection highlight
 ~~~~~~~~~~~~~~~~~~~~~ */
@@ -225,6 +108,7 @@ coordinates
 	position: absolute;
 	top: 0;
 	right: 5px;
+	pointer-events: none;
 }
 /* ~~~~~~~~~~~~~~~~~~~~~
 colors
@@ -234,12 +118,12 @@ colors
 	flex-wrap: wrap;
 	background: #eee;
 	position: relative;
-	width: 400px;
+	width: 320px;
 }
 .color {
 	float:left;
-	width:25px;
-	height:25px;
+	width:20px;
+	height:20px;
 	cursor:pointer;
 	font-size:9px;
 }
@@ -338,7 +222,7 @@ span.hotkey {
 }
 h3 {
 	width: 100%;
-	background: #eee;
+	background: rgba(89, 48, 132, 1);
 	font-weight: bold;
 	padding: 0.5em;
 	margin: 1em 0 0.5em 0;
@@ -370,13 +254,10 @@ table tr td:first-child {
 controls
 ~~~~~~~~~~~~~~~~~~~~~ */
 .controls_container {
-	background: white;
-	width: 430px;
+	width: calc(320px + 25px);
 	padding: 5px;
 	overflow-y: scroll;
 	flex: none;
-	box-shadow: 0 0 2px 0 rgba(0,0,0,0.3);
-
 }
 .control_component {
 	display:block;
@@ -521,7 +402,7 @@ selected glyph in keymappings bar
 	display: inline-block;
 }
 .SelectedGlyphContainer {
-	width: 185px;
+	width: 50px;
 	height: 50px;
     margin-top: auto;
     position: absolute;

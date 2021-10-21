@@ -9,7 +9,7 @@ module.exports = {
     publicPath: '/static/'
   },
   plugins: [
-    new webpack.HotModuleReplacementPlugin()
+    new webpack.HotModuleReplacementPlugin(),
   ],
   resolve: {
     extensions: ['.js', '.jsx']
@@ -24,12 +24,21 @@ module.exports = {
         }
       },
       include: path.join(__dirname, 'src')
+    },
+    {
+      test: /\.css$/i,
+      include: path.resolve(__dirname, 'src'),
+      use: [
+        "style-loader",
+        "css-loader",
+        "postcss-loader"
+      ],
     }]
   },
   devServer: {
     publicPath: '/static/',
     contentBase: path.resolve(__dirname, ""),
-    watchContentBase: true,
+    //watchContentBase: true,
     compress: true,
     port: 3000
   },

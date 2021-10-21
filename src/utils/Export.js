@@ -2,7 +2,6 @@ import React from "react"
 import ReactDOM from "react-dom"
 import FileSaver from "file-saver"
 import store from "../models/CanvasStore"
-import { rawSvgCell } from "../components/Cell"
 import { saveSvgAsPng } from "save-svg-as-png"
 import { cellsAsSvg } from "./cellsAsSvg"
 

@@ -1,10 +1,18 @@
-import { action, observable, computed, autorun, toJS, configure, makeObservable } from "mobx"
+import { action, observable, computed, autorun, toJS, configure, makeAutoObservable, runInAction, reaction, spy } from "mobx"
 import colorstore from "./ColorStore"
+import eventstore from "./EventStore"
 import { getBoundingRectangle } from "../utils/geometry"
 import { getOS } from "../utils/detectOs"
 import localforage from "localforage"
+import { bresenham } from "../utils/utils"
 
-configure({ enforceActions: "never" })
+configure({ enforceActions: "observed" })
+
+/*spy(event => {
+    if (event.type === "reaction") {
+        console.log(`${event.name} `)
+    }
+})*/
 
 /*
 0: glyphPath, 
@@ -31,18 +39,18 @@ const getEmptyLayer = () => observable(EMPTY_CELL[0])
 
 const MAX_HISTORY_SIZE = 64
 
-let canvasStorage
-
 class CanvasStore {
 	constructor() {
 
-		makeObservable(this)
+		makeAutoObservable(this)
 
 		localforage.getItem("canvasStorage")
 			.then((value) => {
 				//load from localforage if it's not the first time
-				canvasStorage = JSON.parse(value)
-				this.setCurrentState(canvasStorage)
+				runInAction(() => {
+					this.setCurrentState(JSON.parse(value))
+					this.initHistory()
+				})
 			})
 			.catch((err) => {
 				// This code runs if there were any errors
@@ -52,12 +60,21 @@ class CanvasStore {
 
 
 		autorun(() => {
-			//save canvas (and history) to localstorage every 300ms
-			const currentState = JSON.stringify(this.getCurrentState())
-			localforage.setItem("canvasStorage", currentState)
-			this.addToUndoHistory(currentState)
-			this.initHistory()
-		}, 300)
+			if (this.canvas) {
+				//save canvas (and history) to localstorage every second
+				const currentState = JSON.stringify(this.getCurrentState)
+				localforage.setItem("canvasStorage", currentState)
+			}
+		}, { delay: 1000, fireImmediately: true })
+		
+		reaction(
+			() => JSON.stringify(this.getCurrentState),
+			currentState => {
+				//watch state, add to undoHistory if something changes
+				this.addToUndoHistory(currentState)
+				this.initHistory()
+			}, {delay: 100, fireImmediately: true}
+		)
 	}
 
 	//CANVAS
@@ -171,16 +188,19 @@ class CanvasStore {
 
    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 	//create object that will be saved to localforage
-	getCurrentState = () => ({
-		name: "gdc-file",
-		timestamp: Math.floor(Date.now() / 1000),
-		canvasWidth: this.canvasWidth,
-		canvasHeight: this.canvasHeight,
-		cellWidth: this.cellWidth,
-		cellHeight: this.cellHeight,
-		defaultFontSize: this.defaultFontSize,
-		canvas: this.canvas,
-	})
+	@computed
+	get getCurrentState() {
+		return ({
+			name: "gdc-file",
+			timestamp: Math.floor(Date.now() / 1000),
+			canvasWidth: this.canvasWidth,
+			canvasHeight: this.canvasHeight,
+			cellWidth: this.cellWidth,
+			cellHeight: this.cellHeight,
+			defaultFontSize: this.defaultFontSize,
+			canvas: this.canvas,
+		})
+	}
 	@action
 	setCurrentState = state => {
 		this.canvasWidth = state.canvasWidth
@@ -201,13 +221,18 @@ class CanvasStore {
 	createEmptyCanvas = () => {
 		this.canvas = this.getEmptyCanvas()
 	}
+	@computed
 	get currentLayer() {
 		return this.canvas[this.selected_y][this.selected_x][this.selectedLayer]
 	}
+	@computed
 	get currentGlyph() {
 		return this.canvas[this.selected_y][this.selected_x]
 	}
-
+	
+	currentLayerXY = ( x, y ) => {
+		return this.canvas[y][x][this.selectedLayer]
+	}
 	/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 		
 	CANVAS SIZE SETTINGS
@@ -275,12 +300,12 @@ class CanvasStore {
 	}
 	@action
 	addRowAtSelection = () => {
-		this.canvasHeight++
+		this.canvasHeight += 1
 		this.canvas.splice(this.selected_y, 0, this.getEmptyRow())
 	}
 	@action
 	addColAtSelection = () => {
-		this.canvasWidth++
+		this.canvasWidth += 1
 		for (var i = 0; i < this.canvasHeight; i++) {
 			var col = this.canvas[i]
 			col.splice(this.selected_x, 0, getEmptyCell())
@@ -313,10 +338,12 @@ class CanvasStore {
 			this.redoHistory = []
 		}
 	}
+
 	@computed
 	get isUndoAvailable() {
 		return this.history.length > 2
 	}
+	
 	@action
 	undo = () => {
 		if (!this.isUndoAvailable) {
@@ -330,19 +357,22 @@ class CanvasStore {
 		const previousState = this.history.pop()
 		this.setCurrentState(JSON.parse(previousState))
 	}
+
 	@computed
 	get isRedoAvailable() {
 		return this.redoHistory.length >= 1
 	}
+	
 	@action
-	addToUndoHistory = state => {
+	addToUndoHistory(state) {
 		this.history.push(state)
 		if (this.history.length > MAX_HISTORY_SIZE) {
 			this.history.shift()
 		}
 	}
+	
 	@action
-	addToRedoHistory = state => {
+	addToRedoHistory(state) {
 		this.redoHistory.push(state)
 		if (this.redoHistory.length > MAX_HISTORY_SIZE) {
 			this.redoHistory.shift()
@@ -358,6 +388,7 @@ class CanvasStore {
 		const redoState = this.redoHistory.pop()
 		this.setCurrentState(JSON.parse(redoState))
 	}
+
 	@action
 	handleUndoRedo = () => {
 		if (getOS() == "OSX") {
@@ -422,13 +453,11 @@ class CanvasStore {
 	@action
 	handleChangeHideGrid = () => {
 		this.hideGrid = !this.hideGrid
-		document.getElementById("hideGrid").checked = this.hideGrid
 	}
 	@action
 	handleChangeTypingMode = () => {
 		this.typingMode = !this.typingMode
 		this.glyphClear()
-		document.getElementById("typingMode").checked = this.typingMode
 	}
 	@action
 	toggleWriting = () => {
@@ -437,7 +466,6 @@ class CanvasStore {
 	@action
 	handleChangePaintMode = () => {
 		this.paintMode = !this.paintMode
-		document.getElementById("paintMode").checked = this.paintMode
 	}
 	@action
 	showPreview = () => {
@@ -655,11 +683,13 @@ class CanvasStore {
 			//Rotate Layer if just "r" is pressed
 			if (this.rotationAmount <= -270) {
 				this.currentLayer[6] = 0
+				this.rotationAmount = 0
 			} else {
 				this.currentLayer[6] -= 90
+				this.rotationAmount -= 90
 			}
 		}
-		this.rotationAmount = this.currentLayer[6]
+		//this.rotationAmount = this.currentLayer[6]
 	}
 	@action
 	handleChangeFlip = () => {
@@ -765,7 +795,12 @@ class CanvasStore {
 		this.handlePaintEvents(posX, posY)
 	}
 	@action
-	handlePaintEvents = (posX, posY) => {
+	handleMoveCursor = (posX, posY) => {
+		this.selected_x = posX
+		this.selected_y = posY
+	}
+	@action
+	handlePaintEvents = (x, y) => {
 		if (this.shiftDown && this.mouseDown) {
 			return
 		}
@@ -774,13 +809,8 @@ class CanvasStore {
 			colorstore.coloringModeFg ||
 			colorstore.coloringModeBg
 		) {
-			this.selected_x = posX
-			this.selected_y = posY
-
 			if (this.paintMode) {
-				if (this.mouseDown) {
-					this.paintLayer()
-				}
+				this.mouseDown && this.paintLayer()
 			}
 			if (colorstore.coloringModeFg) {
 				this.colorLayer()
@@ -790,6 +820,42 @@ class CanvasStore {
 			}
 		}
 	}
+	@action
+	pencil = (x, y, old_x, old_y) => {
+		const self = this;
+		bresenham(old_x, old_y, x, y, function (x, y) {
+			if (self.shiftDown) {
+				self.perfectPixels(x, y)
+			} else {
+				self.insertXY(x, y)
+			}
+		})
+	}
+
+	/*
+	* Simple pixelperfect freehand drawing function from https://cantwell-tom.medium.com/pixel-perfect-lines-in-html-canvas-112fc638d1e9
+	* not perfect as drawing really fast can "glitch" it
+	*/
+	@observable
+	lastDrawn = {x: 0, y: 0}
+	@observable
+	waitingPixel = {x: 0, y: 0}
+	perfectPixels = (x, y) => {
+		//if currentPixel not neighbor to lastDrawn, draw waitingpixel
+		if (Math.abs(x - this.lastDrawn.x) > 1 || Math.abs(y - this.lastDrawn.y) > 1) {
+			this.insertXY(this.waitingPixel.x, this.waitingPixel.y)
+			//update queue
+			this.lastDrawn.x = this.waitingPixel.x;
+			this.lastDrawn.y = this.waitingPixel.y;
+			this.waitingPixel.x = x;
+			this.waitingPixel.y = y;
+		} else {
+			this.waitingPixel.x = x;
+			this.waitingPixel.y = y;
+		}
+	}
+
+
 	@action
 	paintLayer = () => {
 		if (this.shiftDown && this.mouseDown) {
@@ -1022,6 +1088,10 @@ class CanvasStore {
 		this.currentGlyph[4].replace(this.getBgColor())
 	}
 	@action
+	insertXY = (x, y) => {
+		this.currentLayerXY(x, y).replace(this.getSelectedGlyph())
+	}
+	@action
 	insertBackground = () => {
 		//z
 		this.currentGlyph[4].replace(this.getBgColor())
@@ -1082,8 +1152,8 @@ class CanvasStore {
 	}
 	
 	@action
-	copy = () => {
-		this.glyphPath = this.currentLayer[0]
+	copy = (x, y) => {
+		this.glyphPath = this.canvas[y][x][this.selectedLayer][0]
 	}
 	
 

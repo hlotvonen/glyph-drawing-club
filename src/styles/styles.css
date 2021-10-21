@@ -1,0 +1,43 @@
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
+
+@layer base {
+    @font-face {
+        font-family: 'Sans09';
+        src: url('../../assets/fonts/Sans09.woff') format('woff2'),
+            url('../../assets/fonts/Sans09.woff2') format('woff');
+        font-weight: normal;
+        font-style: normal;
+        font-display: swap;
+    }
+    :root {
+        --white: #cbd1be;
+        --black: #160712;
+        --primary1: #8f9389;
+        --primary2: #52534c;
+        --primary3: #26201d;
+        --primary4: #e0a46e;
+        --primary5: #91a47a;
+        --primary6: #5d7643;
+        --primary7: #4d533a;
+        --primary8: #a93130;
+        --primary9: #7a1338;
+        --primary10: #834664;
+        --primary11: #917692;
+        --primary12: #593084;
+        --primary13: #3870be;
+        --primary14: #579fb4;
+    }
+}
+@layer utilities {
+    .noselect {
+        -webkit-touch-callout: none; /* iOS Safari */
+          -webkit-user-select: none; /* Safari */
+           -khtml-user-select: none; /* Konqueror HTML */
+             -moz-user-select: none; /* Old versions of Firefox */
+              -ms-user-select: none; /* Internet Explorer/Edge */
+                  user-select: none; /* Non-prefixed version, currently
+                                        supported by Chrome, Edge, Opera and Firefox */
+    }
+}

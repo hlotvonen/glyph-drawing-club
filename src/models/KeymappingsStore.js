@@ -1,4 +1,4 @@
-import { action, observable, autorun, makeObservable } from "mobx"
+import { action, observable, autorun, makeAutoObservable, runInAction } from "mobx"
 import store from "./CanvasStore"
 import colorstore from "./ColorStore"
 import localforage from "localforage"
@@ -11,13 +11,15 @@ let keymappingsStorage
 class KeymappingsStore {
 	constructor() {
 
-		makeObservable(this)
+		makeAutoObservable(this)
 
 		localforage.getItem("keymappingsStorage")
 			.then((value) => {
 				//load from localforage if it's not the first time
-				keymappingsStorage = JSON.parse(value)
-				this.sets = keymappingsStorage.sets
+				runInAction(() => {
+					keymappingsStorage = JSON.parse(value)
+					this.sets = keymappingsStorage.sets
+				})
 			})
 			.catch((err) => {
 				// This code runs if there were any errors
@@ -34,7 +36,7 @@ class KeymappingsStore {
 				sets: this.sets
 			}
 			localforage.setItem("keymappingsStorage", JSON.stringify(keymappingsLocalstorage))
-		})
+		}, {delay:300, fireImmediately: true})
 	}
 	@observable
 	toggleMapping = false
@@ -46,7 +48,6 @@ class KeymappingsStore {
 	@action
 	handleChangeMapping = () => {
 		this.toggleMapping = !this.toggleMapping
-		document.getElementById("toggleMapping").checked = this.toggleMapping
 	}
 
 	@action
@@ -86,14 +87,14 @@ class KeymappingsStore {
 	@action
 	prevSet = () => {
 		if (this.selectedSetIndex > 0) {
-			this.selectedSetIndex = this.selectedSetIndex - 1
+			this.selectedSetIndex -= 1
 		}
 	}
 
 	@action
 	nextSet = () => {
 		if (this.selectedSetIndex < this.sets.length) {
-			this.selectedSetIndex = this.selectedSetIndex + 1
+			this.selectedSetIndex += 1
 		}
 	}
 
@@ -105,7 +106,6 @@ class KeymappingsStore {
 
 	@action
 	getMapping = keyName => {
-		const selectedSet = this.sets[this.selectedSetIndex]
 		store.canvas[store.selected_y][store.selected_x][store.selectedLayer] = [
 			...this.sets[this.selectedSetIndex][keyName],
 			store.glyphOffsetX,
@@ -116,6 +116,7 @@ class KeymappingsStore {
 			store.glyphOffsetY,
 			colorstore.colorIndex
 		]
+		store.currentGlyph[4].replace(store.getBgColor())
 	}
 }
 
