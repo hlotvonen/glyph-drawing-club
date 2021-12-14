@@ -1,6 +1,6 @@
+import { observer } from "mobx-react"
 import React from "react"
 import store from "../../models/CanvasStore"
-import { observer } from "mobx-react"
 import { saveAs, saveSelectionAs } from "../../utils/SaveAs"
 
 class SaveAsButton extends React.Component {

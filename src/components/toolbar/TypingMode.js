@@ -1,17 +1,19 @@
-import React from "react"
 import { observer } from "mobx-react"
+import React from "react"
+import store from "../../models/CanvasStore"
 
 class TypingMode extends React.Component {
 	render() {
 		return (
-			<div>
-				{"Typing mode (t / ESC):"}
+			<div className="relative">
 				<input
 					id="typingMode"
+					name="typingMode"
 					type="checkbox"
-					value={this.props.typingMode}
-					onChange={this.props.handleChangeTypingMode}
+					value={store.typingMode}
+					onChange={store.handleChangeTypingMode}
 				/>
+				<label htmlFor="typingMode">Typing mode</label>
 			</div>
 		)
 	}

@@ -1,7 +1,7 @@
-import React from "react"
-import { exportAs } from "../../utils/Export"
-import store from "../../models/CanvasStore"
 import { observer } from "mobx-react"
+import React from "react"
+import store from "../../models/CanvasStore"
+import { exportAs } from "../../utils/Export"
 
 class ExportButtons extends React.Component {
 	render() {
@@ -31,7 +31,7 @@ class ExportButtons extends React.Component {
 						target="_blank"
 						rel="noreferrer noopener"
 					>
-						Read how to clean up SVG files
+						{" Read how to clean up SVG files"}
 					</a>
 				</div>
 			</div>

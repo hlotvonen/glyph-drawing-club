@@ -1,33 +1,27 @@
-import React from "react"
-import SelectedGlyph from "./toolbar/SelectedGlyph"
-import setstore from "../models/KeymappingsStore"
 import { observer } from "mobx-react"
-import store from "../models/CanvasStore.js"
-import colorstore from "../models/ColorStore.js"
+import React from "react"
+import store from "../../../models/CanvasStore"
+import colorstore from "../../../models/ColorStore"
+import setstore from "../../../models/KeymappingsStore"
+import SelectedGlyph from "../../toolbar/SelectedGlyph"
 
 const KeyMapping = observer(props => {
 	return (
-		<div
-			className={
-				"KeyMappingsContainer " +
-				(props.setIndex === setstore.selectedSetIndex ? "active" : "")
-			}
-		>
-			<div className="KeyMappingsFlexer">
+		<div className={props.setIndex === setstore.selectedSetIndex ? "active my-1" : "my-1"}>
+			<div className="flex text-xs text-center justify-between">
 				{Object.entries(props.keys).map(([keyName, glyph]) => {
 					if (glyph[0] == "M0 0") {
 						return (
 							<div key={keyName}>
-								{keyName}
 								<div className="selectedGlyph">
 									<div className="vector"></div>
 								</div>
+								{keyName}
 							</div>
 						)
 					} else {
 						return (
 							<div key={keyName}>
-								{keyName}
 								<div className="selectedGlyph">
 									<div className="vector">
 										<SelectedGlyph
@@ -42,9 +36,12 @@ const KeyMapping = observer(props => {
 											colorIndex={colorstore.colorIndex}
 											bgColorIndex={colorstore.bgColorIndex}
 											showBg={true}
+											defaultFontSize={store.defaultFontSize}
+											glyphFontSizeModifier={store.glyphFontSizeModifier}
 										/>
 									</div>
 								</div>
+								{keyName}
 							</div>
 						)
 					}

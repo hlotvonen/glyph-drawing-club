@@ -1,17 +1,20 @@
-import React from "react"
 import { observer } from "mobx-react"
+import React from "react"
+import store from "../../models/CanvasStore"
 
 class PaintMode extends React.Component {
 	render() {
 		return (
-			<div>
-				{"Paint mode (b):"}
+			<div className="relative">
 				<input
 					id="paintMode"
+					name="paintMode"
 					type="checkbox"
-					value={this.props.paintMode}
-					onChange={this.props.handleChangePaintMode}
-				/>
+					checked={store.paintMode}
+					value={store.paintMode}
+					onChange={store.handleChangePaintMode}
+				/>	
+				<label htmlFor="paintMode">Paint mode</label>
 			</div>
 		)
 	}

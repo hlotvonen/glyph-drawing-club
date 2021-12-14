@@ -1,7 +1,7 @@
-import { action, observable, autorun, makeAutoObservable, runInAction } from "mobx"
+import localforage from "localforage"
+import { action, autorun, makeAutoObservable, runInAction } from "mobx"
 import store from "./CanvasStore"
 import colorstore from "./ColorStore"
-import localforage from "localforage"
 
 const EMPTY_GLYPH = ["M0 0", "1", "1", "0"]
 const KEYS = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"]
@@ -24,8 +24,8 @@ class KeymappingsStore {
 			.catch((err) => {
 				// This code runs if there were any errors
 				this.addSet()
-				console.log(err);
-			});
+				console.log(err)
+			})
 
 
 		//set localstorage, autorun will update it every time something changes
@@ -38,11 +38,8 @@ class KeymappingsStore {
 			localforage.setItem("keymappingsStorage", JSON.stringify(keymappingsLocalstorage))
 		}, {delay:300, fireImmediately: true})
 	}
-	@observable
 	toggleMapping = false
-	@observable
 	selectedSetIndex = 0
-	@observable
 	sets = []
 
 	@action

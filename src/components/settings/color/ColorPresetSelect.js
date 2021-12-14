@@ -1,32 +1,32 @@
-import React from "react"
-import { observer } from "mobx-react"
-import colorstore from "../../../models/ColorStore"
-import store from "../../../models/CanvasStore.js"
-import { saveAsString } from "../../../utils/SaveAs"
 import { action } from "mobx"
+import { observer } from "mobx-react"
+import React from "react"
+import store from "../../../models/CanvasStore.js"
+import colorstore from "../../../models/ColorStore"
+import { saveAsString } from "../../../utils/SaveAs"
 
 
 class ColorPresetSelect extends React.Component {
 
 	constructor(props) {
-		super(props);
+		super(props)
 		this.state = {
-			lospecurl: '',
+			lospecurl: "",
 			waitingForFileUpload: false,
-		};
-		this.handleChange = this.handleChange.bind(this);
-		this.handleAdd = this.handleAdd.bind(this);
-		this.handleSave = this.handleSave.bind(this);
+		}
+		this.handleChange = this.handleChange.bind(this)
+		this.handleAdd = this.handleAdd.bind(this)
+		this.handleSave = this.handleSave.bind(this)
 
 	}
 
 	handleChange(event) {
-		this.setState({lospecurl: event.target.value});
+		this.setState({lospecurl: event.target.value})
 	}
 
 	handleAdd(event) {
-		colorstore.fetchLospecPalette(this.state.lospecurl);
-		event.preventDefault();
+		colorstore.fetchLospecPalette(this.state.lospecurl)
+		event.preventDefault()
 	}
 
 	@action
@@ -34,7 +34,7 @@ class ColorPresetSelect extends React.Component {
 		colorstore.palettes[colorstore.selectedPaletteIndex].name = colorstore.paletteName
 		colorstore.palettes[colorstore.selectedPaletteIndex].author = colorstore.paletteAuthor
 		saveAsString(colorstore.paletteName + " palette", JSON.stringify(colorstore.palettes[colorstore.selectedPaletteIndex]), "json")
-		event.preventDefault();
+		event.preventDefault()
 	}
 
 	static readUploadedFileAsText = inputFile => {
@@ -42,8 +42,8 @@ class ColorPresetSelect extends React.Component {
 
 		return new Promise((resolve, reject) => {
 			temporaryFileReader.onerror = () => {
-                temporaryFileReader.abort()
-                alert('Problem parsing input file.')
+				temporaryFileReader.abort()
+				alert("Problem parsing input file.")
 				reject(new DOMException("Problem parsing input file."))
 			}
 
@@ -89,7 +89,9 @@ class ColorPresetSelect extends React.Component {
 	render() {
 		return (
 			<>
-				<h3>Save Palette</h3>
+				<div className="settings-header mt-2">
+					SAVE PALETTE
+				</div>
 				<div>
 					<form onSubmit={this.handleSave}>
 						<label className="flex">
@@ -102,7 +104,7 @@ class ColorPresetSelect extends React.Component {
 								onFocus={() => store.toggleWriting()}
 								onBlur={() => store.toggleWriting()}
 								disabled={colorstore.palettes[colorstore.selectedPaletteIndex].name == "" || colorstore.palettes[colorstore.selectedPaletteIndex].name == "Empty" ? false : true}
-								/>
+							/>
 						</label>
 						<label className="flex">
 							Author:
@@ -114,14 +116,16 @@ class ColorPresetSelect extends React.Component {
 								onFocus={() => store.toggleWriting()}
 								onBlur={() => store.toggleWriting()}
 								disabled={colorstore.palettes[colorstore.selectedPaletteIndex].author == "" ? false : true}
-								/>
+							/>
 						</label>
 						<input type="submit" value="Save palette" />
 						
 					</form>
 				</div>
 				
-				<h3>Load palette</h3>
+				<div className="settings-header mt-2">
+					Load palette
+				</div>
 
 				<div>
 					Load from file:
@@ -130,17 +134,17 @@ class ColorPresetSelect extends React.Component {
 
 				
 				<div>
-					Copy paste url from <a href="https://lospec.com/palette-list" target="_blank" rel="noopener">Lospec</a>:
+					Copy paste url from <a href="https://lospec.com/palette-list" target="_blank" rel="noopener noreferrer">Lospec</a>:
 					<form onSubmit={this.handleAdd} className={"flex"}>
 						<label>
 							<input
-								placeholder={'https://lospec.com/palette-list/palette-name'}
+								placeholder={"https://lospec.com/palette-list/palette-name"}
 								type="text"
 								value={this.state.lospecurl}
 								onChange={this.handleChange}
 								onFocus={() => store.toggleWriting()}
 								onBlur={() => store.toggleWriting()}
-								/>
+							/>
 						</label>
 						<input type="submit" value="Add" />
 					</form>
@@ -177,7 +181,7 @@ class ColorPresetSelect extends React.Component {
 					</button>
 				</div>
 				<div>
-				<button type="button" onClick={() => colorstore.addPalettePreset(1)}>
+					<button type="button" onClick={() => colorstore.addPalettePreset(1)}>
 						Add empty palette
 					</button>
 				</div>

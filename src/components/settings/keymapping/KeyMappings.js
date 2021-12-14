@@ -1,9 +1,9 @@
-import React from "react"
 import { observer } from "mobx-react"
-import setstore from "../models/KeymappingsStore"
-import ToggleMapping from "./ToggleMapping"
+import React from "react"
+import setstore from "../../../models/KeymappingsStore"
 import KeyMapping from "./KeyMapping"
 import SetSelect from "./SetSelect"
+import ToggleMapping from "./ToggleMapping"
 
 @observer
 class KeyMappings extends React.Component {
@@ -11,7 +11,10 @@ class KeyMappings extends React.Component {
 		const sets = setstore.sets
 		return (
 			<div className="Sets">
-				<ToggleMapping handleChangeMapping={setstore.handleChangeMapping} />
+				<div className="settings-header">
+					GLYPH SETS
+					<ToggleMapping />
+				</div>
 				<SetSelect addSet={setstore.addSet} deleteSet={setstore.deleteSet} selectSet={setstore.selectSet} />
 				{sets.map((set, y) => (
 					<KeyMapping keys={set} key={y} setIndex={y} />

@@ -1,17 +1,20 @@
-import React from "react"
 import { observer } from "mobx-react"
+import React from "react"
+import store from "../../models/CanvasStore"
 
 class HideGrid extends React.Component {
 	render() {
 		return (
-			<div>
-				{"Hide grid (h):"}
+			<div className="relative">
 				<input
 					id="hideGrid"
+					name="hideGrid"
 					type="checkbox"
-					value={this.props.hideGrid}
-					onChange={this.props.handleChangeHideGrid}
+					checked={store.hideGrid}
+					value={store.hideGrid}
+					onChange={store.handleChangeHideGrid}
 				/>
+				<label htmlFor="hideGrid">Hide grid <kbd>h</kbd></label>
 			</div>
 		)
 	}

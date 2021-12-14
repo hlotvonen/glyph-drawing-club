@@ -1,7 +1,7 @@
-import React, { Component } from "react"
+import { action, observable } from "mobx"
 import { observer } from "mobx-react"
-import { observable, action } from "mobx"
-import store from "../../../models/CanvasStore.js"
+import React, { Component } from "react"
+import store from "../../../models/CanvasStore"
 import { KEY_INTO_UNICODE } from "../../../utils/keyIntoUnicode"
 
 class GlyphSelect extends Component {
@@ -65,13 +65,13 @@ class GlyphSelect extends Component {
 
 	ShowCredits() {
 		if (!this.credits) {
-			return null;
+			return null
 		}
 		return (
 			<>
-				{this.selectedFont} made by: <a href={this.credits} target="_blank">{this.credits}</a>
+				{this.selectedFont} made by: <a href={this.credits} target="_blank" rel="noreferrer">{this.credits}</a>
 			</>
-		);
+		)
 	}
 	@action
 	load(path, resp) {
@@ -198,26 +198,6 @@ class GlyphSelect extends Component {
 			cnv.width = cnv.width
 			ctx.translate(5 * this.getDPR(), Math.round(30 * this.getDPR()))
 
-			if ( this.selectedFont == "Tesserae 4x4") {
-				ctx.fillStyle = "#f5f5f5"
-				ctx.fillRect(
-					0,
-					Math.round(-25.7 * this.getDPR()),
-					Math.round(25.7 * this.getDPR()),
-					Math.round(25.7 * this.getDPR())
-				)
-			}
-
-			if (this.state.inverted) {
-				ctx.fillStyle = "black"
-				ctx.fillRect(
-					0,
-					Math.round(-25 * this.getDPR()),
-					Math.round(25 * this.getDPR()),
-					Math.round(25 * this.getDPR())
-				)
-			}
-
 			ctx.fillStyle = "black"
 			ctx.font = "16px monospace"
 			ctx.fillText(i+1, 0, 16)
@@ -225,11 +205,7 @@ class GlyphSelect extends Component {
 			ctx.scale(scale, -scale)
 			Typr.U.pathToContext(path, ctx)
 
-			if (this.state.inverted) {
-				ctx.fillStyle = "#f5f5f5"
-			} else {
-				ctx.fillStyle = "black"
-			}
+			ctx.fillStyle = "black"
 			ctx.fill()
 
 			let img = document.createElement("img")
@@ -259,9 +235,6 @@ class GlyphSelect extends Component {
 		}
 		r.onloadend = function(e) {
 			r64.readAsDataURL(file)
-			r64.onloadend = function(e) {
-				let base64result = r64.result.split(",")[1]
-			}
 		}
 		r.readAsArrayBuffer(file)
 	}
@@ -311,38 +284,29 @@ class GlyphSelect extends Component {
 		this.selectedFont = value
 		this.go()
 	}
-	@action
-	handleChangeInvert = () => {
-		this.state.inverted = !this.state.inverted
-		this.drawGlyphs()
-	}
+
 	render() {
 		return (
-			<div className="glyphs">
-				<h3>Glyph selection</h3>
-				Select a preset font:
-				<select
-					value={this.selectedFont}
-					onChange={evt => this.handleFontSelectChange(evt.target.value)}
-				>
-					<option value="Tesserae Core">Tesserae Core</option>
-					<option value="Tesserae Extended">Tesserae Extended</option>
-					<option value="RayMantaC64">RayMantaC64 (Custom PETSCII)</option>
-					<option value="Unscii">Unscii</option>
-					<option value="Submona">Submona (Swift_JIS)</option>
-					<option value="ImagoMundiMei">ImagoMundiMei</option>
-					<option value="ScrollBorder">ScrollBorder</option>
-				</select>
-				<br />
-				<br />
+			<div className="glyphs mt-1">
+				<div className="settings-header">GLYPHS <span>TTF / OTF</span></div>
+				<div>
+					<select
+						value={this.selectedFont}
+						onChange={evt => this.handleFontSelectChange(evt.target.value)}
+					>
+						<option value="Tesserae Core">Tesserae Core</option>
+						<option value="Tesserae Extended">Tesserae Extended</option>
+						<option value="RayMantaC64">RayMantaC64 (Custom PETSCII)</option>
+						<option value="Unscii">Unscii</option>
+						<option value="Submona">Submona (Swift_JIS)</option>
+						<option value="ImagoMundiMei">ImagoMundiMei</option>
+						<option value="ScrollBorder">ScrollBorder</option>
+					</select>
+				</div>
 				<button type="button" onClick={() => this.drawPrev()}>
 					Previous
 				</button>
-				<button type="button" onClick={() => this.drawNext()}>
-					Next
-				</button>
-				<div className="page_selection">
-					Select page:
+				<div className="page_selection mx-2">
 					<input
 						id="page_select_input"
 						type="number"
@@ -369,23 +333,13 @@ class GlyphSelect extends Component {
 						}}
 					/>
 					/{this.state.pages_total + 1}
-					{" Invert:"}
-					<input
-						id="invertGlyphSelection"
-						type="checkbox"
-						value={this.state.inverted}
-						onChange={this.handleChangeInvert}
-					/>
 				</div>
-				<div id="glyphcont" />
-				<button type="button" onClick={() => this.drawPrev()}>
-					Previous
-				</button>
 				<button type="button" onClick={() => this.drawNext()}>
-					Next
+						Next
 				</button>
-				<br />
-				<br/>
+					
+				<div id="glyphcont" className="grid grid-cols-10" />
+
 				{this.ShowCredits()}
 			</div>
 		)

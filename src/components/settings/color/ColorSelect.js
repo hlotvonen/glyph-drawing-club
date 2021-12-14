@@ -1,70 +1,60 @@
-import React, { Component } from "react"
-import { observer } from "mobx-react"
 import { action } from "mobx"
-import colorStore from "../../../models/ColorStore"
+import { observer } from "mobx-react"
+import React, { Component } from "react"
 import store from "../../../models/CanvasStore"
+import colorStore from "../../../models/ColorStore"
 import ColorPalette from "./ColorPalette"
-import ColorSliders from "./ColorSliders"
 import ColorPaletteSelect from "./ColorPaletteSelect"
 import ColorPresetSelect from "./ColorPresetSelect"
+import ColorSliders from "./ColorSliders"
 
 
 @observer
 class ColorSelect extends Component {
 
 	constructor(props) {
-		super(props);
+		super(props)
 		this.state = {
 			fromIndex: 0,
 			toIndex: 1,
-		};
-		this.handleRecolorChange = this.handleRecolorChange.bind(this);
-		this.handleRecolorSubmit = this.handleRecolorSubmit.bind(this);
+		}
+		this.handleRecolorChange = this.handleRecolorChange.bind(this)
+		this.handleRecolorSubmit = this.handleRecolorSubmit.bind(this)
 	}
 
 	handleRecolorChange(e) {
-		const name = e.target.name;
-		e.target.value = e.target.value > 255 ? 255 : e.target.value < 0 ? 0 : e.target.value;
+		const name = e.target.name
+		e.target.value = e.target.value > 255 ? 255 : e.target.value < 0 ? 0 : e.target.value
 		this.setState({ [name]: e.target.value })
 	}
 
 	handleRecolorSubmit(e) {
 		store.swapColorIndexes(this.state.fromIndex, this.state.toIndex)
-		e.preventDefault();
+		e.preventDefault()
 	}
 
 	render() {
 
 		return (
-			<div>
-				<h3>Color tools</h3>
-				<button onClick={() => store.linetest()}>linetest</button>
-				{"Coloring brush: "}
-				{"FG"}
-				<input
-					type="checkbox"
-					value={colorStore.coloringModeFg}
-					onChange={action(() => colorStore.coloringModeFg = !colorStore.coloringModeFg)}
-				/>{" BG"}
-				<input
-					type="checkbox"
-					value={colorStore.coloringModeBg}
-					onChange={action(() => colorStore.coloringModeBg = !colorStore.coloringModeBg)}
-				/>
-				<br />
-				
+			<div>				
 				<ColorPresetSelect />
-				<br />
-				<h3>Palette(s)</h3>
+				<div className="settings-header mt-2 flex justify-between">
+					<span>PALETTES</span>
+					<div className="relative">
+						<input
+							type="checkbox"
+							name="usedcolors"
+							checked={colorStore.showUsedColors}
+							value={colorStore.showUsedColors}
+							onChange={action(() => colorStore.showUsedColors = !colorStore.showUsedColors)}
+						/>
+						<label htmlFor="usedcolors">Show only used colors</label>
+					</div>
+				</div>
 				<ColorPaletteSelect />
 
 				<div className="paletteContainer">
-					{"Show only used colors:"}
-					<input
-						type="checkbox"
-						value={colorStore.showUsedColors}
-						onChange={action(() => colorStore.showUsedColors = !colorStore.showUsedColors)}
-					/>
+
 					<ColorPalette />
 				</div>
 
@@ -79,10 +69,8 @@ class ColorSelect extends Component {
 				<button onClick={() => colorStore.magicRange()}>magicRange</button>
 
 
-				<br />
-
+				<div className="settings-header mt-2">Recolor (assign new color index)</div>
 				<div className="cohesiveColors flex">
-					<h3>Recolor (assign new color index)</h3>
 					<form onSubmit={this.handleRecolorSubmit}>
 						<label>
 						From:
@@ -95,7 +83,7 @@ class ColorSelect extends Component {
 								type="number"
 								min="0"
 								max="255"
-								/>
+							/>
 						</label>
 						<label>
 						To:
@@ -108,7 +96,7 @@ class ColorSelect extends Component {
 								onChange={this.handleRecolorChange}
 								onFocus={() => store.toggleWriting()}
 								onBlur={() => store.toggleWriting()}
-								/>
+							/>
 						</label>
 						<input type="submit" value="Recolor" />
 					</form>

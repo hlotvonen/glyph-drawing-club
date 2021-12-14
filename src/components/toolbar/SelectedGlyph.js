@@ -1,7 +1,7 @@
+import { observer } from "mobx-react"
 import React from "react"
 import colorStore from "../../models/ColorStore"
 import { colorBlend } from "../../utils/colorConversion"
-import { observer } from "mobx-react"
 
 const SelectedGlyph = observer((props) => {
 
@@ -20,33 +20,35 @@ const SelectedGlyph = observer((props) => {
 			style={{
 				backgroundColor: `rgb(${props.showBg && bgColor})`,
 			}}
-			width={ '100%'}
-			height={'100%'}
+			width={ "100%"}
+			height={"100%"}
 		>
 			<g
 				transform={`
-				${/*centering when glyph is flipped: */''}
+				scale(${(Number(props.defaultFontSize) + props.glyphFontSizeModifier) / Number(props.defaultFontSize)})
+				
+				${/*centering when glyph is flipped: */""}
 				translate(
 					${800 + (props.flipGlyph == 1 ? -800 : 0)} 
 					800
 				)
-				${/*flip: */''} 
+				${/*flip: */""} 
 				scale(
 					${props.flipGlyph * 800 / (props.svgHeight == 1 ? 800 : props.svgHeight)} 
 					${-1 * 800 / (props.svgHeight == 1 ? 800 : props.svgHeight)}
 				)
-				${/*rotate: */''} 
+				${/*rotate: */""} 
 				rotate(
 					${props.rotationAmount} 
 					${(props.svgHeight == 1 ? 800 : props.svgHeight) / 2} 
 					${(props.svgHeight == 1 ? 800 : props.svgHeight) / 2}) 
-				${/*baseline adjustment:*/''} 
+				${/*baseline adjustment:*/""} 
 				translate(
 					0 
 					${-props.svgBaseline}
 				)
 			`
-			}>
+				}>
 				<path
 					d={props.glyphInvertedShape ? `M0 0 v${props.svgHeight} h${props.svgWidth} V0 H0 z ${props.glyphPath}` : props.glyphPath}
 					fill={`rgb(${colorBlend(colorStore.palettes[colorStore.selectedPaletteIndex].colors[props.colorIndex], colorStore.cohesionOverlayColor, colorStore.cohesionIntensity)})`}

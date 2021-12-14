@@ -1,29 +1,28 @@
-import React from "react"
 import { observer } from "mobx-react"
+import React from "react"
+import { Tab, TabList, TabPanel, Tabs } from "react-tabs"
 import store from "../../models/CanvasStore"
-import CanvasSizeModification from "./CanvasSizeModification"
-import CellWidth from "./CellWidth"
-import CellHeight from "./CellHeight"
-import FontSize from "./FontSize"
-import GlyphSelect from "./glyphs/GlyphSelect"
-import HideGrid from "../toolbar/HideGrid"
-import KeyMappings from "../KeyMappings"
-import SelectedGlyph from "../toolbar/SelectedGlyph"
-import ExportButtons from "./ExportButtons"
-import SaveAsButton from "./SaveAsButton"
-import LoadButton from "./LoadButton"
-import LoadAndPlace from "./LoadAndPlace"
-import EmptyCanvas from "./EmptyCanvas"
-import TypingMode from "../toolbar/TypingMode"
-import PaintMode from "../toolbar/PaintMode"
-import HistoryControls from "../toolbar/HistoryControls"
-import GlyphOffset from "./GlyphOffset"
-import GlyphFontSizeModifier from "./GlyphFontSizeModifier"
-import GlyphClear from "./GlyphClear"
-import CanvasSizeInMillimeters from "./CanvasSizeInMillimeters"
 import LayerSelect from "../LayerSelect"
+import HideGrid from "../toolbar/HideGrid"
+import HistoryControls from "../toolbar/HistoryControls"
+import PaintMode from "../toolbar/PaintMode"
+import TypingMode from "../toolbar/TypingMode"
+import CanvasSizeInMillimeters from "./CanvasSizeInMillimeters"
+import CanvasSizeModification from "./CanvasSizeModification"
+import CellHeight from "./CellHeight"
+import CellWidth from "./CellWidth"
 import ColorSelect from "./color/ColorSelect"
-import { Tab, Tabs, TabList, TabPanel } from "react-tabs"
+import EmptyCanvas from "./EmptyCanvas"
+import ExportButtons from "./ExportButtons"
+import FontSize from "./FontSize"
+import GlyphClear from "./GlyphClear"
+import GlyphFontSizeModifier from "./GlyphFontSizeModifier"
+import GlyphOffset from "./GlyphOffset"
+import GlyphSelect from "./glyphs/GlyphSelect"
+import KeyMappings from "./keymapping/KeyMappings"
+import LoadAndPlace from "./LoadAndPlace"
+import LoadButton from "./LoadButton"
+import SaveAsButton from "./SaveAsButton"
 
 @observer
 class Settings extends React.Component {
@@ -38,7 +37,7 @@ class Settings extends React.Component {
 		}
 
 		return (
-			<div className="controls_container bg-gray">
+			<div className="controls_container">
 				<Tabs forceRenderTabPanel={true} defaultIndex={0}>
 					<TabList>
 						<Tab>Glyphs</Tab>
@@ -49,30 +48,20 @@ class Settings extends React.Component {
 					</TabList>
 
 					<TabPanel>
-						<h3>Glyph sets</h3>
 						<KeyMappings />
 
-						<h3>Select Layer</h3>
 						<LayerSelect />
 
 						<GlyphSelect />
 
-						<h3>Modes & Tools</h3>
+						<div className="settings-header">
+							MODES & OTHER TOOLS
+						</div>
 						<HistoryControls />
-						<TypingMode
-							typingMode={store.typingMode}
-							handleChangeTypingMode={store.handleChangeTypingMode}
-						/>
-						<PaintMode
-							paintMode={store.paintMode}
-							handleChangePaintMode={store.handleChangePaintMode}
-						/>
-						<HideGrid
-							hideGrid={store.hideGrid}
-							handleChangeHideGrid={store.handleChangeHideGrid}
-						/>
+						<TypingMode/>
+						<PaintMode />
+						<HideGrid />
 
-						<h3>Glyph fine tuning</h3>
 						<GlyphFontSizeModifier />
 						<GlyphOffset />
 						<GlyphClear glyphClear={store.glyphClear} resetOffset={store.resetOffset}/>
@@ -83,14 +72,20 @@ class Settings extends React.Component {
 					</TabPanel>
 
 					<TabPanel>
-						<h3>Canvas size</h3>
+						<div className="settings-header">
+							CANVAS SIZE
+						</div>
 						<CanvasSizeModification />
 						<EmptyCanvas />
 
-						<h3>Canvas size in millimeters</h3>
+						<div className="settings-header">
+							Canvas size in millimeters
+						</div>
 						<CanvasSizeInMillimeters />
 
-						<h3>Cell size</h3>
+						<div className="settings-header">
+							Cell size
+						</div>
 						<CellWidth />
 						<CellHeight />
 						<FontSize
@@ -103,7 +98,9 @@ class Settings extends React.Component {
 					</TabPanel>
 
 					<TabPanel>
-						<h3>Save / Load</h3>
+						<div className="settings-header">
+							SAVE / LOAD
+						</div>
 						<SaveAsButton
 							fileName={store.fileName}
 							updateFileName={store.updateFileName}
@@ -111,138 +108,118 @@ class Settings extends React.Component {
 
 						<LoadButton />
 						<LoadAndPlace />
-						<h3>Export</h3>
+						<div className="settings-header mt-2">
+							EXPORT
+						</div>
 						<ExportButtons
 							exportSizeMultiplier={store.exportSizeMultiplier}
 							updateExportSizeMultiplier={store.updateExportSizeMultiplier}
 						/>
-						<hr />
-						<h3>License:</h3>
+						<div className="settings-header mt-2">
+							LICENCE:
+						</div>
 						<p>
 							You are free to use anything you make with GlyphDrawingClub
 							anywhere (private or commercial), without credits or licensing
 							info.
 						</p>
-						<h3>Community links & project development:</h3>
+						
+						<div className="settings-header mt-2">
+							Community links & project development:
+						</div>
 						<a
 							href="https://github.com/hlotvonen/glyph-drawing-club"
-							target="_blank"
+							target="_blank" rel="noreferrer"
 						>
 							Github
 						</a>
 						<br />
 						<br />
-						<a href="https://www.instagram.com/heikkiveikko/" target="_blank">
+						<a href="https://www.instagram.com/heikkiveikko/" target="_blank" rel="noreferrer">
 							Instagram for examples & development updates
 						</a>
 						<br />
 						<br />
-						<a href="https://blog.glyphdrawing.club/" target="_blank">
+						<a href="https://blog.glyphdrawing.club/" target="_blank" rel="noreferrer">
 							Glyph Drawing Club blog
 						</a>
 						<br />
 						<br />
-						<a href="https://discord.gg/gJNDZ2M" target="_blank">
+						<a href="https://discord.gg/gJNDZ2M" target="_blank" rel="noreferrer">
 							Glyph Drawing Club discord channel for sharing, help, inspiration, community etc! Join now :)
 						</a>
 					</TabPanel>
 
 					<TabPanel>
-						<h3>Basic tutorial</h3>
+						<div className="settings-header">BASICS</div>
 						<ol className="instructions">
 							<li>
-								Select the <span className="hotkey">Draw</span> tab from the
+								Select the <kbd>Draw</kbd> tab from the
 								sidebar
 							</li>
 							<li>
-								<span className="hotkey">Click</span> on any glyph under Glyph
-								selection.
+								<kbd>Click</kbd> on any shape/letter under GLYPHS.
 							</li>
 							<li>
-								Press <span className="hotkey">q</span> to draw.
+								Press <kbd>q</kbd> to draw.
 							</li>
 							<li>
-								Move around the canvas with{" "}
-								<span className="hotkey">arrow keys</span>.
+								Move around the canvas with <kbd>arrow keys</kbd>.
 							</li>
 							<li>
-								Press <span className="hotkey">f</span> to flip,{" "}
-								<span className="hotkey">r</span> to rotate or{" "}
-								<span className="hotkey">i</span> to invert a glyph.
+								Press <kbd>f</kbd> to flip, <kbd>r</kbd> to rotate or <kbd>i</kbd> to invert a glyph.
 							</li>
 						</ol>
-						<em>
-							Glyph Drawing Club is meant to be used with the keyboard, so check
-							out all the shortcuts below!
-						</em>
 
-						<h3>Complete tutorial</h3>
+						<div className="settings-header mt-2">COMPLETE REFERENCE</div>
 						<p>
 							You can find a complete tutorial & more at the{" "}
 							<a
 								href="https://blog.glyphdrawing.club/usage-tutorial-for-glyph-drawing-club"
-								target="_blank"
+								target="_blank" rel="noreferrer"
 							>
 								Glyph Drawing Club Blog
 							</a>
 						</p>
 
-						<h3>Keyboard Shortcuts</h3>
+						<div className="settings-header mt-2">KEYBOARD SHORTCUTS</div>
 						<h4>Move</h4>
 						<table>
 							<tbody>
 								<tr>
-									<td>Arrow keys or WASD</td>
+									<td><kbd>Arrow keys or WASD</kbd></td>
 									<td>Move</td>
 								</tr>
 								<tr>
-									<td>Alt+Arrow keys</td>
+									<td><kbd>Alt+Arrow keys</kbd></td>
 									<td>Quickly move around the canvas</td>
 								</tr>
 							</tbody>
 						</table>
 
 						<h4>Draw</h4>
-						<em>Hold down CTRL if you want to affect all layers</em>
+						<em>Hold down <kbd>CTRL</kbd> if you want to affect all layers</em>
 						<table>
 							<tbody>
 								<tr>
-									<td>q</td>
+									<td><kbd>q</kbd></td>
 									<td>Draw (Place selected glyph)</td>
 								</tr>
 								<tr>
-									<td>e or space</td>
+									<td><kbd>e</kbd> or <kbd>space</kbd></td>
 									<td>Delete</td>
 								</tr>
 								<tr>
-									<td>r</td>
+									<td><kbd>r</kbd></td>
 									<td>Rotate</td>
 								</tr>
 								<tr>
-									<td>f</td>
+									<td><kbd>f</kbd></td>
 									<td>Flip</td>
 								</tr>
 								<tr>
-									<td>i</td>
+									<td><kbd>i</kbd></td>
 									<td>Invert</td>
-								</tr>
-							</tbody>
-						</table>
-
-						<h4>Make glyph sets</h4>
-						<table>
-							<tbody>
-								<tr>
-									<td>m</td>
-									<td>Start mapping glyph sets. Press again to end mapping.</td>
-								</tr>
-								<tr>
-									<td>Number keys 1–10</td>
-									<td>Add selected glyph to set (when mapping is on)</td>
-								</tr>
-								<tr>
-									<td>Number keys 1–10</td>
-									<td>Insert glyph from set (when mapping is off)</td>
 								</tr>
 							</tbody>
 						</table>
@@ -251,107 +228,105 @@ class Settings extends React.Component {
 						<table>
 							<tbody>
 								<tr>
-									<td>Cmd/Ctrl+z</td>
+									<td><kbd>Cmd/Ctrl+z</kbd></td>
 									<td>Undo</td>
 								</tr>
 								<tr>
-									<td>Cmd/Ctrl+Shift+z</td>
+									<td><kbd>Cmd/Ctrl+Shift+z</kbd></td>
 									<td>Redo</td>
 								</tr>
 								<tr>
-									<td>h</td>
+									<td><kbd>h</kbd></td>
 									<td>Hide Grid</td>
 								</tr>
 								<tr>
-									<td>(hold) p</td>
+									<td>(hold) <kbd>p</kbd></td>
 									<td>Preview</td>
 								</tr>
 								<tr>
-									<td>c</td>
+									<td><kbd>c</kbd></td>
 									<td>Copy current glyph</td>
 								</tr>
 							</tbody>
 						</table>
 
 						<h4>Area selection</h4>
-						<em>Hold down CTRL if you want to affect all layers</em>
+						<em>Hold down <kbd>CTRL</kbd> if you want to affect all layers</em>
 						<table>
 							<tbody>
 								<tr>
-									<td>Shift + s</td>
+									<td><kbd>Shift + s</kbd></td>
 									<td>
-										Start selection area. Use arrows keys to change the
-										selection area. Press Shift + s again to lock selection area
+										Start selection area. Use <kbd>arrows keys</kbd> to change the
+										selection area. Press <kbd>Shift + s</kbd> again to lock selection area
 									</td>
 								</tr>
 								<tr>
-									<td>Shift + d</td>
+									<td><kbd>Shift + d</kbd></td>
 									<td>Deselect area</td>
 								</tr>
 								<tr>
-									<td>Shift + a</td>
+									<td><kbd>Shift + a</kbd></td>
 									<td>Select all</td>
 								</tr>
 								<tr>
-									<td>Shift + c</td>
+									<td><kbd>Shift + c</kbd></td>
 									<td>Paste selected area</td>
 								</tr>
 								<tr>
-									<td>Shift + m</td>
+									<td><kbd>Shift + m</kbd></td>
 									<td>Mirror selected area</td>
 								</tr>
 								<tr>
-									<td>Shift + f</td>
+									<td><kbd>Shift + f</kbd></td>
 									<td>Flip selected area</td>
 								</tr>
 								<tr>
-									<td>Shift + q</td>
+									<td><kbd>Shift + q</kbd></td>
 									<td>Fill selected area with selected glyph</td>
 								</tr>
 								<tr>
-									<td>Shift + e</td>
+									<td><kbd>Shift + e</kbd></td>
 									<td>Empty selected area</td>
 								</tr>
 								<tr>
-									<td>Shift + i</td>
+									<td><kbd>Shift + i</kbd></td>
 									<td>Invert the colors of selected area</td>
 								</tr>
 								<tr>
-									<td>Shift + y</td>
+									<td><kbd>Shift + y</kbd></td>
 									<td>Rotate glyphs individually in selected area</td>
 								</tr>
 								<tr>
-									<td>Shift + u</td>
+									<td><kbd>Shift + u</kbd></td>
 									<td>Flip glyphs individually in selected area</td>
 								</tr>
 								<tr>
-									<td>Shift + r</td>
+									<td><kbd>Shift + r</kbd></td>
 									<td>
-										Rotate selected area. Selection area has to be square (same
-										amount of cells width & height)
+										Rotate selected area. Selection area has to be square
 									</td>
 								</tr>
 								<tr>
-									<td>Shift + t</td>
+									<td><kbd>Shift + t</kbd></td>
 									<td>
 										Transpose selected area. Selection area has to be square
-										(same amount of cells width & height)
 									</td>
 								</tr>
 								<tr>
-									<td>Shift + h</td>
+									<td><kbd>Shift + h</kbd></td>
 									<td>Move selected area left</td>
 								</tr>
 								<tr>
-									<td>Shift + j</td>
+									<td><kbd>Shift + j</kbd></td>
 									<td>Move selected area down</td>
 								</tr>
 								<tr>
-									<td>Shift + k</td>
+									<td><kbd>Shift + k</kbd></td>
 									<td>Move selected area up</td>
 								</tr>
 								<tr>
-									<td>Shift + l</td>
+									<td><kbd>Shift + l</kbd></td>
 									<td>Move selected area right</td>
 								</tr>
 							</tbody>
@@ -361,23 +336,23 @@ class Settings extends React.Component {
 						<table>
 							<tbody>
 								<tr>
-									<td>x</td>
+									<td><kbd>x</kbd></td>
 									<td>Color palette quick access</td>
 								</tr>
 								<tr>
-									<td>v</td>
+									<td><kbd>v</kbd></td>
 									<td>Color foreground</td>
 								</tr>
 								<tr>
-									<td>b</td>
+									<td><kbd>b</kbd></td>
 									<td>Color background</td>
 								</tr>
 								<tr>
-									<td>Shift + v</td>
+									<td><kbd>Shift + v</kbd></td>
 									<td>Color selected area foreground</td>
 								</tr>
 								<tr>
-									<td>Shift + b</td>
+									<td><kbd>Shift + b</kbd></td>
 									<td>Color selected area background</td>
 								</tr>
 							</tbody>

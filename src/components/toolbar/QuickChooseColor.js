@@ -1,5 +1,5 @@
-import React, { Component } from "react"
 import { observer } from "mobx-react"
+import React, { Component } from "react"
 import store from "../../models/CanvasStore"
 import ColorPalette from "../settings/color/ColorPalette"
 
@@ -11,10 +11,10 @@ class QuickChooseColor extends Component {
 		if(store.toggleQuickChooseColor) {
 			return (
 				<div className="quickChooseColor">
-                    <div className="paletteContainer">
+					<div className="paletteContainer">
 					    <ColorPalette />
-                    </div>
-                </div>
+					</div>
+				</div>
 			)
 		} else {
 			return (

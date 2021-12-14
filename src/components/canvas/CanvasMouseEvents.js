@@ -1,22 +1,22 @@
+import { observer } from "mobx-react"
 import React from "react"
 import eventstore from "../../models/EventStore"
-import { observer } from "mobx-react"
 
 
 class CanvasMouseEvents extends React.Component {
 	constructor(props) {
-		super(props);
+		super(props)
 
 		// This binding is necessary to make `this` work in the callback
-		this.handleClick = this.handleClick.bind(this);
-		this.handleMouseMove = this.handleMouseMove.bind(this);
-		this.handleMouseDown = this.handleMouseDown.bind(this);
-		this.handleMouseUp = this.handleMouseUp.bind(this);
-		this.handleMouseEnter = this.handleMouseEnter.bind(this);
-		this.handleMouseLeave = this.handleMouseLeave.bind(this);
-		this.handleRightClick = this.handleRightClick.bind(this);
+		this.handleClick = this.handleClick.bind(this)
+		this.handleMouseMove = this.handleMouseMove.bind(this)
+		this.handleMouseDown = this.handleMouseDown.bind(this)
+		this.handleMouseUp = this.handleMouseUp.bind(this)
+		this.handleMouseEnter = this.handleMouseEnter.bind(this)
+		this.handleMouseLeave = this.handleMouseLeave.bind(this)
+		this.handleRightClick = this.handleRightClick.bind(this)
 
-		this.ref = React.createRef();
+		this.ref = React.createRef()
 
 	}
 	
@@ -74,7 +74,7 @@ class CanvasMouseEvents extends React.Component {
 				onMouseUp={this.handleMouseUp}
 				onContextMenu={this.handleRightClick}
 			/>
-		);
+		)
 	}
 }
 

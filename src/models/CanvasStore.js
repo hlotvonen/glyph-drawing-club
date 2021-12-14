@@ -1,10 +1,9 @@
-import { action, observable, computed, autorun, toJS, configure, makeAutoObservable, runInAction, reaction, spy } from "mobx"
-import colorstore from "./ColorStore"
-import eventstore from "./EventStore"
-import { getBoundingRectangle } from "../utils/geometry"
-import { getOS } from "../utils/detectOs"
 import localforage from "localforage"
+import { action, autorun, computed, configure, makeAutoObservable, observable, reaction, runInAction, toJS } from "mobx"
+import { getOS } from "../utils/detectOs"
+import { getBoundingRectangle } from "../utils/geometry"
 import { bresenham } from "../utils/utils"
+import colorstore from "./ColorStore"
 
 configure({ enforceActions: "observed" })
 
@@ -55,8 +54,8 @@ class CanvasStore {
 			.catch((err) => {
 				// This code runs if there were any errors
 				this.createEmptyCanvas()
-				console.log(err);
-			});
+				console.log(err)
+			})
 
 
 		autorun(() => {
@@ -136,7 +135,7 @@ class CanvasStore {
 	@observable
 	selectedLayer = 0
 	@observable
-	hiddenLayers = [null, null, null, null]
+	hiddenLayers = [false, false, false, false]
 
 	//SELECTION AREA
 	@observable
@@ -460,12 +459,12 @@ class CanvasStore {
 		this.glyphClear()
 	}
 	@action
-	toggleWriting = () => {
-		this.disableShortcuts = !this.disableShortcuts
-	}
-	@action
 	handleChangePaintMode = () => {
 		this.paintMode = !this.paintMode
+	}
+	@action
+	toggleWriting = () => {
+		this.disableShortcuts = !this.disableShortcuts
 	}
 	@action
 	showPreview = () => {
@@ -493,8 +492,8 @@ class CanvasStore {
 		this.toggleQuickChooseColor = false
 	}
 	@action
-	layerSelect = event => {
-		this.selectedLayer = Number(event.target.value)
+	layerSelect = layer => {
+		this.selectedLayer = layer
 	}
 	@action
 	selectLayer = (direction) => {
@@ -513,18 +512,14 @@ class CanvasStore {
 		}
 	}
 	@action
-	hideLayer = event => {
-		if (this.hiddenLayers[event.target.value] == event.target.value) {
-			this.hiddenLayers[event.target.value] = null
-		} else {
-			this.hiddenLayers[event.target.value] = event.target.value
-		}
+	hideLayer = layer => {
+		this.hiddenLayers[layer] = !this.hiddenLayers[layer]
 	}
 	@action
 	switchLayersUp = event => {
 		// Shift + R
 		if (!this.selectionArea.start) {
-			;[
+			[
 				this.currentGlyph[Number(event.target.value)],
 				this.currentGlyph[Number(event.target.value) + 1],
 			] = [
@@ -535,7 +530,7 @@ class CanvasStore {
 			const [[start_y, start_x], [end_y, end_x]] = this.getSelectedArea()
 			for (let y_i = start_y; y_i <= end_y; y_i++) {
 				for (let x_i = start_x; x_i <= end_x; x_i++) {
-					;[
+					[
 						this.canvas[y_i][x_i][Number(event.target.value)],
 						this.canvas[y_i][x_i][Number(event.target.value) + 1],
 					] = [
@@ -549,7 +544,7 @@ class CanvasStore {
 	@action
 	switchLayersDown = event => {
 		if (!this.selectionArea.start) {
-			;[
+			[
 				this.currentGlyph[Number(event.target.value)],
 				this.currentGlyph[Number(event.target.value) - 1],
 			] = [
@@ -560,7 +555,7 @@ class CanvasStore {
 			const [[start_y, start_x], [end_y, end_x]] = this.getSelectedArea()
 			for (let y_i = start_y; y_i <= end_y; y_i++) {
 				for (let x_i = start_x; x_i <= end_x; x_i++) {
-					;[
+					[
 						this.canvas[y_i][x_i][Number(event.target.value)],
 						this.canvas[y_i][x_i][Number(event.target.value) - 1],
 					] = [
@@ -822,7 +817,7 @@ class CanvasStore {
 	}
 	@action
 	pencil = (x, y, old_x, old_y) => {
-		const self = this;
+		const self = this
 		bresenham(old_x, old_y, x, y, function (x, y) {
 			if (self.shiftDown) {
 				self.perfectPixels(x, y)
@@ -845,13 +840,13 @@ class CanvasStore {
 		if (Math.abs(x - this.lastDrawn.x) > 1 || Math.abs(y - this.lastDrawn.y) > 1) {
 			this.insertXY(this.waitingPixel.x, this.waitingPixel.y)
 			//update queue
-			this.lastDrawn.x = this.waitingPixel.x;
-			this.lastDrawn.y = this.waitingPixel.y;
-			this.waitingPixel.x = x;
-			this.waitingPixel.y = y;
+			this.lastDrawn.x = this.waitingPixel.x
+			this.lastDrawn.y = this.waitingPixel.y
+			this.waitingPixel.x = x
+			this.waitingPixel.y = y
 		} else {
-			this.waitingPixel.x = x;
-			this.waitingPixel.y = y;
+			this.waitingPixel.x = x
+			this.waitingPixel.y = y
 		}
 	}
 

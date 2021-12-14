@@ -1,5 +1,5 @@
-import React from "react"
 import { observer } from "mobx-react"
+import React from "react"
 import store from "../../models/CanvasStore.js"
 
 class CanvasHeight extends React.Component {
@@ -8,24 +8,26 @@ class CanvasHeight extends React.Component {
 			<div>
 
 				<div className="settingsBlock">
-					{"Canvas height:"}
-					<button onClick={store.deleteRow}> {"-1"} </button>
-					<button onClick={store.addRow}> {"+1"} </button>
-					<span>
-						{store.canvasHeight} {"cells"} ({store.cellHeight * store.canvasHeight} px)
-					</span>
-					<br />
-					{"Canvas width:"}
+
+					<div>Canvas width:</div>
 					<button onClick={store.deleteCol}> {"-1"} </button>
 					<button onClick={store.addCol}> {"+1"} </button>
 					<span>
-						{store.canvasWidth} {"cells"} ({store.cellWidth * store.canvasWidth} px)
+						{" "} {store.canvasWidth} {"columns"} ({store.cellWidth * store.canvasWidth} px)
 					</span>
-					<br />
+
+
+					<div className="mt-1">Canvas height:</div>
+					<button onClick={store.deleteRow}> {"- 1"} </button>
+					<button onClick={store.addRow}> {"+ 1"} </button>
+					<span>
+						{" "} {store.canvasHeight} {"rows"} ({store.cellHeight * store.canvasHeight} px)
+					</span>
+
 				</div>
 
 				<div className="settingsBlock">
-					{"At selection:"}
+					{"At red cursor:"}
 					<br />
 					<button onClick={store.addRowAtSelection}>
 						{"Add Row \u2191"}

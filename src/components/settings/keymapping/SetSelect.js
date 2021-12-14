@@ -1,6 +1,6 @@
-import React from "react"
 import { observer } from "mobx-react"
-import setstore from "../models/KeymappingsStore"
+import React from "react"
+import setstore from "../../../models/KeymappingsStore"
 
 class SetSelect extends React.Component {
 	render() {
@@ -23,20 +23,25 @@ class SetSelect extends React.Component {
 				key={x}
 				onClick={() => this.props.selectSet(x)}
 			>
-				{x + 1}
+				{Number(x + 1)}
 			</button>
 		))
 
 		return (
 			<div className="select_set">
-				<button type="button" onClick={this.props.addSet}>
-					Add
-				</button>
-				<button type="button" onClick={this.props.deleteSet}>
-					Delete
-				</button>
-				{"Select: "}
-				{selectSetButtons}
+				<div className="flex justify-between w-full">
+					<div>
+						{selectSetButtons}
+					</div>
+					<div>
+						<button type="button" onClick={this.props.addSet}>
+						Add
+						</button>
+						<button type="button" onClick={this.props.deleteSet}>
+						Delete
+						</button>
+					</div>
+				</div>
 			</div>
 		)
 	}

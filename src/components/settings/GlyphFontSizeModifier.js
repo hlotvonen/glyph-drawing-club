@@ -1,12 +1,12 @@
-import React from "react"
 import { observer } from "mobx-react"
+import React from "react"
 import store from "../../models/CanvasStore.js"
 
 class GlyphFontSize extends React.Component {
 	render() {
 		return (
 			<div>
-				{"Glyph size modifier:"}
+				<div className="settings-header mt-2">GLYPH SIZE MODIFIER</div>
 				<button onClick={store.decreaseGlyphFontSizeModifier}>
 					{"-1"}
 				</button>
@@ -19,7 +19,7 @@ class GlyphFontSize extends React.Component {
 				<button onClick={store.increaseByOneCellGlyphFontSizeModifier}>
 					{"+" + store.defaultFontSize}
 				</button>
-				<span>{store.glyphFontSizeModifier} px</span>
+				<span className="ml-1">{store.glyphFontSizeModifier} px </span>
 			</div>
 		)
 	}

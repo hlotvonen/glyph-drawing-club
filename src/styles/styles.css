@@ -1,43 +1,569 @@
 @import "tailwindcss/base";
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
+@import "./98.css";
 
-@layer base {
-    @font-face {
-        font-family: 'Sans09';
-        src: url('../../assets/fonts/Sans09.woff') format('woff2'),
-            url('../../assets/fonts/Sans09.woff2') format('woff');
-        font-weight: normal;
-        font-style: normal;
-        font-display: swap;
-    }
-    :root {
-        --white: #cbd1be;
-        --black: #160712;
-        --primary1: #8f9389;
-        --primary2: #52534c;
-        --primary3: #26201d;
-        --primary4: #e0a46e;
-        --primary5: #91a47a;
-        --primary6: #5d7643;
-        --primary7: #4d533a;
-        --primary8: #a93130;
-        --primary9: #7a1338;
-        --primary10: #834664;
-        --primary11: #917692;
-        --primary12: #593084;
-        --primary13: #3870be;
-        --primary14: #579fb4;
-    }
-}
 @layer utilities {
-    .noselect {
-        -webkit-touch-callout: none; /* iOS Safari */
-          -webkit-user-select: none; /* Safari */
-           -khtml-user-select: none; /* Konqueror HTML */
-             -moz-user-select: none; /* Old versions of Firefox */
-              -ms-user-select: none; /* Internet Explorer/Edge */
-                  user-select: none; /* Non-prefixed version, currently
-                                        supported by Chrome, Edge, Opera and Firefox */
-    }
+	.noselect {
+		-webkit-touch-callout: none; /* iOS Safari */
+		-webkit-user-select: none; /* Safari */
+		-khtml-user-select: none; /* Konqueror HTML */
+		-moz-user-select: none; /* Old versions of Firefox */
+		-ms-user-select: none; /* Internet Explorer/Edge */
+		user-select: none; /* Non-prefixed version, currently supported by Chrome, Edge, Opera and Firefox */
+	}
+}
+@layer base {
+	/* ~~~~~~~~~~~~~~~~~~~~~
+document lvl
+~~~~~~~~~~~~~~~~~~~~~ */
+
+	/* ~~~~~~~~~~~~~~~~~~~~~
+top wrapper
+~~~~~~~~~~~~~~~~~~~~~ */
+	.fullscreen {
+		height: 100%;
+		width: 100%;
+		display: flex;
+		background-color: #ddd;
+	}
+	/* ~~~~~~~~~~~~~~~~~~~~~
+canvas & grid
+~~~~~~~~~~~~~~~~~~~~~ */
+	.aligner {
+		display: flex;
+		flex: 1;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		overflow: hidden;
+		position: relative;
+		background-color: #ddd;
+	}
+	#canvas.grid {
+		background: white;
+		position: absolute;
+	}
+	.gridBg {
+		background: white;
+	}
+	.gridBg,
+	.gridFg {
+		position: absolute;
+		top: 0;
+		left: 0;
+	}
+	.UiGrid {
+		position: absolute;
+		top: 0;
+		left: 0;
+		pointer-events: none;
+		opacity: 0.5;
+		z-index: 100;
+	}
+	.UiLayer {
+		position: absolute;
+		top: 0;
+		left: 0;
+		pointer-events: none;
+	}
+	kbd {
+		background-color: #eee;
+		border-radius: 3px;
+		border: 1px solid #b4b4b4;
+		box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2),
+			0 2px 0 0 rgba(255, 255, 255, 0.7) inset;
+		color: #333;
+		display: inline-block;
+		font-size: 0.85em;
+		font-weight: 700;
+		line-height: 1;
+		padding: 2px 4px;
+		white-space: nowrap;
+		margin: 0 2px;
+	}
+	/* ~~~~~~~~~~~~~~~~~~~~~
+cells
+~~~~~~~~~~~~~~~~~~~~~ */
+	.row div {
+		display: inline-block;
+		vertical-align: top;
+		overflow: visible;
+		position: relative;
+	}
+	.row div svg {
+		position: absolute;
+		top: 0;
+		left: 0;
+		pointer-events: none;
+	}
+	.row div svg rect,
+	.row div svg path {
+		pointer-events: none;
+	}
+	/* ~~~~~~~~~~~~~~~~~~~~~
+grid numbers / cursor
+~~~~~~~~~~~~~~~~~~~~~ */
+
+	/* ~~~~~~~~~~~~~~~~~~~~~
+selection highlight
+~~~~~~~~~~~~~~~~~~~~~ */
+	.selectionHighlight {
+		top: 0;
+		left: 0;
+		position: absolute;
+		pointer-events: none;
+		background-image: linear-gradient(90deg, red 50%, transparent 50%),
+			linear-gradient(90deg, red 50%, transparent 50%),
+			linear-gradient(0deg, red 50%, transparent 50%),
+			linear-gradient(0deg, red 50%, transparent 50%);
+		background-repeat: repeat-x, repeat-x, repeat-y, repeat-y;
+		background-size: 15px 1px, 15px 1px, 1px 15px, 1px 15px;
+		background-position: left top, right bottom, left bottom, right top;
+		animation: border-dance 1s infinite linear;
+	}
+	@keyframes border-dance {
+		0% {
+			background-position: left top, right bottom, left bottom, right top;
+		}
+		100% {
+			background-position: left 15px top, right 15px bottom, left bottom 15px,
+				right top 15px;
+		}
+	}
+	.selectionHighlight.isSquare:after {
+		content: "s";
+		position: absolute;
+		bottom: 0;
+		right: 0;
+	}
+
+	/* ~~~~~~~~~~~~~~~~~~~~~
+coordinates
+~~~~~~~~~~~~~~~~~~~~~ */
+	.coordinates {
+		position: absolute;
+		top: 0;
+		right: 5px;
+		pointer-events: none;
+	}
+	/* ~~~~~~~~~~~~~~~~~~~~~
+colors
+~~~~~~~~~~~~~~~~~~~~~ */
+	.colorPalette {
+		display: flex;
+		flex-wrap: wrap;
+		background: #eee;
+		position: relative;
+		width: 400px;
+	}
+	.color {
+		float: left;
+		width: 25px;
+		height: 25px;
+		cursor: pointer;
+		font-size: 9px;
+	}
+	.selectedColor {
+		box-shadow: 0 0 0 1px rgba(0, 255, 0, 1);
+	}
+	.colorSliders {
+		margin-top: 10px;
+		display: flex;
+	}
+	.rgbSliders {
+		flex: 1;
+	}
+	.rgbSlider input[type="range"] {
+		-webkit-appearance: none;
+		outline: none;
+		border-radius: 10px;
+	}
+	.colorPreview {
+		width: 70px;
+		height: 70px;
+	}
+	.intensitySlider {
+		float: left;
+	}
+
+	/* ~~~~~~~~~~~~~~~~~~~~~
+grid move / zoom
+~~~~~~~~~~~~~~~~~~~~~ */
+	.grid_controls {
+		position: absolute;
+		bottom: 0;
+		right: 5px;
+		width: 70px;
+		height: 100px;
+	}
+	.grid_controls button {
+		width: 20px;
+		height: 20px;
+		padding: 0;
+		margin-right: 3px;
+		vertical-align: middle;
+		border: none;
+		background: #eee;
+		box-shadow: 0 0 0 1px rgba(0, 0, 0, 1);
+	}
+	.grid_controls button:hover {
+		transform: scale(1.1);
+	}
+	.grid_controls .zoom {
+		display: flex;
+		justify-content: flex-end;
+		margin-bottom: 5px;
+	}
+	.grid_controls .zoom button:first-child {
+		margin-right: 4px;
+	}
+	.grid_controls .move_y {
+		display: block;
+		margin: 3px auto;
+		width: 25px;
+	}
+
+	/* ~~~~~~~~~~~~~~~~~~~~~
+hide grid checked
+~~~~~~~~~~~~~~~~~~~~~ */
+	.hideGrid {
+		background: white;
+	}
+	.hideGrid .UiLayer {
+		display: none;
+	}
+
+	/* ~~~~~~~~~~~~~~~~~~~~~
+text styles
+~~~~~~~~~~~~~~~~~~~~~ */
+	ol.instructions {
+		list-style: initial;
+		list-style-type: decimal;
+		list-style-position: inside;
+		margin-top: 0;
+	}
+	ol li {
+		margin-top: 5px;
+	}
+	span.hotkey {
+		background: #eee;
+		padding: 2px;
+		border-radius: 5px;
+	}
+	#dropbox-response {
+		color: red;
+	}
+	h3 {
+		width: 100%;
+		padding: 0.5em;
+		margin: 1em 0 0.5em 0;
+		text-transform: uppercase;
+	}
+	h4 {
+		font-weight: bold;
+		margin: 1em 0 0.5em 0;
+	}
+	table,
+	tr {
+		width: 100%;
+	}
+	tr {
+		border-bottom: 1px dotted grey;
+	}
+	td {
+		padding-bottom: 2px;
+	}
+	table tr td {
+		width: 65%;
+	}
+	table tr td:first-child {
+		width: 35%;
+	}
+
+	/* ~~~~~~~~~~~~~~~~~~~~~
+controls
+~~~~~~~~~~~~~~~~~~~~~ */
+	.controls_container {
+		width: calc(400px + 25px);
+		padding: 5px;
+		overflow-y: scroll;
+		flex: none;
+		background-color: whitesmoke;
+	}
+	.control_component {
+		display: block;
+		margin-bottom: 0.5em;
+	}
+	.header {
+		width: 30%;
+		display: inline-block;
+	}
+
+	button:hover {
+		 border: 1px solid black;
+	}
+	button:active {
+		 background-color: #999999;
+	}
+
+	select,
+	input[type="text"] {
+		width: 300px;
+	}
+	select.shortinput,
+	input[type="text"].shortinput {
+		width: 140px;
+	}
+	.page_selection,
+	.control_inputs {
+		display: inline-block;
+	}
+	#page_select_input.input-error {
+		color: red;
+	}
+
+	#glyphcont img:hover {
+		box-shadow: inset 0 0 0 1px rgba(255, 0, 0, 1);
+		cursor: pointer;
+	}
+	.select_set button.active {
+		background-color: lime;
+	}
+	.settingsBlock {
+		padding-bottom: 1em;
+	}
+	.layerSelect {
+		display: flex;
+	}
+	.layerSelect div {
+		flex: 1;
+	}
+	/* ~~~~~~~~~~~~~~~~~~~~~
+Preview
+~~~~~~~~~~~~~~~~~~~~~ */
+	.preview {
+		display: block;
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100vw;
+		height: 100vh;
+		background: black;
+		z-index: 1000;
+		overflow: hidden;
+	}
+	.preview > div {
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		transform: translateX(-50%) translateY(-50%);
+		max-width: 100%;
+		max-height: 100%;
+	}
+	.preview svg {
+		overflow: visible;
+	}
+	/* ~~~~~~~~~~~~~~~~~~~~~
+QuickChooseColor
+~~~~~~~~~~~~~~~~~~~~~ */
+	.quickChooseColor {
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		z-index: 999;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+	}
+	.quickChooseColor .paletteContainer {
+		width: 400px;
+		box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.3);
+	}
+	/* ~~~~~~~~~~~~~~~~~~~~~
+keymappings bar
+~~~~~~~~~~~~~~~~~~~~~ */
+	.KeyMappingsBar {
+		width: 100%;
+		background: white;
+		display: flex;
+		box-sizing: border-box;
+		padding: 5px;
+	}
+	.KeyMappingsBar .Sets {
+		flex: 1;
+	}
+	.KeyMappingsContainer {
+		display: none;
+	}
+	.KeyMappingsFlexer {
+		display: flex;
+		flex-direction: row;
+	}
+	.KeyMappingsContainer .KeyMappingsFlexer div:first-child {
+		order: 1;
+	}
+	.KeyMappingsContainer.active {
+		display: block;
+	}
+	.KeyMappingsContainer .KeyMappingsFlexer > div {
+		text-align: center;
+		box-sizing: border-box;
+		width: 40px;
+		border: none;
+		display: inline-block;
+		position: relative;
+		overflow: visible;
+	}
+	.ToggleMapping,
+	.select_set,
+	.flex {
+		display: flex;
+		flex-wrap: wrap;
+	}
+
+	/* ~~~~~~~~~~~~~~~~~~~~~
+selected glyph in keymappings bar
+~~~~~~~~~~~~~~~~~~~~~ */
+	.selectedGlyph {
+		position: relative;
+	}
+	.selectedGlyph .vector {
+		height: 30px;
+		width: 30px;
+		border: 1px solid #aaa;
+		overflow: visible;
+		box-sizing: border-box;
+		position: relative;
+		display: inline-block;
+	}
+	.selectedGlyph .vector.current {
+		border: 2px solid red;
+	}
+
+	.SelectedGlyphContainer {
+		width: 50px;
+		height: 50px;
+		margin-top: auto;
+		position: absolute;
+		left: 10px;
+		bottom: 10px;
+	}
+	.SelectedGlyphContainer .selectedGlyph {
+		display: inline;
+	}
+	.SelectedGlyphContainer .selectedGlyph .vector {
+		width: 50px;
+		height: 50px;
+		background: white;
+	}
+	#properties {
+		display: block;
+		width: 100px;
+		margin-left: 5px;
+		position: absolute;
+		top: 0;
+		left: 80px;
+	}
+	.selectedGlyph .vector svg {
+		height: 100%;
+		overflow: visible;
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		margin: auto;
+	}
+
+	/* ~~~~~~~~~~~~~~~~~~~~~
+	react-tabs
+	~~~~~~~~~~~~~~~~~~~~~ */
+	.react-tabs {
+		-webkit-tap-highlight-color: transparent;
+	}
+
+	.react-tabs__tab-list {
+		border-bottom: 1px solid #aaa;
+		margin: 0;
+		padding: 0;
+	}
+
+	.react-tabs__tab {
+		display: inline-block;
+		border: 1px solid transparent;
+		border-bottom: none;
+		bottom: -1px;
+		position: relative;
+		list-style: none;
+		padding: 6px 12px;
+		cursor: pointer;
+	}
+
+	.react-tabs__tab--selected {
+		background: #fff;
+		border-color: #aaa;
+		color: black;
+		border-radius: 5px 5px 0 0;
+	}
+
+	.react-tabs__tab--disabled {
+		color: GrayText;
+		cursor: default;
+	}
+
+	.react-tabs__tab:focus {
+		box-shadow: 0 0 5px hsl(208, 99%, 50%);
+		border-color: hsl(208, 99%, 50%);
+		outline: none;
+	}
+
+	.react-tabs__tab:focus:after {
+		content: "";
+		position: absolute;
+		height: 5px;
+		left: -4px;
+		right: -4px;
+		bottom: -5px;
+		background: #fff;
+	}
+
+	.react-tabs__tab-panel {
+		display: none;
+	}
+
+	.react-tabs__tab-panel--selected {
+		display: block;
+	}
+
+	/* ~~~~~~~~~~~~~~~~~~~~~
+tooltips
+~~~~~~~~~~~~~~~~~~~~~ */
+	/* Tooltip container */
+	.tooltip {
+		position: relative;
+		display: flex;
+	}
+
+	/* Tooltip text */
+	.tooltip .tooltiptext {
+		visibility: hidden;
+		background-color: black;
+		color: #fff;
+		text-align: center;
+		width: 100%;
+		padding: 1px 0;
+		border-radius: 1px;
+		pointer-events: none;
+		position: absolute;
+		z-index: 1;
+		transform: translateY(-100%);
+	}
+
+	/* Show the tooltip text when you mouse over the tooltip container */
+	.tooltip:hover .tooltiptext {
+		visibility: visible;
+	}
 }

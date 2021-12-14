@@ -1,5 +1,5 @@
-import React from "react"
 import { observer } from "mobx-react"
+import React from "react"
 import colorstore from "../../../models/ColorStore"
 
 class ColorPaletteSelect extends React.Component {
@@ -17,7 +17,9 @@ class ColorPaletteSelect extends React.Component {
 		))
 
 		return (
-			<div className="select_set">
+			<div className="select_set flex justify-between">
+				<div>{selectPaletteButtons}</div>
+
 				<button
 					onClick={e =>
 						window.confirm("Are you sure you wish to delete this palette?") &&
@@ -26,10 +28,6 @@ class ColorPaletteSelect extends React.Component {
 				>
 					Delete
 				</button>
-
-
-				{"Select: "}
-				{selectPaletteButtons}
 			</div>
 		)
 	}
