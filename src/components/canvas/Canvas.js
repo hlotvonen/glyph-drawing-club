@@ -171,7 +171,7 @@ class Canvas extends Component {
 						Loading canvas...
 					</div>
 					<div>
-						if you get stuck in the loading screen: refresh the page. If that doesn't work: <button onClick={() => this.resetPageAndClearLocalStorage()}>Reset everything</button>
+						if you get stuck in the loading screen: refresh the page. If that doesnt work: <button onClick={() => this.resetPageAndClearLocalStorage()}>Reset everything</button>
 					</div>
 				</div>
 			)
