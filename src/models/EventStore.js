@@ -68,12 +68,19 @@ class EventStore {
 		}
 		@action
 		handleMouseDown(x, y) {
-			this.mouseDownPos = {
-				x: this.clampX(x),
-				y: this.clampY(y)
+			if(!store.paintMode) {
+				this.currentMousePos = {
+					x: this.clampX(x),
+					y: this.clampY(y)
+				}
+			} else {
+				this.mouseDownPos = {
+					x: this.clampX(x),
+					y: this.clampY(y)
+				}
+				store.insertXY(this.mouseDownPos.x, this.mouseDownPos.y)
+				this.mouseDown = true
 			}
-			store.insertXY(this.mouseDownPos.x, this.mouseDownPos.y)
-			this.mouseDown = true
 		}
 		@action
 		handleMouseUp(x, y) {
