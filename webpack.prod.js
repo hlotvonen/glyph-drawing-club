@@ -1,23 +1,45 @@
-var path = require("path")
-var webpack = require("webpack")
+const path = require("path")
+const webpack = require("webpack")
+const TerserPlugin = require("terser-webpack-plugin")
+const MiniCssExtractPlugin = require("mini-css-extract-plugin")
 
 module.exports = {
 	mode: "production",
-	devtool: "eval-nosources-cheap-source-map",
+	devtool: "cheap-module-source-map",
 	entry: [
 		"./src/index.js"
 	],
+	plugins: [
+		new webpack.DefinePlugin({ "process.env.NODE_ENV": JSON.stringify("production") }),
+		new webpack.optimize.ModuleConcatenationPlugin(),
+		new webpack.NoEmitOnErrorsPlugin(),
+		new MiniCssExtractPlugin()
+	],
 	optimization: {
-		runtimeChunk: true,
+		chunkIds: "total-size", 
+		moduleIds: "size",
+		nodeEnv: "production",
+		flagIncludedChunks: true,
+		sideEffects: true,
+		usedExports: true,
+		concatenateModules: true,
 		splitChunks: {
 			cacheGroups: {
 				commons: {
 					test: /[\\/]node_modules[\\/]/,
-					name: "vendors",
+					name: "vendor",
 					chunks: "all"
 				}
-			}
-		}
+			},
+			minSize: 30000,
+			maxAsyncRequests: 5,
+		},
+		noEmitOnErrors: true,
+		minimize: true,
+		minimizer: [new TerserPlugin()],
+		removeAvailableModules: true,
+		removeEmptyChunks: true,
+		mergeDuplicateChunks: true,
 	},
 	output: {
 		path: path.join(__dirname, "dist"),
@@ -45,7 +67,7 @@ module.exports = {
 			test: /\.css$/i,
 			include: path.resolve(__dirname, "src"),
 			use: [
-				"style-loader",
+				MiniCssExtractPlugin.loader,
 				"css-loader",
 				"postcss-loader"
 			],

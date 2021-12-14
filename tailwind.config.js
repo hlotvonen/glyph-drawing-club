@@ -83,4 +83,14 @@ module.exports = {
 		extend: {},
 	},
 	plugins: [],
+	purge: {
+		enabled: true,
+		content: [
+			"./**/*.html",
+			"./**/*.jsx",
+			"./**/*.js"
+		],
+		safelist: [
+		],
+	},
 }
