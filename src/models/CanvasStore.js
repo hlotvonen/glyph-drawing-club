@@ -45,6 +45,9 @@ class CanvasStore {
 
 		localforage.getItem("canvasStorage")
 			.then((value) => {
+				if(!value) {
+					throw "Nothing in canvasStorage"
+				}
 				//load from localforage if it's not the first time
 				runInAction(() => {
 					this.setCurrentState(JSON.parse(value))

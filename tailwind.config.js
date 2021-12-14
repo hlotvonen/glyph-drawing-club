@@ -84,7 +84,7 @@ module.exports = {
 	},
 	plugins: [],
 	purge: {
-		enabled: true,
+		enabled: false,
 		content: [
 			"./**/*.html",
 			"./**/*.jsx",

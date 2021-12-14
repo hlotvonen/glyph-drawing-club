@@ -15,6 +15,9 @@ class KeymappingsStore {
 
 		localforage.getItem("keymappingsStorage")
 			.then((value) => {
+				if(!value) {
+					throw "Nothing in keymappingsStorage"
+				}
 				//load from localforage if it's not the first time
 				runInAction(() => {
 					keymappingsStorage = JSON.parse(value)

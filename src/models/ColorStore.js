@@ -16,6 +16,9 @@ class ColorStore {
 
 		localforage.getItem("colorStorage")
 			.then((value) => {
+				if(!value) {
+					throw "Nothing in colorstorage"
+				}
 				//load from localforage if it's not the first time
 				runInAction(() => {
 					this.init(JSON.parse(value))
