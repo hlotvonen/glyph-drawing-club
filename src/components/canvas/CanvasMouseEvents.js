@@ -1,7 +1,7 @@
 import { observer } from "mobx-react"
 import React from "react"
 import eventstore from "../../models/EventStore"
-
+import gridstore from "../../models/GridStore"
 
 class CanvasMouseEvents extends React.Component {
 	constructor(props) {
@@ -21,9 +21,13 @@ class CanvasMouseEvents extends React.Component {
 	}
 	
 	mousePos(e) {
+
+		let mouseX = (e.clientX - this.ref.current.getBoundingClientRect().left) / gridstore.settings.zoom
+		let mouseY = (e.clientY - this.ref.current.getBoundingClientRect().top) / gridstore.settings.zoom
+
 		return ({
-			x: e.pageX - this.ref.current.getBoundingClientRect().left,
-			y: e.pageY - this.ref.current.getBoundingClientRect().top
+			x: mouseX,
+			y: mouseY
 		})
 	}
 
