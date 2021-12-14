@@ -7,7 +7,7 @@ import SelectedGlyph from "../../toolbar/SelectedGlyph"
 
 const KeyMapping = observer(props => {
 	return (
-		<div className={props.setIndex === setstore.selectedSetIndex ? "active my-1" : "my-1"}>
+		<div className={props.setIndex === setstore.selectedSetIndex ? "active my-1 visible" : "my-1 hidden"}>
 			<div className="flex text-xs text-center justify-between">
 				{Object.entries(props.keys).map(([keyName, glyph]) => {
 					if (glyph[0] == "M0 0") {
