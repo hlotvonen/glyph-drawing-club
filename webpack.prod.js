@@ -3,9 +3,9 @@ var webpack = require("webpack")
 
 module.exports = {
 	mode: "production",
-	devtool: "",
+	devtool: "eval-nosources-cheap-source-map",
 	entry: [
-		"./src/index"
+		"./src/index.js"
 	],
 	optimization: {
 		runtimeChunk: true,
@@ -24,9 +24,6 @@ module.exports = {
 		filename: "[name].bundle.js",
 		publicPath: "/dist/"
 	},
-	plugins: [
-		new webpack.optimize.OccurrenceOrderPlugin(),
-	],
 	resolve: {
 		extensions: [".js", ".jsx"]
 	},
@@ -43,6 +40,15 @@ module.exports = {
 				}
 			},
 			include: path.join(__dirname, "src")
+		},
+		{
+			test: /\.css$/i,
+			include: path.resolve(__dirname, "src"),
+			use: [
+				"style-loader",
+				"css-loader",
+				"postcss-loader"
+			],
 		}]
 	}
 }

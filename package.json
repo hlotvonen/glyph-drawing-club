@@ -6,7 +6,7 @@
     "start": "webpack serve --config webpack.dev.js --progress --mode=development",
     "lint": "eslint src",
     "prettier": "prettier --write src/**/*.js",
-    "build": "webpack --env prod"
+    "build": "webpack --env prod --config webpack.prod.js --progress --mode=production"
   },
   "repository": {
     "type": "git",
