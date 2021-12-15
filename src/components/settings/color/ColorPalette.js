@@ -21,7 +21,7 @@ const LayerColorIndex = observer(() => {
 							g: colorStore.palettes[colorStore.selectedPaletteIndex].colors[selected[i][i == 4 ? 0 : 10]][1],
 							b: colorStore.palettes[colorStore.selectedPaletteIndex].colors[selected[i][i == 4 ? 0 : 10]][2]
 						}, true),
-						transform: `translate(${selected[i][i == 4 ? 0 : 10] % 16 * 20 + i*5 - 1}px, ${((selected[i][i == 4 ? 0 : 10] / 16) >> 0) * 20 +1}px)`
+						transform: `translate(${selected[i][i == 4 ? 0 : 10] % 16 * 25 + i*5 - 1}px, ${((selected[i][i == 4 ? 0 : 10] / 16) >> 0) * 25 +1}px)`
 					}}
 				>{i == 4 ? "B" : i+1}</div>
 			))}

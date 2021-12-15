@@ -68,7 +68,7 @@ class Canvas extends Component {
 					s: store.goDown,
 					d: store.goRight,
 					x: store.showQuickChooseColor,
-					c: store.copy,
+					c: () => store.copy(store.selected_x, store.selected_y),
 					o: store.handleOffsetOn,
 					",": () => store.selectLayer("left"),
 					".": () => store.selectLayer("right"),
