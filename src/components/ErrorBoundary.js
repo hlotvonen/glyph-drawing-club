@@ -1,5 +1,5 @@
-import React, {Component} from "react"
-import store from "../models/CanvasStore"
+import React from "react"
+import localforage from "localforage";
 
 class ErrorBoundary extends React.Component {
   constructor(props) {
@@ -23,11 +23,18 @@ class ErrorBoundary extends React.Component {
   }
 
   resetPageAndClearLocalStorage() {
-    localStorage.clear()
-    location.reload()
+    localforage.clear().then(function() {
+      // Run this code once the database has been entirely deleted.
+      console.log('Database is now empty.');
+      location.reload()
+    }).catch(function(err) {
+        // This code runs if there were any errors
+        console.log(err);
+    });
   }
 
   render() {
+
     if (this.state.hasError) {
       // You can render any custom fallback UI
       return (

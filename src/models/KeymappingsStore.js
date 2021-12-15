@@ -1,4 +1,5 @@
-import { action, observable, computed, autorun, mobx, toJS } from "mobx"
+import localforage from "localforage"
+import { action, autorun, makeAutoObservable, runInAction } from "mobx"
 import store from "./CanvasStore"
 import colorstore from "./ColorStore"
 
@@ -9,15 +10,27 @@ let keymappingsStorage
 
 class KeymappingsStore {
 	constructor() {
-		//load from localstorage if it's not the first time
-		if (localStorage.keymapFirstRun) {
-			keymappingsStorage = JSON.parse(localStorage.keymappingsStorage)
-			this.sets = keymappingsStorage.sets
-			//else create empty canvas
-		} else {
-			this.addSet()
-			localStorage.setItem("keymapFirstRun", false)
-		}
+
+		makeAutoObservable(this)
+
+		localforage.getItem("keymappingsStorage")
+			.then((value) => {
+				if(!value) {
+					throw "Nothing in keymappingsStorage"
+				}
+				//load from localforage if it's not the first time
+				runInAction(() => {
+					keymappingsStorage = JSON.parse(value)
+					this.sets = keymappingsStorage.sets
+				})
+			})
+			.catch((err) => {
+				// This code runs if there were any errors
+				this.addSet()
+				console.log(err)
+			})
+
+
 		//set localstorage, autorun will update it every time something changes
 		autorun(() => {
 			const keymappingsLocalstorage = {
@@ -25,20 +38,16 @@ class KeymappingsStore {
 				timestamp: Math.floor(Date.now() / 1000),
 				sets: this.sets
 			}
-			localStorage.setItem("keymappingsStorage", JSON.stringify(keymappingsLocalstorage))
-		})
+			localforage.setItem("keymappingsStorage", JSON.stringify(keymappingsLocalstorage))
+		}, {delay:300, fireImmediately: true})
 	}
-	@observable
 	toggleMapping = false
-	@observable
 	selectedSetIndex = 0
-	@observable
 	sets = []
 
 	@action
 	handleChangeMapping = () => {
 		this.toggleMapping = !this.toggleMapping
-		document.getElementById("toggleMapping").checked = this.toggleMapping
 	}
 
 	@action
@@ -60,21 +69,32 @@ class KeymappingsStore {
 	
 	@action
 	deleteSet = () => {
+
+		if (this.sets.length <= 1) {
+			return
+		}
+
 		this.sets.splice(this.selectedSetIndex, 1)
-		this.selectedSetIndex = this.selectedSetIndex - 1 
+		if (this.selectedSetIndex === 0) {
+			if (this.selectedSetIndex.length <= 2) {
+				this.selectedSetIndex += 1
+			}
+		} else {
+			this.selectedSetIndex -= 1
+		}
 	}
 
 	@action
 	prevSet = () => {
 		if (this.selectedSetIndex > 0) {
-			this.selectedSetIndex = this.selectedSetIndex - 1
+			this.selectedSetIndex -= 1
 		}
 	}
 
 	@action
 	nextSet = () => {
 		if (this.selectedSetIndex < this.sets.length) {
-			this.selectedSetIndex = this.selectedSetIndex + 1
+			this.selectedSetIndex += 1
 		}
 	}
 
@@ -86,7 +106,6 @@ class KeymappingsStore {
 
 	@action
 	getMapping = keyName => {
-		const selectedSet = this.sets[this.selectedSetIndex]
 		store.canvas[store.selected_y][store.selected_x][store.selectedLayer] = [
 			...this.sets[this.selectedSetIndex][keyName],
 			store.glyphOffsetX,
@@ -97,6 +116,7 @@ class KeymappingsStore {
 			store.glyphOffsetY,
 			colorstore.colorIndex
 		]
+		store.currentGlyph[4].replace(store.getBgColor())
 	}
 }
 

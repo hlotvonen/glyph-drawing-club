@@ -1,7 +1,7 @@
 import store from "../models/CanvasStore"
 import React, { Component } from "react"
-import { rawSvgCell } from "../components/Cell"
-import { rawSvgCellBg } from "../components/CellBg"
+import { rawSvgCell } from "../components/canvas/Cell"
+import { rawSvgCellBg } from "../components/canvas/CellBg"
 
 export const cellsAsSvg = () => (
 	<>	

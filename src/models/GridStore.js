@@ -1,7 +1,12 @@
-import { observable, action } from "mobx"
+import { observable, action, makeObservable } from "mobx"
 import store from "./CanvasStore.js"
 
 class GridStore {
+
+	constructor() {
+		makeObservable(this)
+	}
+
 	posOffsetX = store.cellWidth
 	posOffsetY = store.cellHeight
 
