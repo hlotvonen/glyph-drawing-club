@@ -100,7 +100,7 @@ class CanvasStore {
 	@observable
 	typingMode = false
 	@observable
-	paintMode = false
+	paintMode = true
 	@observable
 	togglePreview = false
 
@@ -154,9 +154,9 @@ class CanvasStore {
 	@observable
 	svgBaseline = 0
 	@observable
-	rotationAmount = 90
+	rotationAmount = 0
 	@observable
-	flipGlyph = -1
+	flipGlyph = 1
 	@observable
 	glyphInvertedShape = false
 
@@ -207,7 +207,6 @@ class CanvasStore {
 	setCurrentState = state => {
 		this.canvasWidth = state.canvasWidth
 		this.canvasHeight = state.canvasHeight
-		this.canvas = state.canvas
 		this.cellWidth = state.cellWidth
 		this.cellHeight = state.cellHeight
 		this.defaultFontSize = state.defaultFontSize
@@ -466,8 +465,8 @@ class CanvasStore {
 		this.paintMode = !this.paintMode
 	}
 	@action
-	toggleWriting = () => {
-		this.disableShortcuts = !this.disableShortcuts
+	toggleWriting = (boolean) => {
+		this.disableShortcuts = boolean
 	}
 	@action
 	showPreview = () => {
@@ -518,32 +517,7 @@ class CanvasStore {
 	hideLayer = layer => {
 		this.hiddenLayers[layer] = !this.hiddenLayers[layer]
 	}
-	@action
-	switchLayersUp = event => {
-		// Shift + R
-		if (!this.selectionArea.start) {
-			[
-				this.currentGlyph[Number(event.target.value)],
-				this.currentGlyph[Number(event.target.value) + 1],
-			] = [
-				this.currentGlyph[Number(event.target.value) + 1],
-				this.currentGlyph[Number(event.target.value)],
-			]
-		} else {
-			const [[start_y, start_x], [end_y, end_x]] = this.getSelectedArea()
-			for (let y_i = start_y; y_i <= end_y; y_i++) {
-				for (let x_i = start_x; x_i <= end_x; x_i++) {
-					[
-						this.canvas[y_i][x_i][Number(event.target.value)],
-						this.canvas[y_i][x_i][Number(event.target.value) + 1],
-					] = [
-						this.canvas[y_i][x_i][Number(event.target.value) + 1],
-						this.canvas[y_i][x_i][Number(event.target.value)],
-					]
-				}
-			}
-		}
-	}
+	
 	@action
 	switchLayersDown = event => {
 		if (!this.selectionArea.start) {
@@ -668,26 +642,43 @@ class CanvasStore {
    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 	@action
 	rotateGlyphRight = () => {
+		console.log(this.rotationAmount)
 		if (this.ctrlDown) {
 			//Rotate Cell if ctrl down
 			for (let z_i = 0; z_i <= 3; z_i++) {
-				if (this.currentGlyph[z_i][6] <= -270) {
+				if (this.currentGlyph[z_i][6] >= 270) {
 					this.currentGlyph[z_i][6] = 0
 				} else {
-					this.currentGlyph[z_i][6] -= 90
+					this.currentGlyph[z_i][6] += 90
 				}
 			}
 		} else {
 			//Rotate Layer if just "r" is pressed
-			if (this.rotationAmount <= -270) {
-				this.currentLayer[6] = 0
+			if (this.rotationAmount >= 270) {
 				this.rotationAmount = 0
 			} else {
-				this.currentLayer[6] -= 90
 				this.rotationAmount -= 90
 			}
+			if (this.currentLayer[6] >= 270) {
+				this.currentLayer[6] = 0
+			} else {
+				this.currentLayer[6] -= 90
+			}
 		}
-		//this.rotationAmount = this.currentLayer[6]
+	}
+	@action
+	handleChangeMirror = () => {
+		if (this.ctrlDown) {
+			for (let z_i = 0; z_i <= 3; z_i++) {
+				this.currentLayer[z_i][6] += 180
+				this.currentGlyph[z_i][7] *= -1
+			}
+		} else {
+			this.currentLayer[6] += 180
+			this.currentLayer[7] *= -1
+		}
+		this.rotationAmount += 180
+		this.flipGlyph *= -1
 	}
 	@action
 	handleChangeFlip = () => {
@@ -698,7 +689,7 @@ class CanvasStore {
 		} else {
 			this.currentLayer[7] *= -1
 		}
-		this.flipGlyph = this.currentLayer[7]
+		this.flipGlyph *= -1
 	}
 	@action
 	handleChangeInvertColor = () => {
@@ -709,27 +700,27 @@ class CanvasStore {
 		} else {
 			this.currentLayer[8] = !this.currentLayer[8]
 		}
-		this.glyphInvertedShape = this.currentLayer[8]
+		this.glyphInvertedShape = !this.glyphInvertedShape
 	}
 	@action
 	increaseGlyphFontSizeModifier = () => {
 		this.currentLayer[5] += 1
-		this.glyphFontSizeModifier = this.currentLayer[5]
+		this.glyphFontSizeModifier += 1
 	}
 	@action
 	decreaseGlyphFontSizeModifier = () => {
 		this.currentLayer[5] -= 1
-		this.glyphFontSizeModifier = this.currentLayer[5]
+		this.glyphFontSizeModifier -= 1
 	}
 	@action
 	increaseByOneCellGlyphFontSizeModifier = () => {
 		this.currentLayer[5] += this.defaultFontSize
-		this.glyphFontSizeModifier = this.currentLayer[5]
+		this.glyphFontSizeModifier += this.defaultFontSize
 	}
 	@action
 	decreaseByOneCellGlyphFontSizeModifier = () => {
 		this.currentLayer[5] -= this.defaultFontSize
-		this.glyphFontSizeModifier = this.currentLayer[5]
+		this.glyphFontSizeModifier -= this.defaultFontSize
 	}
 
 	//GlyphClear - reset selection to default
@@ -1067,7 +1058,7 @@ class CanvasStore {
 	insertEmpty = () => {
 		//space
 		this.currentLayer.replace(getEmptyLayer())
-		this.insertBackground()
+		//this.insertBackground()
 	}
 	@action
 	insertEmptyCell = () => {
@@ -1083,7 +1074,7 @@ class CanvasStore {
 	insert = () => {
 		//q
 		this.currentLayer.replace(this.getSelectedGlyph())
-		this.currentGlyph[4].replace(this.getBgColor())
+		//this.currentGlyph[4].replace(this.getBgColor())
 	}
 	@action
 	insertXY = (x, y) => {
@@ -1430,8 +1421,8 @@ class CanvasStore {
 		}
 	}
 	@action
-	flipSelection = () => {
-		// shift + F or ctrl + shift + f
+	mirrorSelection = () => {
+		// shift + m or ctrl + shift + m
 		if (!this.selectionArea.start) {
 			return
 		}
@@ -1481,8 +1472,8 @@ class CanvasStore {
 		}
 	}
 	@action
-	mirrorSelection = () => {
-		//Shift + M
+	flipSelection = () => {
+		//Shift + f or ctrl + shift + f
 		if (!this.selectionArea.start) {
 			return
 		}

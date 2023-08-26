@@ -1,5 +1,4 @@
 import { observer } from "mobx-react"
-import React from "react"
 import store from "../../../models/CanvasStore"
 import colorstore from "../../../models/ColorStore.js"
 import SelectedGlyph from "../../toolbar/SelectedGlyph"
@@ -8,19 +7,17 @@ const Cursor = ({x, y, w, h}) => (
 	<div
 		className="cursor"
 		style={{
-			boxShadow: "inset 0 0 0 1px red",
-			zIndex: 1000,
+			boxShadow: "0 0 0 1px var(--highlight)",
+			zIndex: 10,
 			pointerEvents: "none",
 			width: w,
 			height: h,
 			transform: `translate(${x * w}px, ${y * h}px)`,
 			position: "absolute",
-			left: 0,
-			right: 0,
 			willChange: "transform"
 		}}
 	>
-		<div style={{opacity:0.6}}>
+		<div className="vector" style={{opacity:0.5}}>
 			<SelectedGlyph
 				glyphPath={store.glyphPath}
 				svgWidth={store.svgWidth}
@@ -31,7 +28,7 @@ const Cursor = ({x, y, w, h}) => (
 				glyphInvertedShape={store.glyphInvertedShape}
 				colorIndex={colorstore.colorIndex}
 				bgColorIndex={colorstore.bgColorIndex}
-				showBg={false}	
+				showBg={false}
 				defaultFontSize={store.defaultFontSize}
 				glyphFontSizeModifier={store.glyphFontSizeModifier}
 			/>

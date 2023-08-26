@@ -1,15 +1,19 @@
 import localforage from "localforage"
 import { action } from "mobx"
 import { observer } from "mobx-react"
-import React, { Component } from "react"
+import { Component } from "react"
 import store from "../../models/CanvasStore.js"
 import colorstore from "../../models/ColorStore.js"
+import FontStore from "../../models/FontStore.js"
 import gridstore from "../../models/GridStore.js"
 import setstore from "../../models/KeymappingsStore"
+import ColorToolbar from "../toolbar/ColorToolbar.js"
 import Coordinates from "../toolbar/Coordinates"
 import GridControls from "../toolbar/GridControls"
+import LayerSelect from "../toolbar/LayerSelect.js"
 import QuickChooseColor from "../toolbar/QuickChooseColor"
 import SelectedGlyph from "../toolbar/SelectedGlyph"
+import Tools from "../toolbar/Tools.js"
 import Grid from "./Grid"
 
 class Canvas extends Component {
@@ -53,23 +57,24 @@ class Canvas extends Component {
 					" ": store.insertEmpty,
 					Backspace: store.backSpace,
 					Enter: store.insert,
-					q: store.insert,
+					a: store.goLeft,
+					b: store.insertBackground,
+					c: () => store.copy(store.selected_x, store.selected_y),
+					d: store.goRight,
 					e: store.insertEmptyCell,
-					r: store.rotateGlyphRight,
 					f: store.handleChangeFlip,
 					h: store.handleChangeHideGrid,
 					i: store.handleChangeInvertColor,
-					z: store.handleUndoRedo,
+					m: store.handleChangeMirror,
+					o: store.handleOffsetOn,
 					p: store.showPreview,
-					b: store.insertBackground,
+					q: store.insert,
+					r: store.rotateGlyphRight,
 					v: store.colorFg,
 					w: store.goUp,
-					a: store.goLeft,
 					s: store.goDown,
-					d: store.goRight,
 					x: store.showQuickChooseColor,
-					c: () => store.copy(store.selected_x, store.selected_y),
-					o: store.handleOffsetOn,
+					z: store.handleUndoRedo,
 					",": () => store.selectLayer("left"),
 					".": () => store.selectLayer("right"),
 					"+": gridstore.zoomIn,
@@ -84,51 +89,50 @@ class Canvas extends Component {
 					//Unused keys:
 					//GNOPWX
 					A: store.selectAll,
-					S: store.makeSelection,
-					C: store.copySelection,
-					M: store.mirrorSelection,
-					T: store.transposeSelection,
-					R: store.rotateSelection,
-					Y: store.rotateIndividuallySelection,
-					U: store.flipIndividuallySelection,
-					F: store.flipSelection,
-					E: store.clearArea,
-					Q: store.fillArea,
 					B: store.fillBackgroundArea,
-					V: store.colorFgSelectionArea,
-					I: store.invertColorSelection,
+					C: store.copySelection,
+					D: store.emptySelection,
+					E: store.clearArea,
+					F: store.flipSelection,
 					H: store.shiftAreaLeft,
+					I: store.invertColorSelection,
 					J: store.shiftAreaDown,
 					K: store.shiftAreaUp,
 					L: store.shiftAreaRight,
-					D: store.emptySelection,
+					M: store.mirrorSelection,
+					Q: store.fillArea,
+					R: store.rotateSelection,
+					S: store.makeSelection,
+					T: store.transposeSelection,
+					U: store.flipIndividuallySelection,
+					V: store.colorFgSelectionArea,
+					Y: store.rotateIndividuallySelection,
 					X: colorstore.swapFgBg,
 						
-
 					//draw glyph from keymap on to canvas
-					1: () => setstore.getMapping("1"),
-					2: () => setstore.getMapping("2"),
-					3: () => setstore.getMapping("3"),
-					4: () => setstore.getMapping("4"),
-					5: () => setstore.getMapping("5"),
-					6: () => setstore.getMapping("6"),
-					7: () => setstore.getMapping("7"),
-					8: () => setstore.getMapping("8"),
-					9: () => setstore.getMapping("9"),
-					0: () => setstore.getMapping("0"),
+					// 1: () => setstore.getMapping("1"),
+					// 2: () => setstore.getMapping("2"),
+					// 3: () => setstore.getMapping("3"),
+					// 4: () => setstore.getMapping("4"),
+					// 5: () => setstore.getMapping("5"),
+					// 6: () => setstore.getMapping("6"),
+					// 7: () => setstore.getMapping("7"),
+					// 8: () => setstore.getMapping("8"),
+					// 9: () => setstore.getMapping("9"),
+					// 0: () => setstore.getMapping("0"),
 				}
 				: {
 					//assign selected glyph to keymap
-					1: () => setstore.setMapping("1", glyph),
-					2: () => setstore.setMapping("2", glyph),
-					3: () => setstore.setMapping("3", glyph),
-					4: () => setstore.setMapping("4", glyph),
-					5: () => setstore.setMapping("5", glyph),
-					6: () => setstore.setMapping("6", glyph),
-					7: () => setstore.setMapping("7", glyph),
-					8: () => setstore.setMapping("8", glyph),
-					9: () => setstore.setMapping("9", glyph),
-					0: () => setstore.setMapping("0", glyph),
+					// 1: () => setstore.setMapping("1", glyph),
+					// 2: () => setstore.setMapping("2", glyph),
+					// 3: () => setstore.setMapping("3", glyph),
+					// 4: () => setstore.setMapping("4", glyph),
+					// 5: () => setstore.setMapping("5", glyph),
+					// 6: () => setstore.setMapping("6", glyph),
+					// 7: () => setstore.setMapping("7", glyph),
+					// 8: () => setstore.setMapping("8", glyph),
+					// 9: () => setstore.setMapping("9", glyph),
+					// 0: () => setstore.setMapping("0", glyph),
 				}
 
 			const handler = handlers[event.key]
@@ -162,49 +166,62 @@ class Canvas extends Component {
 		event.preventDefault()
 	}
 
+	@action
+	handleWheel(e) {
+		e.preventDefault()
+		if (e.deltaY < 0) {
+			FontStore.prevGlyph();
+		} else {
+			FontStore.nextGlyph();
+		}
+	}
+
 	render() {
 
 		if (!store.canvas) {
 			return (
-				<div className={"canvas_container"}>
-					<div className="aligner">
-						Loading canvas...
-					</div>
+				<div className="canvas_container">
 					<div>
-						if you get stuck in the loading screen: refresh the page. If that doesnt work: <button onClick={() => this.resetPageAndClearLocalStorage()}>Reset everything</button>
+						<h1>Loading canvas...</h1>
+						<h2>if you get stuck in the loading screen: refresh the page.</h2>
+						<p>In extreme cases, if nothing else works... <button onClick={() => this.resetPageAndClearLocalStorage()}>WARNING: RESET EVERYTHING</button></p>
 					</div>
 				</div>
 			)
 		}
 
 		return (
-			<div className={"flex-1 flex overflow-hidden" + (store.hideGrid ? " hideGrid" : "")}>
-				<div className="flex flex-1 items-center justify-center overflow-hidden relative">
-					<Grid />
-					<GridControls />
-					<Coordinates />
-					<div className="SelectedGlyphContainer">
-						<div className="selectedGlyph">
-							<div className="vector">
-								<SelectedGlyph
-									glyphPath={store.glyphPath}
-									svgWidth={store.svgWidth}
-									svgHeight={store.svgHeight || 1}
-									svgBaseline={store.svgBaseline}
-									rotationAmount={store.rotationAmount}
-									glyphFontSizeModifier={store.glyphFontSizeModifier}
-									flipGlyph={store.flipGlyph}
-									glyphInvertedShape={store.glyphInvertedShape}
-									colorIndex={colorstore.colorIndex}
-									bgColorIndex={colorstore.bgColorIndex}
-									showBg={true}
-									defaultFontSize={store.defaultFontSize}
-								/>
-							</div>
+			<div 
+				className={"canvas_container" + (store.hideGrid ? " hideGrid" : "")} 
+				onWheel={this.handleWheel}
+			>
+				<Grid />
+				<GridControls />
+				<Coordinates />
+				<div className="SelectedGlyphContainer">
+					<div className="selectedGlyph">
+						<div className="vector">
+							<SelectedGlyph
+								glyphPath={store.glyphPath}
+								svgWidth={store.svgWidth}
+								svgHeight={store.svgHeight || 1}
+								svgBaseline={store.svgBaseline}
+								rotationAmount={store.rotationAmount}
+								glyphFontSizeModifier={store.glyphFontSizeModifier}
+								flipGlyph={store.flipGlyph}
+								glyphInvertedShape={store.glyphInvertedShape}
+								colorIndex={colorstore.colorIndex}
+								bgColorIndex={colorstore.bgColorIndex}
+								showBg={true}
+								defaultFontSize={store.defaultFontSize}
+							/>
 						</div>
 					</div>
-					<QuickChooseColor />
 				</div>
+				<LayerSelect />
+				<Tools />
+				<ColorToolbar />
+				<QuickChooseColor />
 			</div>
 		)
 	}

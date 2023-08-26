@@ -1,121 +1,213 @@
-@import "tailwindcss/base";
-@import "tailwindcss/components";
-@import "tailwindcss/utilities";
-@import "./98.css";
-
-@layer utilities {
-	.noselect {
-		-webkit-touch-callout: none; /* iOS Safari */
-		-webkit-user-select: none; /* Safari */
-		-khtml-user-select: none; /* Konqueror HTML */
-		-moz-user-select: none; /* Old versions of Firefox */
-		-ms-user-select: none; /* Internet Explorer/Edge */
-		user-select: none; /* Non-prefixed version, currently supported by Chrome, Edge, Opera and Firefox */
-	}
-}
 /* ~~~~~~~~~~~~~~~~~~~~~
 document lvl
 ~~~~~~~~~~~~~~~~~~~~~ */
+:root {
+	--font-small: 0.65rem;
+	--grid-bg: rgba(255,255,255,1);
+	--main-bg: rgba(240,240,238,1);
+	--toolbar-bg: rgba(230,230,228,0.8);
+	--toolbar-border: rgba(220,220,210,1);
+
+	--text-color: rgba(255,255,255,1);
+	--highlight: rgba(237,0,147,1);
+	
+	--header-bg: rgb(250, 251, 236);
+	--header-color: rgb(36, 33, 33);
+
+	--selected-bg: rgb(187, 255, 0);
+	--selected-color: rgba(255,255,255,1);
+	--selected-border: rgba(255,255,255,1);
+
+	--button-on-bg: rgb(187, 255, 0);
+	--button-on-color: rgb(59, 68, 25);
+	--button-on-border: rgba(160,210,100,1);
+	
+	--button-on-hover-bg: rgb(187, 255, 0);
+	--button-on-hover-color: rgb(40, 47, 13);
+	--button-on-hover-border: rgba(237,0,147,1);
+
+	--button-off-bg: rgb(255, 255, 243);
+	--button-off-color: rgb(60, 37, 37);
+	--button-off-border: rgb(223, 216, 202);	
+
+	--button-off-hover-bg: rgba(255,255,255,1);
+	--button-off-hover-color: rgb(31, 34, 28);
+	--button-off-hover-border: rgba(237,0,147,1);
+
+	--input-bg: rgb(226, 249, 254);
+	--input-color: rgb(68, 68, 68);
+	--input-border: rgb(165, 175, 218);	
+}
+
+@media (prefers-color-scheme: dark) {
+	:root {
+		--color-highlight: red;
+	}
+}
+
+@font-face {
+	font-family: "sono-regular";
+	src: url("/assets/fonts/Sono-Regular.woff2");
+}
+
+html, body {
+	height:100%;
+	margin:0;
+	font-family: "sono-regular";
+	font-size: 12px;
+	color:var(--color-text);
+}
+
+html {
+  box-sizing: border-box;
+}
+*, *:before, *:after {
+  box-sizing: inherit;
+}
 
 /* ~~~~~~~~~~~~~~~~~~~~~
-top wrapper
+top wrappers
 ~~~~~~~~~~~~~~~~~~~~~ */
+#root {
+	height: 100%;
+}
+.mainContainer {
+	height:100%;
+	overflow: hidden;
+	background-color: var(--main-bg);
+}
 .fullscreen {
 	height: 100%;
-	width: 100%;
 	display: flex;
-	background-color: #ddd;
+	background-color: var(--main-bg);
 }
 /* ~~~~~~~~~~~~~~~~~~~~~
 canvas & grid
 ~~~~~~~~~~~~~~~~~~~~~ */
-.aligner {
-	display: flex;
-	flex: 1;
-	flex-direction: column;
-	align-items: center;
-	justify-content: center;
-	overflow: hidden;
+.canvas_container {
+	flex:1;
 	position: relative;
-	background-color: #ddd;
+	display: flex;
+	justify-content: center;
+	align-items: center;
 }
-#canvas.grid {
-	background: white;
+.canvas {
+	background: var(--grid-bg);
 	position: absolute;
 }
-.gridBg {
-	background: white;
-}
 .gridBg,
-.gridFg {
+.gridFg,
+.UiGrid,
+.UiLayer,
+.referenceImage {
 	position: absolute;
 	top: 0;
 	left: 0;
 }
 .UiGrid {
-	position: absolute;
-	top: 0;
-	left: 0;
 	pointer-events: none;
 	opacity: 0.5;
-	z-index: 100;
 }
 .UiLayer {
-	position: absolute;
-	top: 0;
-	left: 0;
 	pointer-events: none;
 }
-kbd {
-	background-color: #eee;
-	border-radius: 3px;
-	border: 1px solid #b4b4b4;
-	box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2),
-		0 2px 0 0 rgba(255, 255, 255, 0.7) inset;
-	color: #333;
-	display: inline-block;
-	font-size: 0.85em;
-	font-weight: 700;
-	line-height: 1;
-	padding: 2px 4px;
-	white-space: nowrap;
-	margin: 0 2px;
+.CanvasMouseEvents {
+	cursor: url("/assets/ui-icons/cursor.cur"), auto;
 }
-/* ~~~~~~~~~~~~~~~~~~~~~
-cells
-~~~~~~~~~~~~~~~~~~~~~ */
-.row div {
-	display: inline-block;
-	vertical-align: top;
-	overflow: visible;
-	position: relative;
+.referenceImage {
+	width: 100%;
+	height: 100%;
 }
-.row div svg {
-	position: absolute;
-	top: 0;
-	left: 0;
-	pointer-events: none;
+.ReferenceImageList {
+	list-style: none;
+	padding: 0;
+	margin: 3px 0;
+	display: flex;
+	flex-direction: column-reverse;
 }
-.row div svg rect,
-.row div svg path {
-	pointer-events: none;
+.ReferenceImageListItem {
+	padding: 0;
+	margin: 0;
+	display: flex;
+	box-shadow: 0 0 0 1px var(--toolbar-border);
 }
+.ReferenceImageListItem__thumbnailContainer {
+	flex:1;
+	width: 50px;
+	height: 50px;
+	padding: 3px;
+	display: grid;
+	place-content: center;
+}
+.ReferenceImageListItem__thumbnailContainer img {
+	max-width: 100%;
+	max-height: 100%;
+	object-fit: contain;
+	box-shadow: 0 0 0 1px var(--toolbar-border);
+	background-color: white;
+	background: repeating-conic-gradient(#ccc 0% 25%, transparent 0% 50%) 50% / 5px 5px;
+}
+.ReferenceImageListItem__buttons {
+	flex:3;
+	display: flex;
+	flex-direction: column;
+}
+
 /* ~~~~~~~~~~~~~~~~~~~~~
 grid numbers / cursor
 ~~~~~~~~~~~~~~~~~~~~~ */
+.grid-numbers {
+	position: absolute;
+	display: flex;
+	font-size: var(--font-small);
+	color:var(--toolbar-border);
+}
+.grid-numbers-top {
+	justify-content: center;
+	top:-20px;
+}
+.grid-numbers-side {
+	align-items: center;
+	text-align: right;
+	width: 20px;
+	left:-20px;
+}
+.grid-numbers-highlight {
+	color:var(--highlight);
+}
+.grid-numbers-top.grid-numbers-highlight:before {
+	content:'';
+	width: 1px;
+	height: 300px;
+	background-image:linear-gradient(0deg, transparent 0%, var(--highlight) 10%, transparent 100%);
+	position: absolute;
+	z-index: -1;
+	bottom:100%;
+	opacity: 0.2;
+}
+.grid-numbers-side.grid-numbers-highlight:before {
+	content:'';
+	width: 300px;
+	height: 1px;
+	background-image:linear-gradient(90deg, transparent 0%, var(--highlight) 90%, transparent 100%);
+	position: absolute;
+	z-index: -1;
+	right:100%;
+	opacity: 0.2;
+}
 
 /* ~~~~~~~~~~~~~~~~~~~~~
 selection highlight
 ~~~~~~~~~~~~~~~~~~~~~ */
-.selectionHighlight {
+.selectionHighlight {	
+	position: absolute;
 	top: 0;
 	left: 0;
-	position: absolute;
 	pointer-events: none;
-	background-image: linear-gradient(90deg, red 50%, transparent 50%),
-		linear-gradient(90deg, red 50%, transparent 50%),
-		linear-gradient(0deg, red 50%, transparent 50%),
-		linear-gradient(0deg, red 50%, transparent 50%);
+	background-image: linear-gradient(90deg, var(--highlight) 50%, transparent 50%),
+		linear-gradient(90deg, var(--highlight) 50%, transparent 50%),
+		linear-gradient(0deg, var(--highlight) 50%, transparent 50%),
+		linear-gradient(0deg, var(--highlight) 50%, transparent 50%);
 	background-repeat: repeat-x, repeat-x, repeat-y, repeat-y;
 	background-size: 15px 1px, 15px 1px, 1px 15px, 1px 15px;
 	background-position: left top, right bottom, left bottom, right top;
@@ -131,9 +223,11 @@ selection highlight
 	}
 }
 .selectionHighlight.isSquare:after {
-	content: "s";
+	font-size: var(--font-small);
+	content: "square";
+	line-height: 0.9;
 	position: absolute;
-	bottom: 0;
+	bottom: -10px;
 	right: 0;
 }
 
@@ -142,29 +236,311 @@ coordinates
 ~~~~~~~~~~~~~~~~~~~~~ */
 .coordinates {
 	position: absolute;
-	top: 0;
+	top: 5px;
 	right: 5px;
 	pointer-events: none;
+	text-align: right;
+	font-size: var(--font-small);
+}
+
+/* ~~~~~~~~~~~~~~~~~~~~~
+toolbars
+~~~~~~~~~~~~~~~~~~~~~ */
+.fullscreen-button {
+	position: absolute;
+	top:5px;
+	left:5px;
+	z-index: 2;
+}
+.toolbar {
+	position: absolute;
+	background-color: var(--toolbar-bg);
+	box-shadow:0 0 0 1px var(--toolbar-border);
+	padding:5px;
+	font-size: var(--font-small);
+}
+.toolbar > svg {
+	letter-spacing: 2px;
+	position: absolute;
+	color:var(--header-color);
+	font-family: "sono-regular", monospace;
+	overflow: visible;
+	text-transform: uppercase;
+}
+/* tools toolbar */
+.toolbar-tools {
+	left:5px;
+	display: flex;
+	flex-direction: column;
+	position: absolute;
+	font-size:var(--font-small);
+	gap:4px;
+}
+.toolbar-tools > div {
+	display: flex;
+	flex-direction: column;
+	background-color: var(--toolbar-bg);
+	box-shadow:0 0 0 1px var(--toolbar-border);
+}
+.toolbar-tools .tools-1st-half {
+	border-radius: 30px 30px 0 0;
+}
+.toolbar-tools .tools-2nd-half {
+	border-radius: 0 0 30px 30px;
+	padding: 0 0 20px 0;
+}
+.toolbar-title-svg {
+	letter-spacing: 2px;
+	position: absolute;
+	color:var(--header-color);
+	font-family: "sono-regular";
+	overflow: visible;
+	text-transform: uppercase;
+	pointer-events: none;
+}
+.toolbar-tools .tools-1st-half .toolbar-title-svg {
+	top:-3px;
+}
+.toolbar-tools .tools-2nd-half .toolbar-title-svg {
+	bottom:-3px;
+}
+.toolbar-tools .mode-buttons {
+	padding:5px 5px 0 5px;
+}
+.toolbar-tools .mode-buttons button {
+	height: 50px;
+	width: 50px;
+	border-radius: 100%;
+	margin-bottom: 4px;
+}
+.toolbar-wrapper {
+	padding:3px;
+	display: flex;
+	justify-content: center;
+	flex-direction: column;
+}
+.tools-1st-half > .toolbar-wrapper {
+	border-top: 1px solid var(--toolbar-border);
+}	
+.tools-2nd-half > .toolbar-wrapper ~ .toolbar-wrapper {
+	border-top: 1px solid var(--toolbar-border);
+}
+.toolbar-columns {
+	padding-top:3px;
+	display: flex;
+	text-align: center;
+}
+.toolbar-columns > div {
+	flex:1;
+	border:none;
+}
+.icon {
+	fill:var(--button-off-color);
+}
+.button-grid {
+	display: grid;
+	gap:4px;
+}
+.icon-button{
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 1px;
+}
+.button-grid-fontsize {
+	border:none;
+	grid-template-columns: 1fr 1fr;
+}
+.button-grid-glyphoffset {
+	grid-template-columns: 1fr 1fr 1fr;
+	width: min-content;
+}
+.button-grid-glyphoffset > :nth-child(1) {
+	grid-column-start: 2;
+}
+.button-grid-glyphoffset > :nth-child(2) {
+	grid-row-start: 2;
+}
+.button-grid-glyphoffset > :nth-child(3) {
+	grid-column-start: 2;
+}
+.button-grid-glyphoffset > :nth-child(5) {
+	grid-row-start: 3;
+	grid-column-start: 2;
+}
+.button-grid-glyphoffset span {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+.mode-transforms {
+	grid-template-columns: 1fr 1fr;
+}
+
+/* colors toolbar */
+.toolbar-colors {
+	right:5px;
+	padding:0 0 25px 0;
+	border-radius: 30px;
+}
+.toolbar-colors .currentColors {
+	border-bottom:1px solid var(--toolbar-border);
+	cursor: pointer;
+}
+.toolbar-colors > svg {
+	top:-4px;
+	left:-4px;
+}
+.toolbar-colors .hidden {
+	display: none;
+}
+.toolbar-colors > div {
+	position: relative;
+	margin:3px;
+}
+.used-colors {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+}
+
+/* layers toolbar */
+.toolbar-layers {
+	bottom:5px;
+	display: flex;
+	gap:5px;
+	align-items: flex-start;
+	padding:5px 25px 5px 25px;
+	border-radius: 30px;
+}
+.toolbar-layers svg {
+	top:-3px;
+	left:-3px;
+}
+.toolbar-layers button {
+	width:30px;
+	height: 30px;
+	font-size: 1.5rem;
+}
+.toolbar-layers fieldset {
+	border:none;
+	padding:0;
+	margin:0;
+	text-transform: uppercase;
+	text-align: center;
+	display: flex;
+	width: 100%;
+}
+.toolbar-layers fieldset input {
+	display: none;
+}
+.toolbar-layers fieldset label {
+	flex:1;
+	padding:1px;
+	border-radius: 0 0 2px 2px;
 }
 /* ~~~~~~~~~~~~~~~~~~~~~
-colors
+sidebar / settings
 ~~~~~~~~~~~~~~~~~~~~~ */
-.colorPalette {
+section {
+	padding:4px;
+	background-color: var(--toolbar-bg);
+	border: 1px solid var(--toolbar-border);
+	position: relative;
+	margin:20px 0 0;
+}
+section h3 {
+	font-size: var(--font-small);
+	font-weight: normal;
+	letter-spacing: 2px;
+	margin:0;
+	background-color: var(--header-bg);
+	box-shadow: 0 0 0 1px var(--toolbar-border);
+	color: var(--header-color);
+	display: inline-block;
+	width: auto;
+	text-align: center;
+	border-radius: 3px 3px 0 0;
+	padding:2px 5px;
+	position: absolute;
+	left:0;
+	top:-15px;
+}
+/* ~~~~~~~~~~~~~~~~~~~~~
+fontlist
+~~~~~~~~~~~~~~~~~~~~~ */
+.glyphsList {
 	display: flex;
 	flex-wrap: wrap;
-	background: #eee;
+	width: 100%;
+	height: 100%;
 	position: relative;
-	width: 400px;
+}
+.glyphsList-glyph {
+	display: flex;
+	background-color: var(--grid-bg);
+	border:1px solid var(--button-off-bg);
+}
+.glyphsList-glyph:hover {
+	z-index: 99;
+	border:1px solid var(--highlight);
+	box-shadow: 0 0 0 1px var(--highlight);
+}
+.glyphsList-glyph.selected {
+	z-index: 100;
+	background-color: var(--button-on-bg);
+	border:1px solid var(--button-on-bg);
+	box-shadow: 0 0 0 1px var(--button-off-bg);
+} 
+.glyph-highlight {
+	background: var(--selected-bg);
+	width: 100%;
+	height: 100%;
+	position: absolute;
+}
+.glyphsList-container {
+	position: relative;
+	height: 100%;
+	display: inline-block;
+}
+.font-highlight {
+	box-shadow: 0 0 0 3px var(--selected-bg);
+	width: 100%;
+	height: 100%;
+	position: absolute;
+	top:0;
+	left:0;
+	z-index: 0;
+}
+.dropZone {
+	border: 2px dashed var(--input-border);
+	background-color: var(--input-bg);
+	color:var(--input-color);
+	padding: 1rem;
+	border-radius: 1rem;
+	display: grid;
+	place-items: center;
+}
+/* ~~~~~~~~~~~~~~~~~~~~~
+colors palettes
+~~~~~~~~~~~~~~~~~~~~~ */
+.colorPalette {
+	position: relative;
+}
+.paletteContainer .hidden {
+	visibility: hidden;
+}
+.colorPalette > div {
+	display: grid;
+	grid-template-columns: repeat(16, 1fr);
+	width: min-content;
 }
 .color {
-	float: left;
-	width: 25px;
-	height: 25px;
-	cursor: pointer;
-	font-size: 9px;
+	width:22px;
+	height:22px;
+	position: relative;
 }
-.selectedColor {
-	box-shadow: 0 0 0 1px rgba(0, 255, 0, 1);
+.color > * {
+	position: absolute;
 }
 .colorSliders {
 	margin-top: 10px;
@@ -174,63 +550,117 @@ colors
 	flex: 1;
 }
 .rgbSlider input[type="range"] {
-	-webkit-appearance: none;
 	outline: none;
-	border-radius: 10px;
+	border-radius: 100%;
 }
 .colorPreview {
-	width: 70px;
-	height: 70px;
+	width: 40px;
+	height: 40px;
+	border-radius: 100%;
+	display: flex;
+	justify-content: center;
+	align-items: center;
 }
-.intensitySlider {
-	float: left;
+.colorPreview.inner {
+	height: 25px;
+	width: 25px;
+	border-radius: 0;
 }
 
 /* ~~~~~~~~~~~~~~~~~~~~~
 grid move / zoom
 ~~~~~~~~~~~~~~~~~~~~~ */
-.grid_controls {
+.pan-zoom-controls {
 	position: absolute;
-	bottom: 0;
+	bottom: 5px;
 	right: 5px;
-	width: 70px;
-	height: 100px;
+	display: grid;
+	grid-template-columns: 1fr 1fr 1fr;
+	gap:3px;
 }
-.grid_controls button {
-	width: 20px;
-	height: 20px;
-	padding: 0;
-	margin-right: 3px;
-	vertical-align: middle;
+.pan-zoom-controls button {
+	width:20px;
+	height:20px;
 	border: none;
-	background: #eee;
-	box-shadow: 0 0 0 1px rgba(0, 0, 0, 1);
+	background: var(--button-off-bg);
+	box-shadow: 0 0 0 1px var(--button-off-border);
+	border-radius: 100%;
 }
-.grid_controls button:hover {
+.pan-zoom-controls button:hover {
 	transform: scale(1.1);
 }
-.grid_controls .zoom {
-	display: flex;
-	justify-content: flex-end;
-	margin-bottom: 5px;
+.pan-zoom-controls button:nth-child(2) {
+	border-radius: 100% 100% 0 0;
 }
-.grid_controls .zoom button:first-child {
-	margin-right: 4px;
+.pan-zoom-controls button:nth-child(4) {
+	border-radius: 100% 0 0 100%;
 }
-.grid_controls .move_y {
-	display: block;
-	margin: 3px auto;
-	width: 25px;
+.pan-zoom-controls button:nth-child(5) {
+	border-radius: 0;
+}
+.pan-zoom-controls button:nth-child(6) {
+	border-radius: 0 100% 100% 0;
+}
+.pan-zoom-controls button:last-child {
+	grid-column-start: 2;
+	border-radius: 0 0 100% 100%;
 }
 
 /* ~~~~~~~~~~~~~~~~~~~~~
 hide grid checked
 ~~~~~~~~~~~~~~~~~~~~~ */
 .hideGrid {
-	background: white;
+	background: var(--grid-bg);
 }
 .hideGrid .UiLayer {
 	display: none;
+}
+
+/* ~~~~~~~~~~~~~~~~~~~~~
+button & input styles
+~~~~~~~~~~~~~~~~~~~~~ */
+button, 
+input,
+label.buttonlike {
+	font-family: "sono-regular", monospace;
+	font-size: var(--font-small);
+	cursor: pointer;
+}
+button:disabled {
+	color:var(--button-off-border);
+	pointer-events: none;
+}
+button, 
+label.buttonlike {
+	background-color: var(--button-off-bg);
+	color:var(--button-off-color);
+	box-shadow:0 0 0 1px var(--button-off-border);
+	border-radius: 3px;
+	border:none;
+}
+button:hover,
+label.buttonlike:hover {
+	background-color: var(--button-off-hover-bg);
+	color:var(--button-off-hover-color);
+	box-shadow:0 0 0 1px var(--button-off-hover-border);
+}
+button.active,
+label.buttonlike.active {
+	background-color: var(--button-on-bg);
+	color:var(--button-on-color);
+	box-shadow:0 0 0 1px var(--button-on-border);
+}
+button.active:hover,
+label.buttonlike.active:hover {
+	background-color: var(--button-on-hover-bg);
+	color:var(--button-on-hover-color);
+	box-shadow:0 0 0 1px var(--button-on-hover-border);
+}
+.controls_container button, 
+.controls_container input {
+	margin:2px;
+	padding:3px 5px;
+	font-size: 1rem;
 }
 
 /* ~~~~~~~~~~~~~~~~~~~~~
@@ -246,12 +676,12 @@ ol li {
 	margin-top: 5px;
 }
 span.hotkey {
-	background: #eee;
+	background: var(--grid-background);
 	padding: 2px;
-	border-radius: 5px;
+	border-radius: 2px;
 }
 #dropbox-response {
-	color: red;
+	color: var(--color-highlight);
 }
 h3 {
 	width: 100%;
@@ -268,7 +698,7 @@ tr {
 	width: 100%;
 }
 tr {
-	border-bottom: 1px dotted grey;
+	border-bottom: 1px dotted var(--color-highlight);
 }
 td {
 	padding-bottom: 2px;
@@ -279,78 +709,42 @@ table tr td {
 table tr td:first-child {
 	width: 35%;
 }
-
+kbd {
+	background-color: #eee;
+	border-radius: 2px;
+	border: 1px solid #b4b4b4;
+	box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2),
+		0 2px 0 0 rgba(255, 255, 255, 0.7) inset;
+	color: #333;
+	display: inline-block;
+	font-size: var(--font-small);
+	font-weight: 700;
+	line-height: 1;
+	padding: 2px 4px;
+	white-space: nowrap;
+	margin: 0 2px;
+}
 /* ~~~~~~~~~~~~~~~~~~~~~
 controls
 ~~~~~~~~~~~~~~~~~~~~~ */
 .controls_container {
-	width: calc(400px + 25px);
-	padding: 5px;
+	width: 380px;
 	overflow-y: scroll;
-	flex: none;
-	background-color: whitesmoke;
-}
-.control_component {
-	display: block;
-	margin-bottom: 0.5em;
-}
-.header {
-	width: 30%;
-	display: inline-block;
+	scrollbar-gutter: stable;
+	z-index: 2;
 }
 
-button:hover {
-	 border: 1px solid black;
-}
-button:active {
-	 background-color: #999999;
-}
-
-select,
-input[type="text"] {
-	width: 300px;
-}
-select.shortinput,
-input[type="text"].shortinput {
-	width: 140px;
-}
-.page_selection,
-.control_inputs {
-	display: inline-block;
-}
-#page_select_input.input-error {
-	color: red;
-}
-
-#glyphcont img:hover {
-	box-shadow: inset 0 0 0 1px rgba(255, 0, 0, 1);
-	cursor: pointer;
-}
-.select_set button.active {
-	background-color: lime;
-}
-.settingsBlock {
-	padding-bottom: 1em;
-}
-.layerSelect {
-	display: flex;
-}
-.layerSelect div {
-	flex: 1;
-}
 /* ~~~~~~~~~~~~~~~~~~~~~
 Preview
 ~~~~~~~~~~~~~~~~~~~~~ */
 .preview {
-	display: block;
 	position: absolute;
 	top: 0;
 	left: 0;
 	width: 100vw;
 	height: 100vh;
 	background: black;
-	z-index: 1000;
-	overflow: hidden;
+	z-index: 10;
 }
 .preview > div {
 	position: absolute;
@@ -372,14 +766,14 @@ QuickChooseColor
 	left: 0;
 	width: 100%;
 	height: 100%;
-	z-index: 999;
+	z-index: 9;
 	display: flex;
 	justify-content: center;
 	align-items: center;
+	background-color: var(--toolbar-bg);
 }
 .quickChooseColor .paletteContainer {
-	width: 400px;
-	box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.3);
+	width: min-content;
 }
 /* ~~~~~~~~~~~~~~~~~~~~~
 keymappings bar
@@ -426,47 +820,31 @@ keymappings bar
 /* ~~~~~~~~~~~~~~~~~~~~~
 selected glyph in keymappings bar
 ~~~~~~~~~~~~~~~~~~~~~ */
-.selectedGlyph {
-	position: relative;
-}
 .selectedGlyph .vector {
 	height: 30px;
 	width: 30px;
-	border: 1px solid #aaa;
+	box-shadow: 0 0 0 1px var(--button-off-border);
 	overflow: visible;
-	box-sizing: border-box;
+	background: var(--grid-bg);
 	position: relative;
-	display: inline-block;
 }
 .selectedGlyph .vector.current {
-	border: 2px solid red;
+	box-shadow: 0 0 0 1px var(--highlight);
 }
 
 .SelectedGlyphContainer {
-	width: 50px;
-	height: 50px;
-	margin-top: auto;
+	width: 60px;
+	height: 60px;
 	position: absolute;
-	left: 10px;
-	bottom: 10px;
-}
-.SelectedGlyphContainer .selectedGlyph {
-	display: inline;
+	left: 5px;
+	bottom: 5px;
 }
 .SelectedGlyphContainer .selectedGlyph .vector {
-	width: 50px;
-	height: 50px;
-	background: white;
+	width: 60px;
+	height: 60px;
 }
-#properties {
-	display: block;
-	width: 100px;
-	margin-left: 5px;
-	position: absolute;
-	top: 0;
-	left: 80px;
-}
-.selectedGlyph .vector svg {
+
+.vector svg {
 	height: 100%;
 	overflow: visible;
 	position: absolute;
@@ -480,36 +858,31 @@ selected glyph in keymappings bar
 /* ~~~~~~~~~~~~~~~~~~~~~
 	react-tabs
 	~~~~~~~~~~~~~~~~~~~~~ */
-.react-tabs {
-	-webkit-tap-highlight-color: transparent;
-}
-
 .react-tabs__tab-list {
-	border-bottom: 1px solid #aaa;
 	margin: 0;
 	padding: 0;
+	display: flex;
 }
-
 .react-tabs__tab {
-	display: inline-block;
-	border: 1px solid transparent;
-	border-bottom: none;
-	bottom: -1px;
+	flex: 1;
+	text-align: center;
+	border: 1px solid var(--button-off-border);
+	background: var(--button-off-bg);
+	color: var(--button-off-color);
 	position: relative;
 	list-style: none;
-	padding: 6px 12px;
 	cursor: pointer;
+	padding:5px;
 }
 
 .react-tabs__tab--selected {
-	background: #fff;
-	border-color: #aaa;
-	color: black;
-	border-radius: 5px 5px 0 0;
+	background: var(--button-on-bg);
+	border-color: var(--button-on-border);
+	color: var(--button-on-color);
 }
 
 .react-tabs__tab--disabled {
-	color: GrayText;
+	color: gray;
 	cursor: default;
 }
 
@@ -535,6 +908,7 @@ selected glyph in keymappings bar
 
 .react-tabs__tab-panel--selected {
 	display: block;
+	padding:4px 0;
 }
 
 /* ~~~~~~~~~~~~~~~~~~~~~
@@ -542,19 +916,22 @@ tooltips
 ~~~~~~~~~~~~~~~~~~~~~ */
 /* Tooltip container */
 .tooltip {
+	font-size: var(--font-small);
 	position: relative;
-	display: flex;
+	cursor: pointer;
+	pointer-events: none;
 }
-
+.color.tooltip {
+	pointer-events: all;
+}
 /* Tooltip text */
 .tooltip .tooltiptext {
-	visibility: hidden;
-	background-color: black;
-	color: #fff;
+	background-color: var(--button-off-color);
+	color: var(--button-off-bg);
 	text-align: center;
 	width: 100%;
 	padding: 1px 0;
-	border-radius: 1px;
+	border-radius: 2px 2px 0 0;
 	pointer-events: none;
 	position: absolute;
 	z-index: 1;
@@ -562,6 +939,9 @@ tooltips
 }
 
 /* Show the tooltip text when you mouse over the tooltip container */
-.tooltip:hover .tooltiptext {
+.color.tooltip .tooltiptext {
+	visibility: hidden;
+}
+.color.tooltip:hover .tooltiptext {
 	visibility: visible;
 }

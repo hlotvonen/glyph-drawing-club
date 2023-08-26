@@ -31,6 +31,10 @@ export function boxmuller() {
     return [r * Math.cos(theta), y = r * Math.sin(theta)];
 }
 
+export function onlyUnique(value, index, self) {
+    return self.indexOf(value) === index;
+}
+
 // Standard Normal variate using Box-Muller transform.
 // https://stackoverflow.com/a/36481059
 export function randn_bm(min, max, skew) {
@@ -196,4 +200,13 @@ export function getRandomInt(min, max) {
     min = Math.ceil(min);
     max = Math.floor(max);
     return Math.floor(Math.random() * (max - min) + min); //The maximum is exclusive and the minimum is inclusive
+}
+
+export function sortKeys(dict) {
+    var keys = [];
+    for (var key in dict) {
+        keys.push(key);
+    }
+    keys.sort();
+    return keys;
 }

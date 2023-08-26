@@ -17,7 +17,7 @@ class ColorPaletteSelect extends React.Component {
 		))
 
 		return (
-			<div className="select_set flex justify-between">
+			<div className="select_set">
 				<div>{selectPaletteButtons}</div>
 
 				<button

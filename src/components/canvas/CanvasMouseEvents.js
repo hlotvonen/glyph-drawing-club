@@ -1,3 +1,4 @@
+import { throttle } from "lodash"
 import { observer } from "mobx-react"
 import React from "react"
 import eventstore from "../../models/EventStore"
@@ -20,16 +21,16 @@ class CanvasMouseEvents extends React.Component {
 
 	}
 	
-	mousePos(e) {
+	mousePos = throttle((e) => {
 
-		let mouseX = (e.clientX - this.ref.current.getBoundingClientRect().left) / gridstore.settings.zoom
-		let mouseY = (e.clientY - this.ref.current.getBoundingClientRect().top) / gridstore.settings.zoom
+		let mouseX = Math.floor((e.clientX - this.ref.current.getBoundingClientRect().left) / gridstore.settings.zoom)
+		let mouseY = Math.floor((e.clientY - this.ref.current.getBoundingClientRect().top) / gridstore.settings.zoom)
 
 		return ({
 			x: mouseX,
 			y: mouseY
 		})
-	}
+	}, 16)
 
 	handleClick(e) {
 		e.preventDefault()
@@ -57,6 +58,7 @@ class CanvasMouseEvents extends React.Component {
 	handleRightClick(e) {
 		e.preventDefault()
 	}
+
 
 	render() {
 		return (			

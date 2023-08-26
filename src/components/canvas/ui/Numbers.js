@@ -1,5 +1,5 @@
-import React, { Component } from "react"
 import { observer } from "mobx-react"
+import { Component } from "react"
 import store from "../../../models/CanvasStore"
 
 class Numbers extends Component {
@@ -12,7 +12,7 @@ class Numbers extends Component {
 			colNums.push(
 				<div
 					key={i}
-					className={"absolute -top-4 flex justify-center " + (selected_x === i ? "text-white-light" : "")}
+					className={"grid-numbers grid-numbers-top " + (selected_x === i ? "grid-numbers-highlight" : "")}
 					style={{
 						width: store.cellWidth,
 						left: i * store.cellWidth
@@ -28,7 +28,7 @@ class Numbers extends Component {
 			rowNums.push(
 				<div
 					key={i}
-					className={"absolute -left-6 flex items-center " + (selected_y === i ? "text-white-light" : "")}
+					className={"grid-numbers grid-numbers-side " + (selected_y === i ? "grid-numbers-highlight" : "")}
 					style={{
 						height: store.cellHeight,
 						top: i * store.cellHeight,
@@ -40,10 +40,10 @@ class Numbers extends Component {
 		}
 
 		return (
-			<div className="text-pink text-xs pointer-events-none">
+			<>
 				{colNums}
 				{rowNums}
-			</div>
+			</>
 		)
 	}
 }

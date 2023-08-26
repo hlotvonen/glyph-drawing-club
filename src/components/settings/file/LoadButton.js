@@ -1,8 +1,8 @@
-import React from "react"
-import store from "../../models/CanvasStore"
 import { action } from "mobx"
+import React from "react"
+import store from "../../../models/CanvasStore"
 
-class LoadAndPlace extends React.Component {
+class LoadButton extends React.Component {
 	state = {
 		waitingForFileUpload: false,
 	}
@@ -22,28 +22,24 @@ class LoadAndPlace extends React.Component {
 
 				//check if we are dealing with an old file, display warning and don't open file
 				if (jsonObj["canvas"][0][0].length !== 5) {
-					if (window.confirm("Can't open old file, sorry!")) {
+					if (
+						window.confirm(
+							"Can't open a file saved with an old GDC version 1.0., sorry!"
+						)
+					) {
 						window.location.href = "https://www.glyphdrawing.club/"
 					}
-					throw new Error("Can't open old file, sorry!")
+					throw new Error(
+						"Can't open a file saved with an old GDC version 1.0., sorry!"
+					)
 				}
 
-				let canvasHeight = jsonObj["canvasHeight"]
-				let canvasWidth = jsonObj["canvasWidth"]
-
-				for (let y_i = 0; y_i < canvasHeight; y_i++) {
-					for (let x_i = 0; x_i < canvasWidth; x_i++) {
-						if (
-							store.selected_y + y_i >= store.canvasHeight ||
-							store.selected_x + x_i >= store.canvasWidth
-						) {
-							continue
-						}
-						store.canvas[store.selected_y + y_i][
-							store.selected_x + x_i
-						].replace(jsonObj["canvas"][y_i][x_i])
-					}
-				}
+				store.canvasHeight = jsonObj["canvasHeight"]
+				store.canvasWidth = jsonObj["canvasWidth"]
+				store.cellWidth = jsonObj["cellWidth"]
+				store.cellHeight = jsonObj["cellHeight"]
+				store.defaultFontSize = jsonObj["defaultFontSize"]
+				store.canvas = jsonObj["canvas"]
 			})
 			temporaryFileReader.readAsText(inputFile)
 		})
@@ -59,15 +55,18 @@ class LoadAndPlace extends React.Component {
 
 		this.setState({ waitingForFileUpload: true })
 
+		//reset selected_x and y and empty selection to prevent crashes
+		store.selected_x = 0
+		store.selected_y = 0
+		store.emptySelection()
+
 		const fileList = event.target.files
 
 		// Uploads will push to the file input's `.files` array. Get the last uploaded file.
 		const latestUploadedFile = event.target.files.item(fileList.length - 1)
 
 		try {
-			const fileContents = LoadAndPlace.readUploadedFileAsText(
-				latestUploadedFile
-			)
+			const fileContents = LoadButton.readUploadedFileAsText(latestUploadedFile)
 			this.setState({
 				waitingForFileUpload: false,
 			})
@@ -82,10 +81,10 @@ class LoadAndPlace extends React.Component {
 	render() {
 		return (
 			<div>
-				{"Place from file: "}
+				Load from file:
 				<input type="file" name="myFile" onChange={this.uploadFile} />
 			</div>
 		)
 	}
 }
-export default LoadAndPlace
+export default LoadButton

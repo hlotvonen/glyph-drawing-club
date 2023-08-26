@@ -1,5 +1,4 @@
 import { observer } from "mobx-react"
-import React from "react"
 import store from "../../models/CanvasStore"
 import colorStore from "../../models/ColorStore"
 import { colorBlend } from "../../utils/colorConversion"

@@ -1,5 +1,4 @@
 import { observer } from "mobx-react"
-import React from "react"
 import colorStore from "../../models/ColorStore"
 import { colorBlend } from "../../utils/colorConversion"
 
@@ -9,14 +8,7 @@ const SelectedGlyph = observer((props) => {
 
 	return (
 		<svg
-			viewBox={
-				"0 " +
-				props.svgBaseline +
-				" " +
-				props.svgWidth +
-				" " +
-				props.svgHeight
-			}
+			viewBox={"0 0 800 800"}
 			style={{
 				backgroundColor: `rgb(${props.showBg && bgColor})`,
 			}}
@@ -25,7 +17,9 @@ const SelectedGlyph = observer((props) => {
 		>
 			<g
 				transform={`
-				scale(${(Number(props.defaultFontSize) + props.glyphFontSizeModifier) / Number(props.defaultFontSize)})
+				scale(
+					${(Number(props.defaultFontSize) + props.glyphFontSizeModifier) / Number(props.defaultFontSize)}
+				)
 				
 				${/*centering when glyph is flipped: */""}
 				translate(

@@ -1,5 +1,6 @@
 const path = require("path")
 const webpack = require("webpack")
+const MiniCssExtractPlugin = require("mini-css-extract-plugin")
 
 module.exports = {
 	devtool: "eval",
@@ -10,6 +11,7 @@ module.exports = {
 	},
 	plugins: [
 		new webpack.HotModuleReplacementPlugin(),
+		new MiniCssExtractPlugin()
 	],
 	resolve: {
 		extensions: [".js", ".jsx"]
@@ -20,7 +22,11 @@ module.exports = {
 			use: {
 				loader: "babel-loader",
 				options: {
-					presets: ["@babel/react", "@babel/env"],
+					presets: [
+						"@babel/preset-env",
+						["@babel/preset-react", {"runtime": "automatic"}]
+					],
+					
 				}
 			},
 			include: path.join(__dirname, "src")
@@ -29,9 +35,8 @@ module.exports = {
 			test: /\.css$/i,
 			include: path.resolve(__dirname, "src"),
 			use: [
-				"style-loader",
-				"css-loader",
-				"postcss-loader"
+				MiniCssExtractPlugin.loader,
+				"css-loader"
 			],
 		}]
 	},

@@ -7,8 +7,6 @@ import { chromaColor } from "../utils/chromaColors"
 import palettePresets from "../utils/palettePresets.json"
 import { randomRGB } from "../utils/randomRGB"
 	
-let colorStorage
-
 class ColorStore {
 	constructor() {
 
@@ -36,7 +34,8 @@ class ColorStore {
 				let colorLocalstorage = {
 					name: "Color Palettes",
 					timestamp: Math.floor(Date.now() / 1000),
-					palettes: this.palettes
+					palettes: this.palettes,
+					quickPalette: this.quickPalette
 				}
 				localforage.setItem("colorStorage", JSON.stringify(colorLocalstorage))
 			}
@@ -59,8 +58,6 @@ class ColorStore {
 	@observable
 	coloringModeBg = false
 	@observable
-	showUsedColors = false
-	@observable
 	selectedPaletteIndex = 0
 	@observable
 	palettes = []
@@ -70,10 +67,15 @@ class ColorStore {
 	paletteName = ""
 	@observable
 	paletteAuthor = ""
+	@observable
+	quickPalette = new Set([0,255])
+	@observable
+	showQuickPaletteColors = false
 
 	@action
 	init = (storage) => {
 		this.palettes = storage.palettes
+		this.quickPalette = new Set(storage.quickPalette)
 		this.paletteName = this.palettes[this.selectedPaletteIndex].name
 		this.paletteAuthor = this.palettes[this.selectedPaletteIndex].author
 	}
@@ -116,8 +118,6 @@ class ColorStore {
 	handleChangeCohesionColor = () => {
 		this.changingCohesionColor = !this.changingCohesionColor
 	}
-
-
 	@action
 	handlePresetSelectChange = e => {
 		this.selectedPresetPalette = Number(e)

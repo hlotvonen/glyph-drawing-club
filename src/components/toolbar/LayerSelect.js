@@ -1,7 +1,6 @@
 import { observer } from "mobx-react"
-import React from "react"
-import store from "../models/CanvasStore.js"
-import SelectedGlyph from "./toolbar/SelectedGlyph.js"
+import store from "../../models/CanvasStore.js"
+import SelectedGlyph from "./SelectedGlyph.js"
 
 
 const layerGlyph = (layer) => (
@@ -26,45 +25,50 @@ const layerGlyph = (layer) => (
 				/>
 			</div>
 		</div>
-		<input
-			type="checkbox"
-			name={`hideLayer-${layer}`}
-			value={store.hiddenLayers[layer]}
-			onChange={() => store.hideLayer(layer)}
-		/>
-		<label htmlFor={`hideLayer-${layer}`}>hide</label>
+
+		<fieldset>
+			<input
+				type="checkbox"
+				name={`hideLayer-${layer}`}
+				value={store.hiddenLayers[layer]}
+				onChange={() => store.hideLayer(layer)}
+				checked={store.hiddenLayers[layer]}
+			/>
+			<label 
+				htmlFor={`hideLayer-${layer}`}
+				onClick={() => store.hideLayer(layer)}
+				className={`buttonlike ${store.hiddenLayers[layer] ? "" : "active"}`}
+				>
+					{store.hiddenLayers[layer] ? "off" : "on"}
+				</label>
+		</fieldset>
+
 	</div>
 )
 
 const LayerSelect = () => ( 
-	<div>
+	<div className="toolbar toolbar-layers">
   
-		<div className="settings-header">
-		  LAYERS
-		</div>
-  
-		<div className="flex justify-between">
+	<svg viewBox="0 0 60 60" height="60" className="toolbar-title-svg">
+			<defs><path id="textOnPath-layers" d="m0 30ZA1 1 30 0160 30" /></defs>
+			<text>
+				<textPath xlinkHref="#textOnPath-layers">
+					Layers
+				</textPath>
+			</text>
+		</svg>
+		
+		{layerGlyph(0)}
+		<button onClick={event => store.switchLayersDown(event)} value="1">{"⇆"}</button>
 
-			{layerGlyph(0)}
+		{layerGlyph(1)}
+		<button onClick={event => store.switchLayersDown(event)} value="2">{"⇆"}</button>
 
-			<div>
-				<button onClick={event => store.switchLayersDown(event)} value="1">{"⇆"}</button>
-			</div>
+		{layerGlyph(2)}
+		<button onClick={event => store.switchLayersDown(event)} value="3">{"⇆"}</button>
 
-			{layerGlyph(1)}
-
-			<div>
-				<button onClick={event => store.switchLayersDown(event)} value="2">{"⇆"}</button>
-			</div>
-
-			{layerGlyph(2)}
-
-			<div>
-				<button onClick={event => store.switchLayersDown(event)} value="3">{"⇆"}</button>
-			</div>
-
-			{layerGlyph(3)} 
-		</div>
+		{layerGlyph(3)} 
+	
 	</div>
 )
 

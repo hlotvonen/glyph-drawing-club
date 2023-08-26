@@ -1,6 +1,6 @@
 import { observer } from "mobx-react"
 import React from "react"
-import store from "../../models/CanvasStore.js"
+import store from "../../../models/CanvasStore.js"
 
 class CanvasHeight extends React.Component {
 	render() {
@@ -10,7 +10,7 @@ class CanvasHeight extends React.Component {
 				<div className="settingsBlock">
 
 					<div>Canvas width:</div>
-					<button onClick={store.deleteCol}> {"-1"} </button>
+					<button onClick={store.deleteCol}>{"-1"}</button>
 					<button onClick={store.addCol}> {"+1"} </button>
 					<span>
 						{" "} {store.canvasWidth} {"columns"} ({store.cellWidth * store.canvasWidth} px)
@@ -18,8 +18,8 @@ class CanvasHeight extends React.Component {
 
 
 					<div className="mt-1">Canvas height:</div>
-					<button onClick={store.deleteRow}> {"- 1"} </button>
-					<button onClick={store.addRow}> {"+ 1"} </button>
+					<button onClick={store.deleteRow}> {"-1"} </button>
+					<button onClick={store.addRow}> {"+1"} </button>
 					<span>
 						{" "} {store.canvasHeight} {"rows"} ({store.cellHeight * store.canvasHeight} px)
 					</span>

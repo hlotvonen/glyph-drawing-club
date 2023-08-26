@@ -89,102 +89,93 @@ class ColorPresetSelect extends React.Component {
 	render() {
 		return (
 			<>
-				<div className="settings-header mt-2">
-					SAVE PALETTE
-				</div>
-				<div>
+				<section>
+					<h3>SAVE PALETTE</h3>
 					<form onSubmit={this.handleSave}>
-						<label className="flex">
+						<label>
 							Name:
 							<input
 								type="text"
 								name="paletteName"
 								value={colorstore.paletteName}
 								onChange={(evt) => colorstore.handleChangePaletteName(evt)}
-								onFocus={() => store.toggleWriting()}
-								onBlur={() => store.toggleWriting()}
+								onFocus={() => store.toggleWriting(true)}
+          			onBlur={() => store.toggleWriting(false)}
 								disabled={colorstore.palettes[colorstore.selectedPaletteIndex].name == "" || colorstore.palettes[colorstore.selectedPaletteIndex].name == "Empty" ? false : true}
 							/>
 						</label>
-						<label className="flex">
+						<label>
 							Author:
 							<input
 								type="text"
 								name="paletteAuthor"
 								value={colorstore.paletteAuthor}
 								onChange={(evt) => colorstore.handleChangePaletteAuthor(evt)}
-								onFocus={() => store.toggleWriting()}
-								onBlur={() => store.toggleWriting()}
+								onFocus={() => store.toggleWriting(true)}
+          			onBlur={() => store.toggleWriting(false)}
 								disabled={colorstore.palettes[colorstore.selectedPaletteIndex].author == "" ? false : true}
 							/>
 						</label>
 						<input type="submit" value="Save palette" />
 						
 					</form>
-				</div>
+				</section>
 				
-				<div className="settings-header mt-2">
-					Load palette
-				</div>
-
-				<div>
-					Load from file:
-					<input type="file" name="myFile" onChange={this.uploadFile} />
-				</div>
-
-				
-				<div>
-					Copy paste url from <a href="https://lospec.com/palette-list" target="_blank" rel="noopener noreferrer">Lospec</a>:
-					<form onSubmit={this.handleAdd} className={"flex"}>
-						<label>
-							<input
-								placeholder={"https://lospec.com/palette-list/palette-name"}
-								type="text"
-								value={this.state.lospecurl}
-								onChange={this.handleChange}
-								onFocus={() => store.toggleWriting()}
-								onBlur={() => store.toggleWriting()}
-							/>
-						</label>
-						<input type="submit" value="Add" />
-					</form>
-				</div>
-
-				<div>
-					Select a color palette preset:
-					<select
-						value={colorstore.selectedPresetPalette}
-						onChange={e => colorstore.handlePresetSelectChange(e.target.value)}
-					>
-						<option value="0">Deluxe Paint</option>
-						<option value="2">AtariST (Reduced To 256)</option>
-						<option value="3">Eclipse icon 256</option>
-						<option value="4">Fornax Void Official Palette No.1</option>
-						<option value="5">DOOM</option>
-						<option value="6">Riso Blue, Yellow, FluoroPink (Preview)</option>
-						<option value="7">Riso Blue, Yellow, FluoroPink (Blue Plate)</option>
-						<option value="8">
-							Riso Blue, Yellow, FluoroPink (FluoroPink Plate)
-						</option>
-						<option value="9">
-							Riso Blue, Yellow, FluoroPink (Yellow Plate)
-						</option>
-						<option value="10">Riso FluoroPink and Teal (Preview)</option>
-						<option value="11">
-							Riso FluoroPink and Teal (FluoroPink Plate)
-						</option>
-						<option value="12">Riso FluoroPink and Teal (Teal Plate)</option>
-						<option value="13">Liero Level Palette</option>
-					</select>
-					<button type="button" onClick={() => colorstore.addPalettePreset(colorstore.selectedPresetPalette)}>
-						Add
-					</button>
-				</div>
-				<div>
-					<button type="button" onClick={() => colorstore.addPalettePreset(1)}>
-						Add empty palette
-					</button>
-				</div>
+				<section>
+					<h3>LOAD PALETTE</h3>
+					<div>
+						Load from file:
+						<input type="file" name="myFile" onChange={this.uploadFile} />
+					</div>
+					
+					<div>
+						Paste URL from <a href="https://lospec.com/palette-list" target="_blank" rel="noopener noreferrer">Lospec</a>:
+						<form onSubmit={this.handleAdd} className={"flex"}>
+							<label>
+								<input
+									placeholder={"https://lospec.com/palette-list/palette-name"}
+									type="text"
+									value={this.state.lospecurl}
+									onChange={this.handleChange}
+									onFocus={() => store.toggleWriting(true)}
+          				onBlur={() => store.toggleWriting(false)}
+								/>
+							</label>
+							<input type="submit" value="Add" />
+						</form>
+					</div>
+					<div>
+						Select from preset:
+						<select
+							value={colorstore.selectedPresetPalette}
+							onChange={e => colorstore.handlePresetSelectChange(e.target.value)}
+						>
+							<option value="0">Deluxe Paint</option>
+							<option value="2">AtariST (Reduced To 256)</option>
+							<option value="3">Eclipse icon 256</option>
+							<option value="4">Fornax Void Official Palette No.1</option>
+							<option value="5">DOOM</option>
+							<option value="6">Riso Blue, Yellow, FluoroPink (Preview)</option>
+							<option value="7">Riso Blue, Yellow, FluoroPink (Blue Plate)</option>
+							<option value="8">
+								Riso Blue, Yellow, FluoroPink (FluoroPink Plate)
+							</option>
+							<option value="9">
+								Riso Blue, Yellow, FluoroPink (Yellow Plate)
+							</option>
+							<option value="10">Riso FluoroPink and Teal (Preview)</option>
+							<option value="11">
+								Riso FluoroPink and Teal (FluoroPink Plate)
+							</option>
+							<option value="12">Riso FluoroPink and Teal (Teal Plate)</option>
+							<option value="13">Liero Level Palette</option>
+						</select>
+						<button type="button" onClick={() => colorstore.addPalettePreset(colorstore.selectedPresetPalette)}>
+							Add
+						</button>
+					</div>
+					<button type="button" onClick={() => colorstore.addPalettePreset(1)}>Add empty palette</button>
+				</section>
 			</>
 		)
 	}

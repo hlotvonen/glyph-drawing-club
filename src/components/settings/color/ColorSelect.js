@@ -1,6 +1,6 @@
 import { action } from "mobx"
 import { observer } from "mobx-react"
-import React, { Component } from "react"
+import { Component } from "react"
 import store from "../../../models/CanvasStore"
 import colorStore from "../../../models/ColorStore"
 import ColorPalette from "./ColorPalette"
@@ -36,29 +36,29 @@ class ColorSelect extends Component {
 	render() {
 
 		return (
-			<div>				
+			<>
 				<ColorPresetSelect />
-				<div className="settings-header mt-2 flex justify-between">
-					<span>PALETTES</span>
-					<div className="relative">
+				
+				<section>
+					<h3>PALETTE</h3>
+					Double click color to add / remove it from "Colors" toolbar
+					<div>
 						<input
 							type="checkbox"
 							name="usedcolors"
-							checked={colorStore.showUsedColors}
-							value={colorStore.showUsedColors}
-							onChange={action(() => colorStore.showUsedColors = !colorStore.showUsedColors)}
+							checked={colorStore.showQuickPaletteColors}
+							value={colorStore.showQuickPaletteColors}
+							onChange={action(() => colorStore.showQuickPaletteColors = !colorStore.showQuickPaletteColors)}
 						/>
-						<label htmlFor="usedcolors">Show only used colors</label>
+						<label htmlFor="usedcolors">Show which colors are in "Colors" toolbar</label>
 					</div>
-				</div>
-				<ColorPaletteSelect />
+					<ColorPaletteSelect />
+					<div className="paletteContainer">
+						<ColorPalette />
+					</div>
+					<ColorSliders />
+				</section>
 
-				<div className="paletteContainer">
-
-					<ColorPalette />
-				</div>
-
-				<ColorSliders />
 
 				<button onClick={() => colorStore.swapColors()}>Swap FG/BG</button>
 				<button onClick={() => colorStore.shuffleColors()}>Shuffle colors</button>
@@ -69,8 +69,8 @@ class ColorSelect extends Component {
 				<button onClick={() => colorStore.magicRange()}>magicRange</button>
 
 
-				<div className="settings-header mt-2">Recolor (assign new color index)</div>
-				<div className="cohesiveColors flex">
+				<div className="settings-header">Recolor (assign new color index)</div>
+				<div className="cohesiveColors">
 					<form onSubmit={this.handleRecolorSubmit}>
 						<label>
 						From:
@@ -78,8 +78,8 @@ class ColorSelect extends Component {
 								name="fromIndex"
 								value={Number(this.state.fromIndex)}
 								onChange={this.handleRecolorChange}
-								onFocus={() => store.toggleWriting()}
-								onBlur={() => store.toggleWriting()}
+								onFocus={() => store.toggleWriting(true)}
+          			onBlur={() => store.toggleWriting(false)}
 								type="number"
 								min="0"
 								max="255"
@@ -94,16 +94,16 @@ class ColorSelect extends Component {
 								name="toIndex"
 								value={Number(this.state.toIndex)}
 								onChange={this.handleRecolorChange}
-								onFocus={() => store.toggleWriting()}
-								onBlur={() => store.toggleWriting()}
+								onFocus={() => store.toggleWriting(true)}
+          			onBlur={() => store.toggleWriting(false)}
 							/>
 						</label>
 						<input type="submit" value="Recolor" />
 					</form>
 				</div>
 				
-				<div className="cohesiveColors">
-					<h3>Create cohesive color palette</h3>
+				<section>
+					<h3>Tint palette</h3>
 					<div className="intensitySlider">
 						<input 
 							type="range" 
@@ -114,7 +114,7 @@ class ColorSelect extends Component {
 							value={colorStore.cohesionIntensity}
 							onChange={e => colorStore.changeIntensity(e.target.value)}
 						/>
-						{(colorStore.cohesionIntensity * 100).toFixed(0)}% Intensity with color: 
+						{(colorStore.cohesionIntensity * 100).toFixed(0)}% Intensity with: 
 					</div>
 					<div 
 						className="color"
@@ -124,15 +124,9 @@ class ColorSelect extends Component {
 						}}
 						onClick={() => colorStore.handleChangeCohesionColor()}
 					/>
-				</div>
-				<br />
-				<br />
-				<br />
-				<br />
+				</section>
 
-
-
-			</div>
+			</>
 		)
 	}
 }

@@ -1,5 +1,5 @@
 import React from "react"
-import store from "../../models/CanvasStore.js"
+import store from "../../../models/CanvasStore.js"
 
 class EmptyClear extends React.Component {
 	render() {

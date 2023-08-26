@@ -1,8 +1,8 @@
-import React, { Component } from "react"
-import { observer } from "mobx-react"
-import colorStore from "../../../models/ColorStore"
-import store from "../../../models/CanvasStore"
 import invert from 'invert-color'
+import { observer } from "mobx-react"
+import { Component } from "react"
+import store from "../../../models/CanvasStore"
+import colorStore from "../../../models/ColorStore"
 
 const setGradient = (steps) => {
 	let gradientString = "linear-gradient(to right,"
@@ -46,8 +46,8 @@ class ColorSliders extends Component {
 						max="255"
 						value={colorStore.changingCohesionColor ? colorStore.cohesionOverlayColor[index] : colorStore.palettes[colorStore.selectedPaletteIndex].colors[colorStore.colorIndex][index]} 
 						onChange={e => colorStore.colorSelect(index, e.target.value)}
-						onFocus={() => store.toggleWriting()}
-						onBlur={() => store.toggleWriting()}
+						onFocus={() => store.toggleWriting(true)}
+          			onBlur={() => store.toggleWriting(false)}
 					/>
 					{name}
 				</div>

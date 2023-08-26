@@ -1,8 +1,7 @@
-import React from "react"
-import store from "../../models/CanvasStore"
 import { observer } from "mobx-react"
-import { colorBlend } from "../../utils/colorConversion"
+import store from "../../models/CanvasStore"
 import colorStore from "../../models/ColorStore"
+import { colorBlend } from "../../utils/colorConversion"
 
 const CellBg = observer(props => {
 	const bgColor = props.cell
@@ -37,7 +36,17 @@ export const rawSvgCellBg = ({bgColor}) => (
 	>	
 		<rect width={100 + "%"} height={100 + "%"} />
 	</svg>
+)
 
+export const rawTransparentSvgCellBg = ({bgColor}) => (
+	<svg
+		height={store.defaultFontSize}
+		width={store.cellWidth}
+		viewBox={0 + " " + 0 + " " + 800 / (store.cellHeight / store.cellWidth) + " " + 800}
+		fill={+bgColor[0] === 255 ? "transparent" : `rgb(${colorBlend(colorStore.palettes[colorStore.selectedPaletteIndex].colors[bgColor], colorStore.cohesionOverlayColor, colorStore.cohesionIntensity)})`} 
+	>	
+		<rect width={100 + "%"} height={100 + "%"} />
+	</svg>
 )
 
 export default CellBg

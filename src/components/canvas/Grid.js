@@ -1,11 +1,12 @@
-import React, { Component } from "react"
 import { observer } from "mobx-react"
+import React, { Component } from "react"
 import store from "../../models/CanvasStore"
+import gridStore from "../../models/GridStore"
+import CanvasMouseEvents from "./CanvasMouseEvents"
 import Cell from "./Cell"
 import CellBg from "./CellBg"
+import { ReferenceImage } from "./ReferenceImage"
 import UiLayer from "./ui/UiLayer"
-import CanvasMouseEvents from "./CanvasMouseEvents"
-import gridStore from "../../models/GridStore"
 
 @observer
 class Grid extends Component {
@@ -42,8 +43,7 @@ class Grid extends Component {
 
 		return (
 			<div
-				id="canvas"
-				className="grid"
+				className="canvas"
 				style={{
 					transform: `translate(${gridStore.settings.posX}px, ${
 						gridStore.settings.posY
@@ -52,6 +52,7 @@ class Grid extends Component {
 					height:  Number(store.canvasHeight) * Number(store.cellHeight) + "px",
 				}}
 			>	
+				<ReferenceImage />
 				<div className="gridBg">
 					{gridBg}
 				</div>
