@@ -3,12 +3,13 @@ const webpack = require("webpack")
 const MiniCssExtractPlugin = require("mini-css-extract-plugin")
 
 module.exports = {
-	devtool: "eval",
 	mode: "development",
 	output: {
 		filename: "bundle.js",
-		publicPath: "/static/"
+		publicPath: "/static/",
+		devtoolModuleFilenameTemplate: info => path.resolve(info.absoluteResourcePath).replace(/\\/g, '/'),
 	},
+	devtool: "cheap-module-source-map",
 	plugins: [
 		new webpack.HotModuleReplacementPlugin(),
 		new MiniCssExtractPlugin()
@@ -43,7 +44,7 @@ module.exports = {
 	devServer: {
 		publicPath: "/static/",
 		contentBase: path.resolve(__dirname, ""),
-		//watchContentBase: true,
+		watchContentBase: true,
 		compress: true,
 		port: 3000
 	},

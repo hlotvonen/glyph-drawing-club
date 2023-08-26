@@ -51,9 +51,13 @@
 	<body>
 		<div id="root"></div>
 
-		<!--<script src="/static/bundle.js"></script>-->
-
-		<script src="/dist/main.bundle.js"></script>
-		<script src="/dist/vendor.bundle.js"></script>
+		<script>
+		    if (window.location.hostname === 'localhost') {
+		        document.write('<script src="/static/bundle.js"></' + 'script>');
+		    } else {
+		        document.write('<script src="/dist/main.bundle.js"></' + 'script>');
+		        document.write('<script src="/dist/vendor.bundle.js"></' + 'script>');
+		    }
+		</script>
 	</body>
 </html>

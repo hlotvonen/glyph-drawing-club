@@ -22,6 +22,8 @@ const layerGlyph = (layer) => (
 					bgColorIndex={store.canvas[store.selected_y][store.selected_x][4][0]}
 					defaultFontSize={store.defaultFontSize}
 					showBg={true}
+					glyphOffsetX={0}
+					glyphOffsetY={0}
 				/>
 			</div>
 		</div>

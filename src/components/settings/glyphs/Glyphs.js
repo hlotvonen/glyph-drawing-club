@@ -18,14 +18,13 @@ const indexToXY = (index, gridWidth) => {
 const Glyph = class extends fabric.Rect {
   constructor(options) {
     super(options);
-    const def = {
+    this.set({
       width: 800,
       height: 800,
       objectCaching: false,
       selectable: false,
       hasControls: false,
-      borderColor: "red",
-      fill: "white",
+      fill: '#ddd',
       hasRotatingPoint: false,
       lockMovementX: true,
       lockMovementY: true,
@@ -37,8 +36,8 @@ const Glyph = class extends fabric.Rect {
       lockSkewingY: true,
       hoverCursor: "pointer",
       flipY: true,
-    }
-    Object.assign(this, def, options)
+      ...options
+    });
   }
 
   _render(ctx) {
@@ -62,6 +61,7 @@ function drawFont(canvas, fontObject) {
       path: value.path.toPathData(8),
       left: indexToXY(value.index, GRIDWIDTH).x * fontObject.size + colPadding,
       top: indexToXY(value.index, GRIDWIDTH).y * fontObject.size + rowPadding,
+      fontName: fontObject.name
     });
     glyphPath.scaleToWidth(fontObject.size, true);
     glyphPath.scaleToHeight(fontObject.size, true);
@@ -69,37 +69,38 @@ function drawFont(canvas, fontObject) {
   }
   canvas.selection = false;
   canvas.setHeight(Math.floor(fontObject.data.nGlyphs / GRIDWIDTH) * fontObject.size + fontObject.size + Math.floor(fontObject.data.nGlyphs / GRIDWIDTH) * 2);
-  canvas.setWidth(GRIDWIDTH * fontObject.size + GRIDWIDTH * 2);
+  canvas.setWidth(GRIDWIDTH * fontObject.size + GRIDWIDTH * 2 - 1);
 }
 
-const Glyphs = (props) => {
+const Glyphs = ({ fontObject }) => {
   const canvasEl = useRef(null);
+
   useEffect(() => {
     const options = {
       renderOnAddRemove: false
     };
     const canvas = new fabric.Canvas(canvasEl.current, options);
-    // make the fabric.Canvas instance available to your app
-    drawFont(canvas, props.fontObject);
+    drawFont(canvas, fontObject);
+
     return () => {
-      drawFont(null);
       canvas.dispose();
     }
-  }, []);
+  }, [fontObject]);
 
-  return (
+return (
     <section>
-      <h3>{props.fontObject.name}</h3>
-      <details>
-        <summary>
-          Details
-        </summary>
-        <DisplayNames names={props.fontObject.data.names} />
-      </details>
+      <h3>{fontObject.name}</h3>
+      {FontStore.loadedFonts.length > 1 &&
+        <button className="removeFont" onClick={() => FontStore.removeFont(fontObject.name)}>remove</button>
+      }
       <div className='glyphsList-container'>
         <canvas ref={canvasEl}/>
-        <GlyphsMouseEvents fontName={props.fontObject.name} />
+        <GlyphsMouseEvents fontName={fontObject.name} />
       </div>
+      <details>
+        <summary>Details</summary>
+        <DisplayNames names={fontObject.data.names} />
+      </details>
     </section>
   );
 };
@@ -129,18 +130,19 @@ export const Font = observer(() => {
   )
 });
 
-const DisplayNames = memo((props) => {
-  return( 
-    <>
-      <div>
-        License: {props.names?.copyright?.en ? props.names.copyright.en : " "}
-      </div>
-      <div>
-        Designer:
-        <a href={props.names?.designerURL?.en ? props.names.designerURL.en : ""} target="_blank" rel="noreferrer nooppener">
-          {props.names?.designer?.en ? props.names.designer.en : " "}
-        </a>
-      </div>
-    </>
-  )
-});
+const DisplayNames = memo(({ names }) => (
+  <dl>
+    <dt>License:</dt>
+    <dd>{names?.copyright?.en || " "}</dd>
+    <dt>Designer:</dt>
+    {names?.designerURL?.en ? (
+        <dd>
+          <a href={names.designerURL.en} target="_blank" rel="noreferrer nooppener">
+            {names?.designer?.en || " "}
+          </a>
+        </dd>
+    ) : (
+        <dd>{names?.designer?.en || " "}</dd>
+    )}
+  </dl>
+));

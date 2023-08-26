@@ -1,3 +1,4 @@
+
 import { throttle } from "lodash";
 import { action, observable } from "mobx";
 import { observer } from "mobx-react";
@@ -19,10 +20,7 @@ export const GlyphsMouseEvents = observer((props) => {
 		})
 	}, 16)
 
-	const mousePosToIndex = (posX, posY) => {		
-		const index = posX + (posY * 16)
-		return index
-	}
+	const mousePosToIndex = (posX, posY) => posX + (posY * 16);
 
 	function handleClick(e) {
 		e.preventDefault()
@@ -32,76 +30,98 @@ export const GlyphsMouseEvents = observer((props) => {
 		mousePos.x = getMousePos(e).x;
 		mousePos.y = getMousePos(e).y;
 	})
+
+	const handleMouseDown = (e) => {
+	  e.preventDefault();
+	  const { x, y } = getMousePos(e);
+	  const glyphIndex = mousePosToIndex(Math.floor(x / 22), Math.floor(y / 22));
+	  const glyphCount = FontStore.getGlyphCount(props.fontName);
 	
-	function handleMouseDown(e) {
-		e.preventDefault()
-		FontStore.selectGlyph({
-			fontName: props.fontName,
-			index: mousePosToIndex(Math.floor(getMousePos(e).x / 22), Math.floor(getMousePos(e).y / 22))
-		})
-	}
+	  if (glyphIndex < glyphCount) {
+	    FontStore.selectGlyph({
+	      fontName: props.fontName,
+	      index: glyphIndex,
+	    });
+	  }
+	};
 	function handleMouseUp(e) {
 		e.preventDefault()
 	}
-	const handleMouseEnter = action((e) => {
-		e.preventDefault()
-		setShow(true);
-	})
-	const handleMouseLeave = action((e) => {
-		e.preventDefault()
-		setShow(false);
-	})
+  const handleMouseEnter = () => setShow(true);
+  const handleMouseLeave = () => setShow(false);
 
 	function handleRightClick(e) {
 		e.preventDefault()
 	}
 
-	const Tooltip = observer(() => (
-		<> 
-			{
-			show && 
-			<div 
-				className="tooltip"
+	const Tooltip = observer(() => {
+		const glyphCount = FontStore.getGlyphCount(props.fontName);
+		const currentGlyphIndex = mousePosToIndex(Math.floor(mousePos.x / 22), Math.floor(mousePos.y / 22));
+
+		return (
+			<>
+				{show && currentGlyphIndex < glyphCount && (
+					<div
+						className="tooltip"
+						style={{
+							width: "20px",
+							height: "20px",
+							position: "absolute",
+							boxShadow: "0 0 0 1px red",
+							pointerEvents: "none",
+							left: Math.floor(mousePos.x / 22) * 22,
+							top: Math.floor(mousePos.y / 22) * 22
+						}}
+					>
+						<div className="tooltiptext">
+							{currentGlyphIndex}
+						</div>
+					</div>
+				)}
+			</>
+		);
+	});
+
+	const SelectedGlyph = observer(() => {
+		const { index } = FontStore.selectedGlyph;
+		return (
+			<div
+				className="selected-glyph"
 				style={{
 					width: "20px",
 					height: "20px",
 					position: "absolute",
-					boxShadow: "0 0 0 1px red",
-					left: Math.floor(mousePos.x / 22) * 22,
-					top: Math.floor(mousePos.y / 22) * 22
+					pointerEvents: "none",
+					boxShadow: "0 0 0 2px blue",
+					left: Math.floor(index % 16) * 22,
+					top: Math.floor(index / 16) * 22
 				}}
-			>
-				<div
-					className="tooltiptext"
-				>
-					{mousePosToIndex(Math.floor(mousePos.x / 22), Math.floor(mousePos.y / 22))}
-				</div>
-			</div>
-			}
-		</>
-	));
+			/>
+		);
+	});
 
-	return (			
+	return (
 		<>
 			<div
 				className="GlyphsMouseEvents"
 				style={{
-					width: 100 + "%",
-					height: 100 + "%",
+					width: "100%",
+					height: "100%",
 					position: "absolute",
 					top: 0,
 					left: 0
 				}}
 				ref={ref}
-				onMouseMove={(e) => handleMouseMove(e)}
-				onMouseEnter={(e) => handleMouseEnter(e)}
-				onMouseLeave={(e) => handleMouseLeave(e)}
-				onClick={(e) => handleClick(e)}
-				onMouseDown={(e) => handleMouseDown(e)}
-				onMouseUp={(e) => handleMouseUp(e)}
-				onContextMenu={(e) => handleRightClick(e)}
+				onMouseMove={handleMouseMove}
+				onMouseEnter={handleMouseEnter}
+				onMouseLeave={handleMouseLeave}
+				onClick={handleClick}
+				onMouseDown={handleMouseDown}
+				onMouseUp={handleMouseUp}
+				onContextMenu={handleRightClick}
 			/>
 			<Tooltip/>
+			<SelectedGlyph/>
 		</>
 	)
-})
+});

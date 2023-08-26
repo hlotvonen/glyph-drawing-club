@@ -1,6 +1,6 @@
 {
   "name": "glyph-drawing-club",
-  "version": "2.0.0",
+  "version": "3.0.0",
   "description": "GlyphDrawing.club is a free contemporary text art and modular design editor.",
   "scripts": {
     "start": "webpack serve --config webpack.dev.js --progress --mode development",

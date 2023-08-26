@@ -168,7 +168,6 @@ class Canvas extends Component {
 
 	@action
 	handleWheel(e) {
-		e.preventDefault()
 		if (e.deltaY < 0) {
 			FontStore.prevGlyph();
 		} else {
@@ -214,6 +213,8 @@ class Canvas extends Component {
 								bgColorIndex={colorstore.bgColorIndex}
 								showBg={true}
 								defaultFontSize={store.defaultFontSize}
+								glyphOffsetX={0}
+								glyphOffsetY={0}
 							/>
 						</div>
 					</div>

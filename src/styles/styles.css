@@ -520,6 +520,22 @@ fontlist
 	display: grid;
 	place-items: center;
 }
+.controls_container .removeFont {
+	font-size: var(--font-small);
+	font-weight: normal;
+	margin:0;
+	background-color: var(--button-off-bg);
+	box-shadow: 0 0 0 1px var(--button-off-border);
+	color: var(--header-color);
+	display: inline-block;
+	width: auto;
+	text-align: center;
+	border-radius: 3px;
+	padding:2px 5px;
+	position: absolute;
+	right:0;
+	top:-15px;
+}
 /* ~~~~~~~~~~~~~~~~~~~~~
 colors palettes
 ~~~~~~~~~~~~~~~~~~~~~ */
@@ -919,10 +935,6 @@ tooltips
 	font-size: var(--font-small);
 	position: relative;
 	cursor: pointer;
-	pointer-events: none;
-}
-.color.tooltip {
-	pointer-events: all;
 }
 /* Tooltip text */
 .tooltip .tooltiptext {
@@ -932,16 +944,7 @@ tooltips
 	width: 100%;
 	padding: 1px 0;
 	border-radius: 2px 2px 0 0;
-	pointer-events: none;
 	position: absolute;
 	z-index: 1;
 	transform: translateY(-100%);
-}
-
-/* Show the tooltip text when you mouse over the tooltip container */
-.color.tooltip .tooltiptext {
-	visibility: hidden;
-}
-.color.tooltip:hover .tooltiptext {
-	visibility: visible;
 }

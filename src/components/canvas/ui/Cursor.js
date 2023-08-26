@@ -31,6 +31,8 @@ const Cursor = ({x, y, w, h}) => (
 				showBg={false}
 				defaultFontSize={store.defaultFontSize}
 				glyphFontSizeModifier={store.glyphFontSizeModifier}
+				glyphOffsetX={store.glyphOffsetX}
+				glyphOffsetY={store.glyphOffsetY}
 			/>
 		</div>
 	</div>

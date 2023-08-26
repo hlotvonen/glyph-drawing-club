@@ -1,55 +1,57 @@
+
 import { observer } from "mobx-react"
 import colorStore from "../../models/ColorStore"
 import { colorBlend } from "../../utils/colorConversion"
 
 const SelectedGlyph = observer((props) => {
+    const {
+        bgColorIndex,
+        showBg,
+        glyphOffsetX,
+        glyphOffsetY,
+        defaultFontSize,
+        glyphFontSizeModifier,
+        flipGlyph,
+        svgHeight,
+        rotationAmount,
+        svgBaseline,
+        glyphInvertedShape,
+        svgWidth,
+        glyphPath,
+        colorIndex
+    } = props;
 
-	const bgColor = colorBlend(colorStore.palettes[colorStore.selectedPaletteIndex].colors[props.bgColorIndex], colorStore.cohesionOverlayColor, colorStore.cohesionIntensity)
+    const bgColor = colorBlend(colorStore.palettes[colorStore.selectedPaletteIndex].colors[bgColorIndex], colorStore.cohesionOverlayColor, colorStore.cohesionIntensity)
 
-	return (
-		<svg
-			viewBox={"0 0 800 800"}
-			style={{
-				backgroundColor: `rgb(${props.showBg && bgColor})`,
-			}}
-			width={ "100%"}
-			height={"100%"}
-		>
-			<g
-				transform={`
-				scale(
-					${(Number(props.defaultFontSize) + props.glyphFontSizeModifier) / Number(props.defaultFontSize)}
-				)
-				
-				${/*centering when glyph is flipped: */""}
-				translate(
-					${800 + (props.flipGlyph == 1 ? -800 : 0)} 
-					800
-				)
-				${/*flip: */""} 
-				scale(
-					${props.flipGlyph * 800 / (props.svgHeight == 1 ? 800 : props.svgHeight)} 
-					${-1 * 800 / (props.svgHeight == 1 ? 800 : props.svgHeight)}
-				)
-				${/*rotate: */""} 
-				rotate(
-					${props.rotationAmount} 
-					${(props.svgHeight == 1 ? 800 : props.svgHeight) / 2} 
-					${(props.svgHeight == 1 ? 800 : props.svgHeight) / 2}) 
-				${/*baseline adjustment:*/""} 
-				translate(
-					0 
-					${-props.svgBaseline}
-				)
-			`
-				}>
-				<path
-					d={props.glyphInvertedShape ? `M0 0 v${props.svgHeight} h${props.svgWidth} V0 H0 z ${props.glyphPath}` : props.glyphPath}
-					fill={`rgb(${colorBlend(colorStore.palettes[colorStore.selectedPaletteIndex].colors[props.colorIndex], colorStore.cohesionOverlayColor, colorStore.cohesionIntensity)})`}
-				/>
-			</g>
-		</svg>
-	)
+    const scale = (Number(defaultFontSize) + glyphFontSizeModifier) / Number(defaultFontSize);
+    const flip = svgHeight == 1 ? 800 : svgHeight;
+    const rotate = (svgHeight == 1 ? 800 : svgHeight) / 2;
+    const fill = `rgb(${colorBlend(colorStore.palettes[colorStore.selectedPaletteIndex].colors[colorIndex], colorStore.cohesionOverlayColor, colorStore.cohesionIntensity)})`;
+
+    return (
+        <svg
+            viewBox="0 0 800 800"
+            style={{ backgroundColor: `rgb(${showBg && bgColor})` }}
+            width="100%"
+            height="100%"
+        >
+            <g
+                transform={`
+                    translate(${glyphOffsetX} ${glyphOffsetY})
+                    scale(${scale})
+                    translate(${800 + (flipGlyph == 1 ? -800 : 0)} 800)
+                    scale(${flipGlyph * 800 / flip} ${-1 * 800 / flip})
+                    rotate(${rotationAmount} ${rotate} ${rotate})
+                    translate(0 ${-svgBaseline})
+                `}
+            >
+                <path
+                    d={glyphInvertedShape ? `M0 0 v${svgHeight} h${svgWidth} V0 H0 z ${glyphPath}` : glyphPath}
+                    fill={fill}
+                />
+            </g>
+        </svg>
+    )
 })
 
-export default SelectedGlyph
+export default SelectedGlyph;
