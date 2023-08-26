@@ -22,7 +22,7 @@ const ExportButtons = (props) => (
 		<div className="exportSvg">
 			<button onClick={() => exportAs("svg")}>Export Svg</button>
 			<a
-				href="https://blog.glyphdrawing.club/how-to-clean-up-your-drawing-in-adobe-illustrator"
+				href="https://blog.glyphdrawing.club/how-to-clean-up-your-glyph-drawing-in-adobe-illustrator/"
 				target="_blank"
 				rel="noreferrer noopener"
 			>

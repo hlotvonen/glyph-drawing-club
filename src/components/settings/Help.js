@@ -25,7 +25,7 @@ export const Help = () => (
     <h3>COMPLETE REFERENCE</h3>
     <p>
       You can find a complete tutorial & more at the <a
-        href="https://blog.glyphdrawing.club/usage-tutorial-for-glyph-drawing-club"
+        href="https://blog.glyphdrawing.club/tutorial-for-glyph-drawing-club/"
         target="_blank"
       >
         Glyph Drawing Club Blog
