@@ -1,3 +1,4 @@
+import React from 'react'
 import { render } from "react-dom"
 import Canvas from "./components/canvas/Canvas"
 import Preview from "./components/canvas/ui/Preview"
