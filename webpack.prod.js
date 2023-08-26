@@ -58,7 +58,10 @@ module.exports = {
 			use: {
 				loader: "babel-loader",
 				options: {
-					presets: ["@babel/react", "@babel/env"]
+					presets: [
+						"@babel/preset-env",
+						["@babel/preset-react", {"runtime": "automatic"}]
+					],
 				}
 			},
 			include: path.join(__dirname, "src")
