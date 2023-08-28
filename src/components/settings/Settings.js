@@ -4,10 +4,9 @@ import { Tab, TabList, TabPanel, Tabs } from "react-tabs"
 import store from "../../models/CanvasStore"
 import { Help } from "./Help"
 import ColorSelect from "./color/ColorSelect"
-import ExportButtons from "./file/ExportButtons"
-import LoadAndPlace from "./file/LoadAndPlace"
-import LoadButton from "./file/LoadButton"
-import SaveAsButton from "./file/SaveAsButton"
+import ExportCanvas from "./file/ExportCanvas"
+import LoadCanvas from "./file/LoadCanvas"
+import SaveCanvas from "./file/SaveCanvas"
 import { Font } from "./glyphs/Glyphs"
 import CanvasSizeInMillimeters from "./options/CanvasSizeInMillimeters"
 import CanvasSizeModification from "./options/CanvasSizeModification"
@@ -91,15 +90,11 @@ class Settings extends React.Component {
 					<TabPanel>
 						<section>
 							<h3>SAVE & LOAD</h3>
-							<SaveAsButton
-								fileName={store.fileName}
-								updateFileName={store.updateFileName}
-							/>
-							<LoadButton />
-							<LoadAndPlace />
+							<SaveCanvas/>
+							<LoadCanvas />
 						</section>
 
-						<ExportButtons
+						<ExportCanvas
 							exportSizeMultiplier={store.exportSizeMultiplier}
 							updateExportSizeMultiplier={store.updateExportSizeMultiplier}
 						/>

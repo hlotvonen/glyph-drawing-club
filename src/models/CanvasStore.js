@@ -33,8 +33,8 @@ EMPTY_CELL[1] = new Array("M0 0", 1, 1, 0, 0, 0, 0, 1, false, 0, 0) //LAYER 2
 EMPTY_CELL[2] = new Array("M0 0", 1, 1, 0, 0, 0, 0, 1, false, 0, 0) //LAYER 3
 EMPTY_CELL[3] = new Array("M0 0", 1, 1, 0, 0, 0, 0, 1, false, 0, 0) //LAYER 4
 EMPTY_CELL[4] = new Array("255") //BG LAYER
-const getEmptyCell = () => observable([...EMPTY_CELL])
-const getEmptyLayer = () => observable(EMPTY_CELL[0])
+const createEmptyCell = () => observable([...EMPTY_CELL])
+const createEmptyLayer = () => observable(EMPTY_CELL[0])
 
 const MAX_HISTORY_SIZE = 64
 
@@ -56,7 +56,7 @@ class CanvasStore {
 			})
 			.catch((err) => {
 				// This code runs if there were any errors
-				this.createEmptyCanvas()
+				this.resetCanvas()
 				console.log(err)
 			})
 
@@ -64,13 +64,13 @@ class CanvasStore {
 		autorun(() => {
 			if (this.canvas) {
 				//save canvas (and history) to localstorage every second
-				const currentState = JSON.stringify(this.getCurrentState)
+				const currentState = JSON.stringify(this.currentState)
 				localforage.setItem("canvasStorage", currentState)
 			}
 		}, { delay: 1000, fireImmediately: true })
 		
 		reaction(
-			() => JSON.stringify(this.getCurrentState),
+			() => JSON.stringify(this.currentState),
 			currentState => {
 				//watch state, add to undoHistory if something changes
 				this.addToUndoHistory(currentState)
@@ -80,109 +80,71 @@ class CanvasStore {
 	}
 
 	//CANVAS
-	@observable
-	canvas
+	@observable	canvas
 
 	//SETTINGS
-	@observable
-	canvasWidth = 20
-	@observable
-	canvasHeight = 15
-	@observable
-	cellWidth = 20
-	@observable
-	cellHeight = 20
-	@observable
-	defaultFontSize = 20
+	@observable	canvasWidth = 20
+	@observable	canvasHeight = 15
+	@observable	cellWidth = 20
+	@observable	cellHeight = 20
+	@observable	defaultFontSize = 20
 
-	@observable
-	hideGrid = false
-	@observable
-	typingMode = false
-	@observable
-	paintMode = true
-	@observable
-	togglePreview = false
-
-
-	@observable
-	toggleQuickChooseColor = false
+	@observable	hideGrid = false
+	@observable	typingMode = false
+	@observable	paintMode = true
+	@observable	togglePreview = false
+	@observable	mirrorX = false
+	@observable	mirrorY = false
+	@observable	toggleQuickChooseColor = false
 
 	//HISTORY
-	@observable
-	history = []
-	@observable
-	redoHistory = []
+	@observable	history = []
+	@observable	redoHistory = []
 
 	preserveRedoHistory = false
 
 	//SHORTCUTS
-	@observable
-	disableShortcuts = false
+	@observable	disableShortcuts = false
 
 	//EXPORT
-	@observable
-	exportSizeMultiplier = 5
+	@observable	exportSizeMultiplier = 5
 
 	//SAVE / LOAD
-	@observable
-	fileName = "Untitled"
+	@observable	fileName = "Untitled"
 
 	//CURSOR
-	@observable
-	selected_x = 0
-	@observable
-	selected_y = 0
+	@observable	selected_x = 0
+	@observable	selected_y = 0
 
 	//LAYERS
-	@observable
-	selectedLayer = 0
-	@observable
-	hiddenLayers = [false, false, false, false]
+	@observable	selectedLayer = 0
+	@observable	hiddenLayers = [false, false, false, false]
 
 	//SELECTION AREA
-	@observable
-	selectionArea = { start: null, end: null }
+	@observable	selectionArea = { start: null, end: null }
 
 	//GLYPH
-	@observable
-	glyphPath = "M0 0"
-	@observable
-	svgHeight = 0
-	@observable
-	svgWidth = 0
-	@observable
-	svgBaseline = 0
-	@observable
-	rotationAmount = 0
-	@observable
-	flipGlyph = 1
-	@observable
-	glyphInvertedShape = false
+	@observable	glyphPath = "M0 0"
+	@observable	svgHeight = 0
+	@observable	svgWidth = 0
+	@observable	svgBaseline = 0
+	@observable	rotationAmount = 0
+	@observable	flipGlyph = 1
+	@observable	glyphInvertedShape = false
 
 	//OFFSET
-	@observable
-	offsetAmount = 100
-	@observable
-	glyphOffsetX = 0
-	@observable
-	glyphOffsetY = 0
-	@observable
-	glyphFontSizeModifier = 0
-	@observable
-	toggleOffset = false
+	@observable	offsetAmount = 100
+	@observable	glyphOffsetX = 0
+	@observable	glyphOffsetY = 0
+	@observable	glyphFontSizeModifier = 0
+	@observable	toggleOffset = false
 
 	//MOUSE & KEYBOARD MODIFIER EVENTS
-	@observable
-	mouseDown = false
-	@observable
-	altDown = false
-	@observable
-	ctrlDown = false
-	@observable
-	metaDown = false
-	@observable
-	shiftDown = false
+	@observable	mouseDown = false
+	@observable	altDown = false
+	@observable	ctrlDown = false
+	@observable	metaDown = false
+	@observable	shiftDown = false
 
 	/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 		
@@ -191,7 +153,7 @@ class CanvasStore {
    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 	//create object that will be saved to localforage
 	@computed
-	get getCurrentState() {
+	get currentState() {
 		return ({
 			name: "gdc-file",
 			timestamp: Math.floor(Date.now() / 1000),
@@ -203,6 +165,7 @@ class CanvasStore {
 			canvas: this.canvas,
 		})
 	}
+
 	@action
 	setCurrentState = state => {
 		this.canvasWidth = state.canvasWidth
@@ -212,68 +175,132 @@ class CanvasStore {
 		this.defaultFontSize = state.defaultFontSize
 		this.canvas = state.canvas
 	}
-	getEmptyCanvas = () => {
-		return Array.from({ length: this.canvasHeight }, this.getEmptyRow)
+
+	loadCanvas(json) {
+		this.selected_x = 0
+		this.selected_y = 0
+		this.emptySelection()
+		this.setCurrentState(json)
 	}
-	getEmptyRow = () => {
-		return Array.from({ length: this.canvasWidth }, () => getEmptyCell())
+	placeCanvas(json) {
+		const canvasHeight = json.canvasHeight;
+		const canvasWidth = json.canvasWidth;
+
+		for (let rowIndex = 0; rowIndex < canvasHeight; rowIndex++) {
+			for (let columnIndex = 0; columnIndex < canvasWidth; columnIndex++) {
+				if (
+					this.selected_y + rowIndex >= this.canvasHeight ||
+					this.selected_x + columnIndex >= this.canvasWidth
+				) {
+					continue;
+				}
+				this.canvas[this.selected_y + rowIndex][
+					this.selected_x + columnIndex
+				].replace(json["canvas"][rowIndex][columnIndex]);
+			}
+		}
 	}
-	@action
-	createEmptyCanvas = () => {
-		this.canvas = this.getEmptyCanvas()
-	}
+
 	@computed
 	get currentLayer() {
 		return this.canvas[this.selected_y][this.selected_x][this.selectedLayer]
 	}
+
 	@computed
 	get currentGlyph() {
 		return this.canvas[this.selected_y][this.selected_x]
 	}
-	
+
 	currentLayerXY = ( x, y ) => {
 		return this.canvas[y][x][this.selectedLayer]
+	}
+
+	createEmptyCanvas = () => {
+		return Array.from({ length: this.canvasHeight }, this.createEmptyRow)
+	}
+
+	createEmptyRow = () => {
+		return Array.from({ length: this.canvasWidth }, () => createEmptyCell())
+	}
+
+	@action
+	resetCanvas = () => {
+		this.canvas = this.createEmptyCanvas()
+	}
+
+	@action
+	resetEverything = () => {
+		this.selected_y = 0
+		this.selected_x = 0
+		this.canvasWidth = 20
+		this.canvasHeight = 15
+		this.cellWidth = 20
+		this.cellHeight = 20
+		this.defaultFontSize = 20
+		this.flipGlyph = 1
+		this.rotationAmount = 0
+		this.resetCanvas()
+		this.emptySelection()
 	}
 	/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 		
 	CANVAS SIZE SETTINGS
 
    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
-	//Change canvas width
+
+	// Adds a new column to the canvas
 	@action
 	addCol = () => {
+		// Increase the width of the canvas
 		this.canvasWidth += 1
+
+		// Add an empty cell to the end of each row
 		for (const row of this.canvas) {
-			row.push(getEmptyCell())
+			row.push(createEmptyCell())
 		}
 	}
+
+	// Deletes the last column from the canvas
 	@action
 	deleteCol = () => {
-		if (this.canvasWidth > 1) {
-			this.canvasWidth -= 1
-			for (const row of this.canvas) {
-				row.pop()
-			}
-			if (this.selected_x == this.canvasWidth) {
-				this.selected_x -= 1
-			}
+		// Ensure the canvas always has at least one column
+		if (this.canvasWidth <= 1) return
+
+		// Decrease the width of the canvas
+		this.canvasWidth -= 1
+
+		// Remove the last cell from each row
+		for (const row of this.canvas) {
+			row.pop()
+		}
+
+		// Ensure the selected cell is not out of bounds
+		if (this.selected_x == this.canvasWidth) {
+			this.selected_x -= 1
 		}
 	}
+
+	// Adds a new row to the canvas
 	@action
 	addRow = () => {
 		this.canvasHeight += 1
-		this.canvas.push(this.getEmptyRow())
+		this.canvas.push(this.createEmptyRow())
 	}
+
+	// Deletes the last row from the canvas
 	@action
 	deleteRow = () => {
-		if (this.canvasHeight > 1) {
-			this.canvasHeight -= 1
-			this.canvas.pop()
-			if (this.selected_y == this.canvasHeight) {
-				this.selected_y -= 1
-			}
+		// Ensure the canvas always has at least one row
+		if (this.canvasHeight <= 1) return 
+		this.canvasHeight -= 1
+		this.canvas.pop()
+
+		// Ensure the selected cell is not out of bounds
+		if (this.selected_y == this.canvasHeight) {
+			this.selected_y -= 1
 		}
 	}
+
 	@action
 	deleteRowAtSelection = () => {
 		this.canvas.splice(this.selected_y, 1)
@@ -285,6 +312,7 @@ class CanvasStore {
 			this.selected_y += 1
 		}
 	}
+
 	@action
 	deleteColAtSelection = () => {
 		for (var i = 0; i < this.canvasHeight; i++) {
@@ -299,33 +327,22 @@ class CanvasStore {
 			this.selected_x += 1
 		}
 	}
+
 	@action
 	addRowAtSelection = () => {
 		this.canvasHeight += 1
-		this.canvas.splice(this.selected_y, 0, this.getEmptyRow())
+		this.canvas.splice(this.selected_y, 0, this.createEmptyRow())
 	}
+
 	@action
 	addColAtSelection = () => {
 		this.canvasWidth += 1
 		for (var i = 0; i < this.canvasHeight; i++) {
 			var col = this.canvas[i]
-			col.splice(this.selected_x, 0, getEmptyCell())
+			col.splice(this.selected_x, 0, createEmptyCell())
 		}
 	}
-	@action
-	emptyCanvas = () => {
-		this.selected_y = 0
-		this.selected_x = 0
-		this.canvasWidth = 20
-		this.canvasHeight = 15
-		this.cellWidth = 20
-		this.cellHeight = 20
-		this.defaultFontSize = 20
-		this.canvas = this.getEmptyCanvas()
-		this.flipGlyph = 1
-		this.rotationAmount = 0
-		this.emptySelection()
-	}
+
 	/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 		
 	HISTORY
@@ -347,9 +364,8 @@ class CanvasStore {
 	
 	@action
 	undo = () => {
-		if (!this.isUndoAvailable) {
-			return
-		}
+		if (!this.isUndoAvailable) return
+
 		this.preserveRedoHistory = true
 
 		const currentState = this.history.pop()
@@ -379,6 +395,7 @@ class CanvasStore {
 			this.redoHistory.shift()
 		}
 	}
+
 	@action
 	redo = () => {
 		if (!this.isRedoAvailable) {
@@ -420,26 +437,31 @@ class CanvasStore {
 	increaseCellHeight = () => {
 		this.cellHeight += 1
 	}
+
 	@action
 	decreaseCellHeight = () => {
 		if (this.cellHeight > 1) {
 			this.cellHeight -= 1
 		}
 	}
+
 	@action
 	increaseCellWidth = () => {
 		this.cellWidth += 1
 	}
+
 	@action
 	decreaseCellWidth = () => {
 		if (this.cellWidth > 1) {
 			this.cellWidth -= 1
 		}
 	}
+
 	@action
 	increaseFontSize = () => {
 		this.defaultFontSize += 1
 	}
+	
 	@action
 	decreaseFontSize = () => {
 		if (this.defaultFontSize > 1) {
@@ -455,19 +477,23 @@ class CanvasStore {
 	handleChangeHideGrid = () => {
 		this.hideGrid = !this.hideGrid
 	}
+
 	@action
 	handleChangeTypingMode = () => {
 		this.typingMode = !this.typingMode
 		this.glyphClear()
 	}
+
 	@action
 	handleChangePaintMode = () => {
 		this.paintMode = !this.paintMode
 	}
+
 	@action
 	toggleWriting = (boolean) => {
 		this.disableShortcuts = boolean
 	}
+
 	@action
 	showPreview = () => {
 		//P
@@ -477,10 +503,12 @@ class CanvasStore {
 			return
 		}
 	}
+
 	@action
 	hidePreview = () => {
 		this.togglePreview = false
 	}
+	
 	@action
 	showQuickChooseColor = () => {
 		if (!this.toggleQuickChooseColor) {
@@ -489,14 +517,17 @@ class CanvasStore {
 			return
 		}
 	}
+
 	@action
 	hideQuickChooseColor = () => {
 		this.toggleQuickChooseColor = false
 	}
+	
 	@action
 	layerSelect = layer => {
 		this.selectedLayer = layer
 	}
+	
 	@action
 	selectLayer = (direction) => {
 		if (direction === "right") {
@@ -513,6 +544,7 @@ class CanvasStore {
 			)
 		}
 	}
+
 	@action
 	hideLayer = layer => {
 		this.hiddenLayers[layer] = !this.hiddenLayers[layer]
@@ -520,25 +552,24 @@ class CanvasStore {
 	
 	@action
 	switchLayersDown = event => {
+		// Parse the target value from the event
+		const targetValue = Number(event.target.value);
+		const previousValue = targetValue - 1;
+
 		if (!this.selectionArea.start) {
-			[
-				this.currentGlyph[Number(event.target.value)],
-				this.currentGlyph[Number(event.target.value) - 1],
-			] = [
-				this.currentGlyph[Number(event.target.value) - 1],
-				this.currentGlyph[Number(event.target.value)],
-			]
+			// Swap the current glyph and the previous glyph
+			[this.currentGlyph[targetValue], this.currentGlyph[previousValue]] = 
+			[this.currentGlyph[previousValue], this.currentGlyph[targetValue]];
 		} else {
-			const [[start_y, start_x], [end_y, end_x]] = this.getSelectedArea()
-			for (let y_i = start_y; y_i <= end_y; y_i++) {
-				for (let x_i = start_x; x_i <= end_x; x_i++) {
-					[
-						this.canvas[y_i][x_i][Number(event.target.value)],
-						this.canvas[y_i][x_i][Number(event.target.value) - 1],
-					] = [
-						this.canvas[y_i][x_i][Number(event.target.value) - 1],
-						this.canvas[y_i][x_i][Number(event.target.value)],
-					]
+			// Get the selected area
+			const [[startRow, startCol], [endRow, endCol]] = this.getSelectedArea();
+
+			// Loop over the selected area
+			for (let rowIndex = startRow; rowIndex <= endRow; rowIndex++) {
+				for (let colIndex = startCol; colIndex <= endCol; colIndex++) {
+					// Swap the current cell and the previous cell
+					[this.canvas[rowIndex][colIndex][targetValue], this.canvas[rowIndex][colIndex][previousValue]] = 
+					[this.canvas[rowIndex][colIndex][previousValue], this.canvas[rowIndex][colIndex][targetValue]];
 				}
 			}
 		}
@@ -552,10 +583,12 @@ class CanvasStore {
 	updateExportSizeMultiplier = evt => {
 		this.exportSizeMultiplier = evt.target.value
 	}
+
 	@action
 	updateFileName = evt => {
 		this.fileName = evt.target.value
 	}
+
 	/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 		
 	GLYPH OFFSET
@@ -563,20 +596,18 @@ class CanvasStore {
    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 	@action
 	increaseGlyphOffsetX = () => {
-
 		//o + arrow keys
 		if (!this.selectionArea.start) {
 			this.currentLayer[4] += this.offsetAmount
 			this.glyphOffsetX = Number(this.currentLayer[4])
 		} else {
 			const boundingRectangle = this.getSelectedArea()
-			const [[start_y, start_x], [end_y, end_x]] = boundingRectangle
-	
 			this.mapRangeSelectedLayer(boundingRectangle, glyph => {
 				glyph[4] += this.offsetAmount
 			})
 		}
 	}
+
 	@action
 	decreaseGlyphOffsetX = () => {
 		if (!this.selectionArea.start) {
@@ -584,27 +615,25 @@ class CanvasStore {
 			this.glyphOffsetX = Number(this.currentLayer[4])
 		} else {
 			const boundingRectangle = this.getSelectedArea()
-			const [[start_y, start_x], [end_y, end_x]] = boundingRectangle
-	
 			this.mapRangeSelectedLayer(boundingRectangle, glyph => {
 				glyph[4] -= this.offsetAmount
 			})
 		}
 	}
+
 	@action
 	increaseGlyphOffsetY = () => {
 		if (!this.selectionArea.start) {
 			this.currentLayer[9] += this.offsetAmount
 			this.glyphOffsetY = Number(this.currentLayer[9])
 		} else {
-			const boundingRectangle = this.getSelectedArea()
-			const [[start_y, start_x], [end_y, end_x]] = boundingRectangle
-	
+			const boundingRectangle = this.getSelectedArea()	
 			this.mapRangeSelectedLayer(boundingRectangle, glyph => {
 				glyph[9] += this.offsetAmount
 			})
 		}
 	}
+
 	@action
 	decreaseGlyphOffsetY = () => {
 		if (!this.selectionArea.start) {
@@ -612,17 +641,17 @@ class CanvasStore {
 			this.glyphOffsetY = Number(this.currentLayer[9])
 		} else {
 			const boundingRectangle = this.getSelectedArea()
-			const [[start_y, start_x], [end_y, end_x]] = boundingRectangle
-	
 			this.mapRangeSelectedLayer(boundingRectangle, glyph => {
 				glyph[9] -= this.offsetAmount
 			})
 		}
 	}
+
 	@action
 	handleChangeOffsetAmount = evt => {
 		this.offsetAmount = Number(evt.target.value)
 	}
+
 	@action
 	handleOffsetOn = () => {
 		if (!this.toggleOffset) {
@@ -631,10 +660,12 @@ class CanvasStore {
 			return
 		}
 	}
+
 	@action
 	handleOffsetOff = () => {
 		this.toggleOffset = false
 	}
+	
 	/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 		
 	LAYER & CELL MODIFICATIONS
@@ -642,7 +673,6 @@ class CanvasStore {
    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 	@action
 	rotateGlyphRight = () => {
-		console.log(this.rotationAmount)
 		if (this.ctrlDown) {
 			//Rotate Cell if ctrl down
 			for (let z_i = 0; z_i <= 3; z_i++) {
@@ -825,10 +855,8 @@ class CanvasStore {
 	* Simple pixelperfect freehand drawing function from https://cantwell-tom.medium.com/pixel-perfect-lines-in-html-canvas-112fc638d1e9
 	* not perfect as drawing really fast can "glitch" it
 	*/
-	@observable
-	lastDrawn = {x: 0, y: 0}
-	@observable
-	waitingPixel = {x: 0, y: 0}
+	@observable	lastDrawn = {x: 0, y: 0}
+	@observable	waitingPixel = {x: 0, y: 0}
 	perfectPixels = (x, y) => {
 		//if currentPixel not neighbor to lastDrawn, draw waitingpixel
 		if (Math.abs(x - this.lastDrawn.x) > 1 || Math.abs(y - this.lastDrawn.y) > 1) {
@@ -860,7 +888,7 @@ class CanvasStore {
 				currentGlyph.replace(this.getSelectedGlyph())
 			}
 			if (this.altDown) {
-				currentGlyph.replace(getEmptyLayer())
+				currentGlyph.replace(createEmptyLayer())
 			}
 		}
 	}
@@ -1057,7 +1085,7 @@ class CanvasStore {
 	@action
 	insertEmpty = () => {
 		//space
-		this.currentLayer.replace(getEmptyLayer())
+		this.currentLayer.replace(createEmptyLayer())
 		//this.insertBackground()
 	}
 	@action
@@ -1066,25 +1094,64 @@ class CanvasStore {
 		if (!this.ctrlDown) {
 			this.insertEmpty()
 		} else {
-			this.currentGlyph.replace(getEmptyCell())
+			this.currentGlyph.replace(createEmptyCell())
 		}
 		this.currentGlyph[4][0] = 255
 	}
-	@action
 	insert = () => {
 		//q
-		this.currentLayer.replace(this.getSelectedGlyph())
+		//this.currentLayer.replace(this.getSelectedGlyph())
 		//this.currentGlyph[4].replace(this.getBgColor())
+		//this.insertXY(this.selected_x, this.selected_y)
+		this.withSymmetricalMode(this.insertXY, this.selected_x, this.selected_y)
 	}
-	@action
 	insertXY = (x, y) => {
 		this.currentLayerXY(x, y).replace(this.getSelectedGlyph())
+
+		// if (this.mirrorX && !this.mirrorY) {
+		// 	let symmetricalX = this.canvasWidth - x - 1;
+		// 	this.currentLayerXY(symmetricalX, y).replace(this.getSelectedGlyph())
+		// }
+		// if (this.mirrorY && !this.mirrorX) {
+		// 	let symmetricalY = this.canvasHeight - y - 1;
+		// 	this.currentLayerXY(x, symmetricalY).replace(this.getSelectedGlyph())
+		// }
+		// if (this.mirrorX && this.mirrorY) {
+		// 	let symmetricalX = this.canvasWidth - x - 1;
+		// 	let symmetricalY = this.canvasHeight - y - 1;
+		// 	this.currentLayerXY(symmetricalX, y).replace(this.getSelectedGlyph())
+		// 	this.currentLayerXY(x, symmetricalY).replace(this.getSelectedGlyph())
+		// 	this.currentLayerXY(symmetricalX, symmetricalY).replace(this.getSelectedGlyph())
+		// }
 	}
-	@action
+	// This is your wrapper function
+	withSymmetricalMode(func, x, y, ...args) {
+		// Calculate symmetrical coordinates
+		let symmetricalX = this.canvasWidth - x - 1;
+		let symmetricalY = this.canvasHeight - y - 1;
+
+		// Call the original function with original coordinates
+		func(x, y, ...args);
+
+		// Call the original function with symmetrical coordinates
+		if (this.mirrorX && !this.mirrorY) {
+			func(symmetricalX, y, ...args);
+		}
+		if (this.mirrorY && !this.mirrorX) {
+			func(x, symmetricalY, ...args);
+		}
+		if (this.mirrorX && this.mirrorY) {
+			func(symmetricalX, y, ...args);
+			func(x, symmetricalY, ...args);
+			func(symmetricalX, symmetricalY, ...args);
+		}
+
+	}
 	insertBackground = () => {
 		//z
 		this.currentGlyph[4].replace(this.getBgColor())
 	}
+
 	@action
 	colorFg = () => {
 		//x
@@ -1163,6 +1230,17 @@ class CanvasStore {
 			])
 		}
 		return [this.selectionArea.start, this.selectionArea.end]
+	}
+	getSelectionDimensions() {
+		const [[start_y, start_x], [end_y, end_x]] = this.getSelectedArea();
+		
+		const selectionHeight = end_y - start_y + 1;
+		const selectionWidth = end_x - start_x + 1;
+		
+		return {
+			selectionHeight,
+			selectionWidth 
+		};
 	}
 	mapRangeAllLayers = (range, f) => {
 		const [[start_y, start_x], [end_y, end_x]] = range
@@ -1338,11 +1416,11 @@ class CanvasStore {
 		if (!this.ctrlDown) {
 			this.paintRangeSelectedLayer(
 				this.getSelectedArea(),
-				getEmptyLayer(),
+				createEmptyLayer(),
 				this.selectedLayer
 			)
 		} else {
-			this.paintRangeAllLayers(this.getSelectedArea(), getEmptyLayer())
+			this.paintRangeAllLayers(this.getSelectedArea(), createEmptyLayer())
 			this.paintRangeSelectedLayer(this.getSelectedArea(), [255], 4)
 		}
 	}
@@ -1618,7 +1696,7 @@ class CanvasStore {
 				}
 			}
 			for (let x_i = start_x; x_i <= end_x; x_i++) {
-				this.canvas[start_y][x_i][this.selectedLayer].replace(getEmptyLayer())
+				this.canvas[start_y][x_i][this.selectedLayer].replace(createEmptyLayer())
 			}
 		} else {
 			//ALL LAYERS
@@ -1629,7 +1707,7 @@ class CanvasStore {
 				}
 			}
 			for (let x_i = start_x; x_i <= end_x; x_i++) {
-				this.canvas[start_y][x_i].replace(getEmptyCell())
+				this.canvas[start_y][x_i].replace(createEmptyCell())
 			}
 		}
 		this.goDown()
@@ -1658,7 +1736,7 @@ class CanvasStore {
 				}
 			}
 			for (let x_i = start_x; x_i <= end_x; x_i++) {
-				this.canvas[end_y][x_i][this.selectedLayer].replace(getEmptyLayer())
+				this.canvas[end_y][x_i][this.selectedLayer].replace(createEmptyLayer())
 			}
 		} else {
 			for (let y_i = start_y; y_i <= end_y; y_i++) {
@@ -1667,7 +1745,7 @@ class CanvasStore {
 				}
 			}
 			for (let x_i = start_x; x_i <= end_x; x_i++) {
-				this.canvas[end_y][x_i].replace(getEmptyCell())
+				this.canvas[end_y][x_i].replace(createEmptyCell())
 			}
 		}
 		this.goUp()
@@ -1696,7 +1774,7 @@ class CanvasStore {
 				}
 			}
 			for (let y_i = start_y; y_i <= end_y; y_i++) {
-				this.canvas[y_i][start_x][this.selectedLayer].replace(getEmptyLayer())
+				this.canvas[y_i][start_x][this.selectedLayer].replace(createEmptyLayer())
 			}
 		} else {
 			for (let y_i = start_y; y_i <= end_y; y_i++) {
@@ -1705,7 +1783,7 @@ class CanvasStore {
 				}
 			}
 			for (let y_i = start_y; y_i <= end_y; y_i++) {
-				this.canvas[y_i][start_x].replace(getEmptyCell())
+				this.canvas[y_i][start_x].replace(createEmptyCell())
 			}
 		}
 		this.goRight()
@@ -1734,7 +1812,7 @@ class CanvasStore {
 				}
 			}
 			for (let y_i = start_y; y_i <= end_y; y_i++) {
-				this.canvas[y_i][end_x][this.selectedLayer].replace(getEmptyLayer())
+				this.canvas[y_i][end_x][this.selectedLayer].replace(createEmptyLayer())
 			}
 		} else {
 			for (let y_i = start_y; y_i <= end_y; y_i++) {
@@ -1743,7 +1821,7 @@ class CanvasStore {
 				}
 			}
 			for (let y_i = start_y; y_i <= end_y; y_i++) {
-				this.canvas[y_i][end_x].replace(getEmptyCell())
+				this.canvas[y_i][end_x].replace(createEmptyCell())
 			}
 		}
 		this.goLeft()

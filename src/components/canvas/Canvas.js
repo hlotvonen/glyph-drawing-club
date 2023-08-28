@@ -1,12 +1,13 @@
-import localforage from "localforage"
-import { action } from "mobx"
-import { observer } from "mobx-react"
-import { Component } from "react"
+import React, { useEffect } from 'react';
+import { observer } from 'mobx-react';
+import localforage from 'localforage';
+
 import store from "../../models/CanvasStore.js"
 import colorstore from "../../models/ColorStore.js"
 import FontStore from "../../models/FontStore.js"
 import gridstore from "../../models/GridStore.js"
 import setstore from "../../models/KeymappingsStore"
+
 import ColorToolbar from "../toolbar/ColorToolbar.js"
 import Coordinates from "../toolbar/Coordinates"
 import GridControls from "../toolbar/GridControls"
@@ -14,31 +15,34 @@ import LayerSelect from "../toolbar/LayerSelect.js"
 import QuickChooseColor from "../toolbar/QuickChooseColor"
 import SelectedGlyph from "../toolbar/SelectedGlyph"
 import Tools from "../toolbar/Tools.js"
+
 import Grid from "./Grid"
 
-class Canvas extends Component {
-	componentDidMount() {
-		document.addEventListener("keydown", this.handleKeyPress, false)
-		document.addEventListener("keyup", this.handleKeyPressUp, false)
-	}
-	componentWillUnmount() {
-		document.removeEventListener("keydown", this.handleKeyPress, false)
-		document.removeEventListener("keyup", this.handleKeyPressUp, false)
-	}
+const Canvas = observer(() => {
 
-	resetPageAndClearLocalStorage() {
-		localforage.clear().then(function() {
-			// Run this code once the database has been entirely deleted.
-			console.log("Database is now empty.")
-			location.reload()
-		}).catch(function(err) {
-			// This code runs if there were any errors
-			console.log(err)
-		})
-	}
+  useEffect(() => {
+    document.addEventListener('keydown', handleKeyPress, false);
+    document.addEventListener('keyup', handleKeyPressUp, false);
 
-	@action
-	handleKeyPress = event => {
+    return () => {
+      document.removeEventListener('keydown', handleKeyPress, false);
+      document.removeEventListener('keyup', handleKeyPressUp, false);
+    };
+  }, []);
+
+  const resetPageAndClearLocalStorage = () => {
+    localforage
+      .clear()
+      .then(() => {
+        console.log('Database is now empty.');
+        location.reload();
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+	const handleKeyPress = (event) => {
 		//disable shortcuts if focus is on input element
 		if (!store.disableShortcuts && !store.typingMode) {
 			const glyph = [
@@ -146,7 +150,7 @@ class Canvas extends Component {
 		}
 	}
 
-	handleKeyPressUp = event => {
+	const handleKeyPressUp = (event) => {
 		const handlers = {
 			Alt: store.handleAltUp,
 			Control: store.handleCtrlUp,
@@ -166,66 +170,67 @@ class Canvas extends Component {
 		event.preventDefault()
 	}
 
-	@action
-	handleWheel(e) {
-		if (e.deltaY < 0) {
+	const handleWheel = (event) => {
+		if (event.deltaY < 0) {
 			FontStore.prevGlyph();
 		} else {
 			FontStore.nextGlyph();
 		}
 	}
 
-	render() {
-
-		if (!store.canvas) {
-			return (
-				<div className="canvas_container">
-					<div>
-						<h1>Loading canvas...</h1>
-						<h2>if you get stuck in the loading screen: refresh the page.</h2>
-						<p>In extreme cases, if nothing else works... <button onClick={() => this.resetPageAndClearLocalStorage()}>WARNING: RESET EVERYTHING</button></p>
-					</div>
-				</div>
-			)
-		}
-
+	if (!store.canvas) {
 		return (
-			<div 
-				className={"canvas_container" + (store.hideGrid ? " hideGrid" : "")} 
-				onWheel={this.handleWheel}
-			>
-				<Grid />
-				<GridControls />
-				<Coordinates />
-				<div className="SelectedGlyphContainer">
-					<div className="selectedGlyph">
-						<div className="vector">
-							<SelectedGlyph
-								glyphPath={store.glyphPath}
-								svgWidth={store.svgWidth}
-								svgHeight={store.svgHeight || 1}
-								svgBaseline={store.svgBaseline}
-								rotationAmount={store.rotationAmount}
-								glyphFontSizeModifier={store.glyphFontSizeModifier}
-								flipGlyph={store.flipGlyph}
-								glyphInvertedShape={store.glyphInvertedShape}
-								colorIndex={colorstore.colorIndex}
-								bgColorIndex={colorstore.bgColorIndex}
-								showBg={true}
-								defaultFontSize={store.defaultFontSize}
-								glyphOffsetX={0}
-								glyphOffsetY={0}
-							/>
-						</div>
+		  <div className='canvas_container'>
+			<div>
+			  <h1>Loading canvas...</h1>
+			  <h2>If you get stuck in the loading screen: refresh the page.</h2>
+			  <p>
+				In extreme cases, if nothing else works...{' '}
+				<button onClick={resetPageAndClearLocalStorage}>
+				  WARNING: RESET EVERYTHING
+				</button>
+			  </p>
+			</div>
+		  </div>
+		);
+	}
+
+	return (
+		<div
+			className={`canvas_container${store.hideGrid ? ' hideGrid' : ''}`}
+			onWheel={handleWheel}
+		>
+		  <Grid />
+		  <GridControls />
+		  <Coordinates />
+		  <div className='SelectedGlyphContainer'>
+				<div className='selectedGlyph'>
+					<div className='vector'>
+					<SelectedGlyph
+						glyphPath={store.glyphPath}
+						svgWidth={store.svgWidth}
+						svgHeight={store.svgHeight || 1}
+						svgBaseline={store.svgBaseline}
+						rotationAmount={store.rotationAmount}
+						glyphFontSizeModifier={store.glyphFontSizeModifier}
+						flipGlyph={store.flipGlyph}
+						glyphInvertedShape={store.glyphInvertedShape}
+						colorIndex={colorstore.colorIndex}
+						bgColorIndex={colorstore.bgColorIndex}
+						showBg={true}
+						defaultFontSize={store.defaultFontSize}
+						glyphOffsetX={0}
+						glyphOffsetY={0}
+					/>
 					</div>
 				</div>
-				<LayerSelect />
-				<Tools />
-				<ColorToolbar />
-				<QuickChooseColor />
-			</div>
-		)
-	}
-}
+		  </div>
+		  <LayerSelect />
+		  <Tools />
+		  <ColorToolbar />
+		  <QuickChooseColor />
+		</div>
+	);
+});
 
-export default observer(Canvas)
+export default Canvas;
