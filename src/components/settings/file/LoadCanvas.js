@@ -40,9 +40,10 @@ function LoadCanvas() {
   };
 
   return (
-    <>
-      <form>
-        <label htmlFor="loadFileInput">Load file</label>
+    <section>
+      <h3>Load previous artwork</h3>
+      <form data-tooltip="Load File: Open a previously saved drawing for further editing or viewing">
+        <label htmlFor="loadFileInput">Load from file</label>
 
         <input 
           id="loadFileInput"
@@ -52,9 +53,8 @@ function LoadCanvas() {
         />
         {isLoading && <span>Loading...</span>}
       </form>
-      <form>
-        <label htmlFor="placeCanvas">Place file</label>
-
+      <form data-tooltip="Place Drawing: Place a new image onto the existing artwork at the cursor position">
+        <label htmlFor="placeCanvas">Place from file</label>
         <input 
           id="placeCanvas"
           type="file" 
@@ -63,7 +63,7 @@ function LoadCanvas() {
         />
         {isLoading && <span>Loading...</span>}
       </form>
-    </>
+    </section>
   );
 }
 

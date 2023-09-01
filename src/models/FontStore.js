@@ -11,7 +11,7 @@ class FontStore {
     // load default font if none are loaded
     autorun(() => {
       if (!this.hasLoadedFonts) {
-        this.loadFontFromUrl('fonts/BruceRogersOrnaments-Regular.otf')
+        this.loadFontFromUrl('fonts/Tesserae-4x4Extended.otf')
       }
     })
   }

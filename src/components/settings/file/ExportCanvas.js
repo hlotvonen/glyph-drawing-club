@@ -23,9 +23,9 @@ const ExportCanvas = () => {
 
   return (
     <section>
-      <h3>Export</h3>
+      <h3>Export As</h3>
 
-      <form className="exportPng">
+      <form data-tooltip="Export as PNG: Save the drawing as an image">
         <button onClick={e => handlePngExport(e)}>Export PNG</button>
 
         <label>
@@ -43,7 +43,7 @@ const ExportCanvas = () => {
         ({store.cellWidth * store.canvasWidth * exportSize} &times; {store.cellHeight * store.canvasHeight * exportSize} px)
       </form>
 
-      <form className="exportSvg">
+      <form data-tooltip="Export as SVG: Save the drawing in scalable vector graphics format for further editing">
         <button onClick={handleSvgExport}>Export SVG</button>
 
         <a

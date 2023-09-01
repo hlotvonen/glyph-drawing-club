@@ -47,29 +47,12 @@ class Settings extends React.Component {
 					</TabPanel>
 
 					<TabPanel>
-						<section>
-							<h3>CANVAS SIZE</h3>
-							<CanvasSizeModification />
-							<EmptyCanvas />
-						</section>
-						
-						<SetReferenceImage/> 
-
-						<section>
-							<h3>SIZE CALCULATOR</h3>
-							<CanvasSizeInMillimeters />
-						</section>
-						
-						<section>
-							<h3>CELL SIZE</h3>
-							<CellSize />
-							<FontSize
-								increaseFontSize={store.increaseFontSize}
-								decreaseFontSize={store.decreaseFontSize}
-								defaultFontSize={store.defaultFontSize}
-							/>
-						</section>
-
+						<CanvasSizeModification />
+						<EmptyCanvas />					
+						<SetReferenceImage/>
+						<CanvasSizeInMillimeters />					
+						<CellSize />
+	
 						<section>
 							<h3>GLYPH OFFSET</h3>
 							<div>
@@ -80,7 +63,8 @@ class Settings extends React.Component {
 									value={store.offsetAmount}
 									onChange={evt => store.handleChangeOffsetAmount(evt)}
 									onFocus={() => store.toggleWriting(true)}
-         					onBlur={() => store.toggleWriting(false)}
+         							onBlur={() => store.toggleWriting(false)}
+									size="7"
 								/>
 							</div>
 						</section>
@@ -88,11 +72,8 @@ class Settings extends React.Component {
 					</TabPanel>
 
 					<TabPanel>
-						<section>
-							<h3>SAVE & LOAD</h3>
-							<SaveCanvas/>
-							<LoadCanvas />
-						</section>
+						<SaveCanvas/>
+						<LoadCanvas />
 
 						<ExportCanvas
 							exportSizeMultiplier={store.exportSizeMultiplier}

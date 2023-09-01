@@ -20,6 +20,8 @@ const SaveCanvas = () => {
   };
 
   return (
+    <section>
+    <h3>Save your artwork</h3>
     <form>
 			<label htmlFor="fileName">Filename:</label>
       <input
@@ -32,15 +34,17 @@ const SaveCanvas = () => {
 				size="10"
       />
 
-      <button onClick={(e) => handleSaveClick(e)}>Save file</button>
+      <button onClick={(e) => handleSaveClick(e)} data-tooltip="Save Drawing: Store your artwork as a file for future loading and editing">Save file</button>
 
       <button 
         onClick={(e) => handleSelectionSaveClick(e)}
         disabled={!store.selectionArea.start}
+        data-tooltip="Save Area: Store the selected area as a file for future loading and editing"
       >
         Save selection
       </button>
     </form>
+    </section>
   );
 };
 

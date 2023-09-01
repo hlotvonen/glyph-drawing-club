@@ -2,50 +2,47 @@ import { observer } from "mobx-react"
 import React from "react"
 import store from "../../../models/CanvasStore.js"
 
-class CanvasHeight extends React.Component {
-	render() {
-		return (
-			<div>
-
-				<div className="settingsBlock">
-
-					<div>Canvas width:</div>
-					<button onClick={store.deleteCol}>{"-1"}</button>
-					<button onClick={store.addCol}> {"+1"} </button>
-					<span>
-						{" "} {store.canvasWidth} {"columns"} ({store.cellWidth * store.canvasWidth} px)
-					</span>
-
-
-					<div className="mt-1">Canvas height:</div>
-					<button onClick={store.deleteRow}> {"-1"} </button>
-					<button onClick={store.addRow}> {"+1"} </button>
-					<span>
-						{" "} {store.canvasHeight} {"rows"} ({store.cellHeight * store.canvasHeight} px)
-					</span>
-
+const CanvasSizeModification = () => {
+	return (
+		<>
+			<section data-tooltip="Resize Canvas: Adjust the drawing grid dimensions">
+				<h3>Canvas size</h3>
+				<div>
+					Width:
+					<button onClick={store.deleteCol}>-</button>
+					<button onClick={store.addCol}>+</button>
+					{store.canvasWidth} columns
 				</div>
 
-				<div className="settingsBlock">
-					{"At red cursor:"}
-					<br />
-					<button onClick={store.addRowAtSelection}>
-						{"Add Row \u2191"}
-					</button>
-					<button onClick={store.deleteRowAtSelection}>
-						{"Delete Row"}
-					</button>
-					<br />
-					<button onClick={store.addColAtSelection}>
-						{"Add Col \u2190"}
-					</button>
-					<button onClick={store.deleteColAtSelection}>
-						{"Delete Col"}
-					</button>
+				<div>
+					Height:
+					<button onClick={store.deleteRow}>-</button>
+					<button onClick={store.addRow}>+</button> 
+					{store.canvasHeight} rows
 				</div>
+			</section>
 
-			</div>
-		)
-	}
+			<section>
+				<h3>Modify size at cursor</h3>
+					<div>
+						<button onClick={store.addRowAtSelection} data-tooltip="Add Row: Insert a new row just above the cursor position">
+							Add Row {"\u2191"}
+						</button>
+						<button onClick={store.deleteRowAtSelection} data-tooltip="Delete Current Row: Remove the row at the cursor position">
+							Delete Row
+						</button>
+					</div>
+					<div>
+						<button onClick={store.addColAtSelection} data-tooltip="Add Column: Insert a new column to the immediate left of the cursor.">
+							Add Col {"\u2190"}
+						</button>
+						<button onClick={store.deleteColAtSelection} data-tooltip="Delete Current Column: Remove the column at the cursor position">
+							Delete Col
+						</button>
+					</div>
+			</section>
+		</>
+	)
 }
-export default observer(CanvasHeight)
+
+export default observer(CanvasSizeModification)

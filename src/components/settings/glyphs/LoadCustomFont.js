@@ -29,8 +29,8 @@ export const LoadCustomFont = observer(() => {
   }  
   
   return (
-    <section>
-      <h3>Load custom font</h3>
+    <section data-tooltip="Add Your Own Fonts: Click, hold, and move font files (.OTF or .TTF) from your computer into this area to import them">
+      <h3>Add custom font</h3>
       <div
         className="dropZone"
         onDragOver={e => { e.preventDefault();}}

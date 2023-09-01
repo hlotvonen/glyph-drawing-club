@@ -948,3 +948,24 @@ tooltips
 	z-index: 1;
 	transform: translateY(-100%);
 }
+
+[data-tooltip] {
+	position: relative;
+}
+
+[data-tooltip]:after {
+	content: attr(data-tooltip);
+	position: fixed;
+	left:40px;
+	top:5px;
+	background-color: #ccccff;
+	border-radius: 2px;
+	padding: 4px 6px;
+	width: max-content;
+	display: none;
+	pointer-events: none;
+}
+
+[data-tooltip]:hover:after {
+	display: inline-block;
+}

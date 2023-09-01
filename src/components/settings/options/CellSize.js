@@ -1,19 +1,24 @@
 import { observer } from "mobx-react"
 import store from "../../../models/CanvasStore"
 
-export const CellSize = observer(() => (
-  <>
-    <div>
-      Cell width:
-      <button onClick={store.decreaseCellWidth}>-1</button>
-      <button onClick={store.increaseCellWidth}>+1</button>
+export const CellSize = observer(() => {
+
+  function increaseSize(){
+    store.increaseCellWidth()
+    store.increaseCellHeight()
+    store.increaseFontSize()
+  }
+  function decreaseSize(){
+    store.decreaseCellWidth()
+    store.decreaseCellHeight()
+    store.decreaseFontSize()
+  }
+  return(
+    <section data-tooltip="Change Cell Size: Resize to adjust overall image dimensions">
+      <h3>Cell size:</h3>
+      <button onClick={decreaseSize}>-</button>
+      <button onClick={increaseSize}>+</button>
       <span>{store.cellWidth} px</span>
-    </div>
-      <div>
-      Cell height: 
-      <button onClick={store.decreaseCellHeight}> -1 </button>
-      <button onClick={store.increaseCellHeight}> +1 </button>
-      <span>{store.cellHeight} px</span>
-    </div>
-  </>
-))
+    </section>
+  )
+})

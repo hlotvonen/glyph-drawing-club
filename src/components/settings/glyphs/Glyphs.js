@@ -6,7 +6,7 @@ import { GlyphsMouseEvents } from "./GlyphsMouseEvents";
 import { LoadCustomFont } from './LoadCustomFont';
 import { LoadDefaultFont } from './LoadDefaultFont';
 
-const GRIDWIDTH = 16;
+const GRID_WIDTH = 16;
 
 const indexToXY = (index, gridWidth) => {
   return {
@@ -19,8 +19,6 @@ const Glyph = class extends fabric.Rect {
   constructor(options) {
     super(options);
     this.set({
-      width: 800,
-      height: 800,
       objectCaching: false,
       selectable: false,
       hasControls: false,
@@ -35,6 +33,7 @@ const Glyph = class extends fabric.Rect {
       lockSkewingX: true,
       lockSkewingY: true,
       hoverCursor: "pointer",
+      absolutePositioned: true,
       flipY: true,
       ...options
     });
@@ -54,22 +53,27 @@ const Glyph = class extends fabric.Rect {
 };
 
 function drawFont(canvas, fontObject) {
-  for (const [key, value] of Object.entries(fontObject.data.glyphs.glyphs)) {
-    const colPadding = key % GRIDWIDTH * 2
-    const rowPadding = Math.floor(key / GRIDWIDTH) * 2
+
+  const fontHeight = fontObject.data.ascender + Math.abs(fontObject.data.descender)
+
+  for (const glyph of Object.values(fontObject.data.glyphs.glyphs)) {
+    const colGap = glyph.index % GRID_WIDTH * 2
+    const rowGap = Math.floor(glyph.index / GRID_WIDTH) * 2
     const glyphPath = new Glyph({
-      path: value.path.toPathData(8),
-      left: indexToXY(value.index, GRIDWIDTH).x * fontObject.size + colPadding,
-      top: indexToXY(value.index, GRIDWIDTH).y * fontObject.size + rowPadding,
-      fontName: fontObject.name
+      path: glyph.path.toPathData(8),
+      left: indexToXY(glyph.index, GRID_WIDTH).x * fontObject.size + colGap,
+      top: indexToXY(glyph.index, GRID_WIDTH).y * fontObject.size + rowGap,
+      fontName: fontObject.name,
+      width: glyph.advanceWidth,
+      height: fontHeight,
     });
     glyphPath.scaleToWidth(fontObject.size, true);
     glyphPath.scaleToHeight(fontObject.size, true);
     canvas.add(glyphPath);
   }
   canvas.selection = false;
-  canvas.setHeight(Math.floor(fontObject.data.nGlyphs / GRIDWIDTH) * fontObject.size + fontObject.size + Math.floor(fontObject.data.nGlyphs / GRIDWIDTH) * 2);
-  canvas.setWidth(GRIDWIDTH * fontObject.size + GRIDWIDTH * 2 - 1);
+  canvas.setHeight(Math.floor(fontObject.data.nGlyphs / GRID_WIDTH) * fontObject.size + fontObject.size + Math.floor(fontObject.data.nGlyphs / GRID_WIDTH) * 2);
+  canvas.setWidth(GRID_WIDTH * fontObject.size + GRID_WIDTH * 2 - 1);
 }
 
 const Glyphs = ({ fontObject }) => {
@@ -93,7 +97,7 @@ return (
       {FontStore.loadedFonts.length > 1 &&
         <button className="removeFont" onClick={() => FontStore.removeFont(fontObject.name)}>remove</button>
       }
-      <div className='glyphsList-container'>
+      <div className='glyphsList-container' data-tooltip="Choose a Shape: Click a shape to draw with">
         <canvas ref={canvasEl}/>
         <GlyphsMouseEvents fontName={fontObject.name} />
       </div>

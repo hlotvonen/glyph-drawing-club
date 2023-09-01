@@ -13,8 +13,8 @@ export const LoadDefaultFont = observer(() => {
   }
 
   return (
-    <section>
-      <h3>Load default font</h3>
+    <section data-tooltip="Choose a Preset Font: Pick from a selection of pre-defined fonts">
+      <h3>Add more shapes</h3>
       <form method="post" onSubmit={handleSubmit}>
         <select name="selectedFont" defaultValue="Tesserae Extended">
           <option value="fonts/Tesserae-TypeDesign.otf">Tesserae Core</option>
