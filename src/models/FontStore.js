@@ -84,10 +84,10 @@ class FontStore {
     const glyph = font.data.glyphs.glyphs[glyphLocation.index];
 
     runInAction(() => {
-      const { path, advanceWidth, ascender, descender } = font.data;
+      const { ascender, descender } = font.data;
       CanvasStore.glyphPath = glyph.path.toPathData(8);
-      CanvasStore.svgWidth = advanceWidth;
-      CanvasStore.svgHeight = ascender + descender;
+      CanvasStore.svgWidth = glyph.advanceWidth;
+      CanvasStore.svgHeight = ascender + Math.abs(descender);
       CanvasStore.svgBaseline = descender;
     })
   }
